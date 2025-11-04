@@ -1,4 +1,4 @@
-// server.js - VERCEL-READY VERSION 🚀
+// server.js - FINAL VERCEL-READY VERSION
 
 const express = require('express');
 const mongoose = require('mongoose');
@@ -10,31 +10,26 @@ const app = express();
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, '/'))); // Serve all static files
 
-// MongoDB Connection (Use env var on Vercel!)
+// SERVE STATIC FILES FROM ROOT (CRITICAL!)
+app.use(express.static(__dirname)); // ← This serves index.html, CSS, JS
+
+// MongoDB Connection
 const DB_URI = process.env.MONGODB_URI || 'mongodb+srv://Aasritha_Thalamati:aasi2006@cluster0.bftp8lu.mongodb.net/SansoraShopping?retryWrites=true&w=majority';
 
 mongoose.connect(DB_URI)
-  .then(() => console.log('✅ MongoDB connected'))
-  .catch(err => console.error('❌ MongoDB error:', err));
+  .then(() => console.log('MongoDB connected'))
+  .catch(err => console.error('MongoDB error:', err));
 
-// Product Schema
+// Product Schema & Model
 const productSchema = new mongoose.Schema({
-    title: { type: String, required: true },
-    sku: { type: String, required: true, unique: true },
-    current_price: { type: Number, required: true },
-    original_price: Number,
-    discount: String,
-    description: String,
-    images: [{ url: String, is_main: Boolean, is_thumbnail: Boolean }],
-    features: [String],
-    rating: Number,
-    reviews_count: Number,
-    category: String,
-    inventory_count: Number,
-    delivery_time: String,
-    specs: { battery_life: String, charging_time: String, connectivity: String, weight: String, warranty: String }
+    title: String, sku: { type: String, unique: true },
+    current_price: Number, original_price: Number,
+    discount: String, description: String,
+    images: [Object], features: [String],
+    rating: Number, reviews_count: Number,
+    category: String, inventory_count: Number,
+    delivery_time: String, specs: Object
 }, { collection: 'products' });
 
 const Product = mongoose.model('Product', productSchema);
@@ -51,10 +46,10 @@ app.get('/api/product/:sku', async (req, res) => {
     }
 });
 
-// Serve HTML files
+// SERVE index.html FOR ALL ROUTES (SPA)
 app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, req.path === '/' ? 'index.html' : req.path));
+    res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// VERCEL SERVERLESS EXPORT (THIS IS THE KEY!)
+// VERCEL EXPORT
 module.exports = app;
