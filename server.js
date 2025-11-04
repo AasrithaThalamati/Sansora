@@ -53,3 +53,9 @@ app.get('*', (req, res) => {
 
 // VERCEL EXPORT
 module.exports = app;
+// FALLBACK: Serve index.html
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+module.exports = app;
