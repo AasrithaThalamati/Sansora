@@ -1,0 +1,1280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Sansora</title>
+    <link rel="icon" type="image/png" href="logo-black.png">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background */
+        .bg-animation {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 0;
+            opacity: 0.3;
+            overflow: hidden;
+        }
+
+        .bg-animation span {
+            position: absolute;
+            display: block;
+            width: 20px;
+            height: 20px;
+            background: rgba(138, 99, 210, 0.5);
+            animation: float 25s infinite;
+            border-radius: 50%;
+        }
+
+        .bg-animation span:nth-child(1) { left: 10%; animation-delay: 0s; }
+        .bg-animation span:nth-child(2) { left: 20%; animation-delay: 2s; }
+        .bg-animation span:nth-child(3) { left: 30%; animation-delay: 4s; }
+        .bg-animation span:nth-child(4) { left: 40%; animation-delay: 6s; }
+        .bg-animation span:nth-child(5) { left: 50%; animation-delay: 8s; }
+        .bg-animation span:nth-child(6) { left: 60%; animation-delay: 10s; }
+        .bg-animation span:nth-child(7) { left: 70%; animation-delay: 12s; }
+        .bg-animation span:nth-child(8) { left: 80%; animation-delay: 14s; }
+
+        @keyframes float {
+            0% { opacity: 0; transform: translateY(100vh) scale(0); }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { opacity: 0; transform: translateY(-100vh) scale(1.5); }
+        }
+
+        /* Navbar */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-logo img {
+            height: 70px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: #000000;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+        }
+
+        .nav-link:hover {
+            background: rgba(138, 99, 210, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .nav-link.active {
+            background: linear-gradient(135deg, #8a63d2, #6a4ba9);
+        }
+
+        /* Main Container */
+        .admin-container {
+            position: relative;
+            z-index: 1;
+            max-width: 1400px;
+            margin: 100px auto 2rem;
+            padding: 0 2rem;
+        }
+
+        /* Header */
+        .admin-header {
+            background: linear-gradient(135deg, rgba(138, 99, 210, 0.3), rgba(106, 75, 169, 0.3));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 2.5rem;
+            border-radius: 25px;
+            margin-bottom: 2rem;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            animation: slideDown 0.6s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .admin-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #fff, #8a63d2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Tabs */
+        .admin-tabs {
+            display: flex;
+            background: rgba(26, 26, 46, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 0.8rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            gap: 0.8rem;
+            overflow-x: auto;
+            animation: slideUp 0.6s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .admin-tab {
+            flex: 1;
+            min-width: 150px;
+            padding: 1.2rem;
+            border: none;
+            background: transparent;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.7);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
+            font-size: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .admin-tab::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .admin-tab:hover::before {
+            left: 100%;
+        }
+
+        .admin-tab:hover {
+            background: rgba(138, 99, 210, 0.2);
+            color: #fff;
+            transform: translateY(-3px);
+        }
+
+        .admin-tab.active {
+            background: linear-gradient(135deg, #8a63d2, #6a4ba9);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(138, 99, 210, 0.5);
+        }
+
+        /* Stats Cards */
+        .admin-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: rgba(26, 26, 46, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            animation: fadeIn 0.6s ease forwards;
+            opacity: 0;
+        }
+
+        .stat-card:nth-child(1) { animation-delay: 0.1s; }
+        .stat-card:nth-child(2) { animation-delay: 0.2s; }
+        .stat-card:nth-child(3) { animation-delay: 0.3s; }
+        .stat-card:nth-child(4) { animation-delay: 0.4s; }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #8a63d2, #6a4ba9);
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+
+        .stat-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: rgba(138, 99, 210, 0.5);
+            box-shadow: 0 15px 45px rgba(138, 99, 210, 0.3);
+        }
+
+        .stat-icon {
+            font-size: 3rem;
+            background: linear-gradient(135deg, #8a63d2, #6a4ba9);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover .stat-icon {
+            transform: scale(1.2) rotate(10deg);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1rem;
+        }
+
+        /* Controls */
+        .admin-controls {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .control-btn {
+            background: linear-gradient(135deg, #8a63d2, #6a4ba9);
+            color: rgb(0, 0, 0);
+            border: none;
+            padding: 1rem 1.8rem;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            box-shadow: 0 4px 15px rgba(138, 99, 210, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .control-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .control-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .control-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(138, 99, 210, 0.5);
+        }
+
+        .control-btn.add {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
+        }
+
+        .control-btn.add:hover {
+            box-shadow: 0 8px 25px rgba(39, 174, 96, 0.5);
+        }
+
+        .control-btn.delete {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+        }
+
+        .control-btn.delete:hover {
+            box-shadow: 0 8px 25px rgba(231, 76, 60, 0.5);
+        }
+
+        /* Tables */
+        .products-table, .orders-table {
+            background: rgba(26, 26, 46, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .table-header {
+            background: linear-gradient(135deg, #8a63d2, #6a4ba9);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .products-grid-admin, .orders-grid-admin {
+            display: grid;
+            gap: 1rem;
+            padding: 1.5rem;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        /* Custom Scrollbar */
+        .products-grid-admin::-webkit-scrollbar,
+        .orders-grid-admin::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        .products-grid-admin::-webkit-scrollbar-track,
+        .orders-grid-admin::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        .products-grid-admin::-webkit-scrollbar-thumb,
+        .orders-grid-admin::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #8a63d2, #6a4ba9);
+            border-radius: 10px;
+        }
+
+        .product-row, .order-row {
+            display: grid;
+            grid-template-columns: 80px 2fr 1fr 1fr 1fr 180px;
+            gap: 1rem;
+            align-items: center;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .order-row {
+            grid-template-columns: 1fr 1fr 1fr 1fr 180px;
+        }
+
+        .product-row:hover, .order-row:hover {
+            background: rgba(138, 99, 210, 0.15);
+            border-color: rgba(138, 99, 210, 0.5);
+            transform: translateX(10px);
+            box-shadow: 0 8px 25px rgba(138, 99, 210, 0.2);
+        }
+
+        .product-image-small {
+            width: 70px;
+            height: 70px;
+            object-fit: cover;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .product-row:hover .product-image-small {
+            transform: scale(1.1);
+        }
+
+        .product-actions, .order-actions {
+            display: flex;
+            gap: 0.8rem;
+        }
+
+        .action-btn {
+            padding: 0.7rem 1.2rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .edit-btn {
+            background: linear-gradient(135deg, #feca57, #ff9ff3);
+            color: white;
+        }
+
+        .delete-btn {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+        }
+
+        .view-btn {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 10000;
+            overflow-y: auto;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            margin: 2rem auto;
+            padding: 2.5rem;
+            border-radius: 25px;
+            max-width: 650px;
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.5);
+            animation: modalSlide 0.4s ease;
+        }
+
+        @keyframes modalSlide {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid rgba(138, 99, 210, 0.3);
+        }
+
+        .modal-header h2 {
+            background: linear-gradient(135deg, #fff, #8a63d2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: rgba(255, 255, 255, 0.7);
+            transition: all 0.3s ease;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-close:hover {
+            background: rgba(231, 76, 60, 0.2);
+            color: #e74c3c;
+            transform: rotate(90deg);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.8rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            font-size: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #8a63d2;
+            background: rgba(138, 99, 210, 0.1);
+            box-shadow: 0 0 20px rgba(138, 99, 210, 0.3);
+        }
+
+        .form-group textarea {
+            height: 120px;
+            resize: vertical;
+        }
+
+        /* Status Select */
+        .order-status-select {
+            padding: 0.7rem 1rem;
+            border-radius: 10px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            font-weight: 600;
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .order-status-select:hover {
+            border-color: #8a63d2;
+        }
+
+        .status-pending { background: rgba(255, 193, 7, 0.2); color: #ffc107; }
+        .status-processing { background: rgba(52, 152, 219, 0.2); color: #3498db; }
+        .status-shipped { background: rgba(155, 89, 182, 0.2); color: #9b59b6; }
+        .status-delivered { background: rgba(39, 174, 96, 0.2); color: #27ae60; }
+        .status-cancelled { background: rgba(231, 76, 60, 0.2); color: #e74c3c; }
+
+        /* Message Popup */
+        .message-popup {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            padding: 1.2rem 2rem;
+            border-radius: 15px;
+            color: white;
+            font-weight: 500;
+            z-index: 10001;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            animation: slideInRight 0.4s ease;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 968px) {
+            .product-row {
+                grid-template-columns: 60px 1fr 120px;
+            }
+            .product-row > div:nth-child(3),
+            .product-row > div:nth-child(4),
+            .product-row > div:nth-child(5) {
+                display: none;
+            }
+            .order-row {
+                grid-template-columns: 1fr;
+            }
+            .admin-header h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="bg-animation">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+
+    <!-- Admin Auth Check -->
+    <script>
+        (function() {
+            const savedUser = localStorage.getItem('sansora_user');
+            
+            if (!savedUser) {
+                alert('Please login to access the admin dashboard');
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            try {
+                const userData = JSON.parse(savedUser);
+                
+                if (!userData.isAdmin) {
+                    alert('Access denied. Admin privileges required.');
+                    window.location.href = 'index.html';
+                    return;
+                }
+            } catch (error) {
+                localStorage.removeItem('sansora_user');
+                alert('Authentication error. Please login again.');
+                window.location.href = 'login.html';
+            }
+        })();
+    </script>
+
+    <nav class="navbar">
+        <div class="nav-logo">
+            <img src="logo-black.png" alt="Sansora Logo">
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html" class="nav-link">Home</a></li>
+            <li><a href="admin.html" class="nav-link active">Admin Dashboard</a></li>
+            <li><a href="#" class="nav-link" onclick="logout()">Logout</a></li>
+        </ul>
+    </nav>
+
+    <div class="admin-container">
+        <div class="admin-header">
+            <h1><i class="fas fa-crown"></i> Admin Dashboard</h1>
+            <p>Manage products, orders, and control your e-commerce platform</p>
+        </div>
+
+        <!-- Admin Tabs -->
+        <div class="admin-tabs">
+            <button class="admin-tab active" onclick="switchTab('dashboard', event)">
+                <i class="fas fa-chart-line"></i> Dashboard
+            </button>
+            <button class="admin-tab" onclick="switchTab('products', event)">
+                <i class="fas fa-box"></i> Products
+            </button>
+            <button class="admin-tab" onclick="switchTab('orders', event)">
+                <i class="fas fa-shopping-cart"></i> Orders
+            </button>
+        </div>
+
+        <!-- Dashboard Content -->
+        <div id="dashboardContent">
+            <div class="admin-stats">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-box"></i></div>
+                    <div class="stat-number" id="totalProducts">0</div>
+                    <div class="stat-label">Total Products</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-tag"></i></div>
+                    <div class="stat-number" id="totalCategories">0</div>
+                    <div class="stat-label">Categories</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-rupee-sign"></i></div>
+                    <div class="stat-number" id="averagePrice">₹0</div>
+                    <div class="stat-label">Average Price</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-shopping-cart"></i></div>
+                    <div class="stat-number" id="totalOrders">0</div>
+                    <div class="stat-label">Total Orders</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Products Content -->
+        <div id="productsContent" style="display: none;">
+            <div class="admin-controls">
+                <button class="control-btn add" onclick="showAddProductModal()">
+                    <i class="fas fa-plus"></i> Add Product
+                </button>
+                <button class="control-btn" onclick="refreshData()">
+                    <i class="fas fa-sync"></i> Refresh Data
+                </button>
+                <button class="control-btn delete" onclick="toggleDeleteMode()">
+                    <i class="fas fa-trash"></i> <span id="deleteModeText">Delete Mode</span>
+                </button>
+            </div>
+
+            <div class="products-table">
+                <div class="table-header">
+                    <i class="fas fa-list"></i> Product Management
+                </div>
+                <div class="products-grid-admin" id="productsGridAdmin">
+                    <!-- Products will be loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Orders Content -->
+        <div id="ordersContent" style="display: none;">
+            <div class="admin-controls">
+                <button class="control-btn" onclick="refreshOrders()">
+                    <i class="fas fa-sync"></i> Refresh Orders
+                </button>
+            </div>
+
+            <div class="orders-table">
+                <div class="table-header">
+                    <i class="fas fa-shopping-cart"></i> Order Management
+                </div>
+                <div class="orders-grid-admin" id="ordersGridAdmin">
+                    <!-- Orders will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Product Modal -->
+    <div id="addProductModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Add New Product</h2>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <form id="productForm">
+                <div class="form-group">
+                    <label for="productTitle">Product Title *</label>
+                    <input type="text" id="productTitle" required>
+                </div>
+                <div class="form-group">
+                    <label for="productCategory">Category *</label>
+                    <select id="productCategory" required>
+                        <option value="">Select Category</option>
+                        <option value="electronics">Electronics</option>
+                        <option value="fashion">Fashion</option>
+                        <option value="home">Home & Kitchen</option>
+                        <option value="books">Books</option>
+                        <option value="sports">Sports</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="productPrice">Price (₹) *</label>
+                    <input type="number" id="productPrice" min="1" required>
+                </div>
+                <div class="form-group">
+                    <label for="productImage">Image URL *</label>
+                    <input type="url" id="productImage" required placeholder="https://example.com/image.jpg">
+                </div>
+                <div class="form-group">
+                    <label for="productDescription">Description *</label>
+                    <textarea id="productDescription" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="productSKU">SKU *</label>
+                    <input type="text" id="productSKU" required placeholder="SKU-001">
+                </div>
+                <div class="form-group">
+                    <label for="productInventory">Inventory Count *</label>
+                    <input type="number" id="productInventory" min="0" value="100" required>
+                </div>
+                <button type="submit" class="control-btn add" style="width: 100%; justify-content: center;">
+                    <i class="fas fa-save"></i> <span id="submitBtnText">Add Product</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- View Order Modal -->
+    <div id="viewOrderModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Order Details</h2>
+                <button class="modal-close" onclick="closeOrderModal()">&times;</button>
+            </div>
+            <div id="orderDetailsContent">
+                <!-- Order details will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let deleteMode = false;
+        let editingProductId = null;
+        let adminOrders = [];
+        let currentTab = 'dashboard';
+        
+        function getAdminProducts() {
+            const savedProducts = localStorage.getItem('sansora_products');
+            if (savedProducts) {
+                try {
+                    return JSON.parse(savedProducts);
+                } catch (error) {
+                    console.error('Error loading products:', error);
+                    return [];
+                }
+            }
+            return [];
+        }
+        
+        function initializeAdmin() {
+            loadOrders();
+            loadAdminData();
+            displayAdminProducts();
+            displayAdminOrders();
+            console.log('✅ Admin initialized. Total products:', getAdminProducts().length);
+        }
+        
+        function switchTab(tab, event) {
+            currentTab = tab;
+            
+            document.querySelectorAll('.admin-tab').forEach(btn => btn.classList.remove('active'));
+            event.target.closest('.admin-tab').classList.add('active');
+            
+            document.getElementById('dashboardContent').style.display = tab === 'dashboard' ? 'block' : 'none';
+            document.getElementById('productsContent').style.display = tab === 'products' ? 'block' : 'none';
+            document.getElementById('ordersContent').style.display = tab === 'orders' ? 'block' : 'none';
+            
+            if (tab === 'orders') {
+                refreshOrders();
+            } else if (tab === 'products') {
+                displayAdminProducts();
+            }
+        }
+        
+        function loadAdminData() {
+            const adminProducts = getAdminProducts();
+            const totalProducts = adminProducts.length;
+            const categories = [...new Set(adminProducts.map(p => p.category))];
+            const totalCategories = categories.length;
+            const averagePrice = totalProducts > 0 ? Math.round(adminProducts.reduce((sum, p) => sum + p.price, 0) / totalProducts) : 0;
+            const totalOrders = adminOrders.length;
+            
+            document.getElementById('totalProducts').textContent = totalProducts;
+            document.getElementById('totalCategories').textContent = totalCategories;
+            document.getElementById('averagePrice').textContent = `₹${averagePrice.toLocaleString('en-IN')}`;
+            document.getElementById('totalOrders').textContent = totalOrders;
+        }
+        
+        function loadOrders() {
+            const savedOrders = localStorage.getItem('user_orders');
+            if (savedOrders) {
+                adminOrders = JSON.parse(savedOrders);
+            } else {
+                adminOrders = [];
+            }
+        }
+        
+        function displayAdminProducts() {
+            const adminProducts = getAdminProducts();
+            const grid = document.getElementById('productsGridAdmin');
+            if (!grid) return;
+            
+            if (adminProducts.length === 0) {
+                grid.innerHTML = '<p style="text-align: center; padding: 2rem; color: rgba(255,255,255,0.7);">No products available. Add your first product!</p>';
+                return;
+            }
+            
+            grid.innerHTML = adminProducts.map(product => `
+                <div class="product-row" data-id="${product.id}">
+                    <img src="${product.image}" alt="${product.title}" class="product-image-small" onerror="this.src='https://via.placeholder.com/70x70?text=No+Image'">
+                    <div>
+                        <strong>${product.title}</strong><br>
+                        <small style="color: rgba(255,255,255,0.6);">${product.category.toUpperCase()}</small>
+                    </div>
+                    <div style="font-weight: 600;">₹${product.price.toLocaleString('en-IN')}</div>
+                    <div style="font-size: 0.9rem; color: rgba(255,255,255,0.6);">
+                        ${product.description.substring(0, 50)}...
+                    </div>
+                    <div style="text-align: center; color: rgba(255,255,255,0.6);">
+                        <small>SKU: ${product.sku || 'N/A'}</small><br>
+                        <small>Stock: ${product.inventory_count || 0}</small>
+                    </div>
+                    <div class="product-actions">
+                        <button class="action-btn edit-btn" onclick="editProduct(${product.id})">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="action-btn delete-btn" onclick="deleteProduct(${product.id})" 
+                                ${deleteMode ? 'style="background: linear-gradient(135deg, #27ae60, #2ecc71);"' : ''}>
+                            <i class="fas fa-${deleteMode ? 'check' : 'trash'}"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+            
+            console.log('✅ Displayed', adminProducts.length, 'products in admin');
+        }
+        
+        function displayAdminOrders() {
+            const grid = document.getElementById('ordersGridAdmin');
+            if (!grid) return;
+            
+            if (adminOrders.length === 0) {
+                grid.innerHTML = '<p style="text-align: center; padding: 2rem; color: rgba(255,255,255,0.7);">No orders available</p>';
+                return;
+            }
+            
+            grid.innerHTML = adminOrders.map(order => `
+                <div class="order-row" data-id="${order.id}">
+                    <div>
+                        <strong>#${order.id}</strong><br>
+                        <small style="color: rgba(255,255,255,0.6);">${order.date}</small>
+                    </div>
+                    <div>
+                        <strong>Items:</strong> ${order.items.length}<br>
+                        <small style="color: rgba(255,255,255,0.6);">${order.items.map(i => i.title).join(', ').substring(0, 30)}...</small>
+                    </div>
+                    <div>
+                        <strong>₹${order.total.toLocaleString('en-IN')}</strong><br>
+                        <small style="color: rgba(255,255,255,0.6);">${order.paymentMethod.toUpperCase()}</small>
+                    </div>
+                    <div>
+                        <select class="order-status-select status-${order.status.toLowerCase()}" 
+                                onchange="updateOrderStatus('${order.id}', this.value)">
+                            <option value="Pending" ${order.status === 'Pending' ? 'selected' : ''}>Pending</option>
+                            <option value="Processing" ${order.status === 'Processing' ? 'selected' : ''}>Processing</option>
+                            <option value="Shipped" ${order.status === 'Shipped' ? 'selected' : ''}>Shipped</option>
+                            <option value="Delivered" ${order.status === 'Delivered' ? 'selected' : ''}>Delivered</option>
+                            <option value="Cancelled" ${order.status === 'Cancelled' ? 'selected' : ''}>Cancelled</option>
+                        </select>
+                    </div>
+                    <div class="order-actions">
+                        <button class="action-btn view-btn" onclick="viewOrderDetails('${order.id}')">
+                            <i class="fas fa-eye"></i> View
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function showAddProductModal() {
+            editingProductId = null;
+            document.getElementById('modalTitle').textContent = 'Add New Product';
+            document.getElementById('submitBtnText').textContent = 'Add Product';
+            document.getElementById('productForm').reset();
+            document.getElementById('productInventory').value = 100;
+            document.getElementById('addProductModal').style.display = 'block';
+        }
+        
+        function editProduct(productId) {
+            const adminProducts = getAdminProducts();
+            const product = adminProducts.find(p => p.id === productId);
+            if (!product) {
+                showMessage('Product not found', 'error');
+                return;
+            }
+            
+            editingProductId = productId;
+            document.getElementById('modalTitle').textContent = 'Edit Product';
+            document.getElementById('submitBtnText').textContent = 'Update Product';
+            
+            document.getElementById('productTitle').value = product.title;
+            document.getElementById('productCategory').value = product.category;
+            document.getElementById('productPrice').value = product.price;
+            document.getElementById('productImage').value = product.image;
+            document.getElementById('productDescription').value = product.description;
+            document.getElementById('productSKU').value = product.sku || '';
+            document.getElementById('productInventory').value = product.inventory_count || 100;
+            
+            document.getElementById('addProductModal').style.display = 'block';
+        }
+        
+        function deleteProduct(productId) {
+            if (!deleteMode) {
+                showMessage('Enable delete mode first!', 'error');
+                return;
+            }
+            
+            if (confirm('Are you sure you want to delete this product? This action cannot be undone.')) {
+                let adminProducts = getAdminProducts();
+                const productIndex = adminProducts.findIndex(p => p.id === productId);
+                
+                if (productIndex > -1) {
+                    const deletedProduct = adminProducts.splice(productIndex, 1)[0];
+                    localStorage.setItem('sansora_products', JSON.stringify(adminProducts));
+                    
+                    showMessage(`✅ ${deletedProduct.title} deleted successfully!`, 'success');
+                    loadAdminData();
+                    displayAdminProducts();
+                    
+                    console.log('✅ Product deleted. Remaining products:', adminProducts.length);
+                }
+            }
+        }
+        
+        function toggleDeleteMode() {
+            deleteMode = !deleteMode;
+            const deleteModeText = document.getElementById('deleteModeText');
+            const deleteBtn = deleteModeText.parentElement;
+            
+            if (deleteMode) {
+                deleteModeText.textContent = 'Exit Delete Mode';
+                deleteBtn.style.background = 'linear-gradient(135deg, #27ae60, #2ecc71)';
+                showMessage('⚠️ Delete mode enabled - Click delete buttons to remove products', 'success');
+            } else {
+                deleteModeText.textContent = 'Delete Mode';
+                deleteBtn.style.background = 'linear-gradient(135deg, #e74c3c, #c0392b)';
+                showMessage('Delete mode disabled', 'success');
+            }
+            
+            displayAdminProducts();
+        }
+        
+        function updateOrderStatus(orderId, newStatus) {
+            const orderIndex = adminOrders.findIndex(o => o.id === orderId);
+            if (orderIndex > -1) {
+                adminOrders[orderIndex].status = newStatus;
+                localStorage.setItem('user_orders', JSON.stringify(adminOrders));
+                showMessage(`Order status updated to ${newStatus}`, 'success');
+                displayAdminOrders();
+                loadAdminData();
+            }
+        }
+        
+        function viewOrderDetails(orderId) {
+            const order = adminOrders.find(o => o.id === orderId);
+            if (!order) return;
+            
+            const content = `
+                <div style="padding: 1rem;">
+                    <h3 style="color: #fff;">Order #${order.id}</h3>
+                    <p style="color: rgba(255,255,255,0.8);"><strong>Date:</strong> ${order.date}</p>
+                    <p style="color: rgba(255,255,255,0.8);"><strong>Status:</strong> <span class="status-${order.status.toLowerCase()}" style="padding: 0.3rem 0.8rem; border-radius: 5px;">${order.status}</span></p>
+                    <p style="color: rgba(255,255,255,0.8);"><strong>Payment:</strong> ${order.paymentMethod.toUpperCase()}</p>
+                    <p style="color: rgba(255,255,255,0.8);"><strong>Total:</strong> ₹${order.total.toLocaleString('en-IN')}</p>
+                    
+                    <h4 style="margin-top: 2rem; color: #fff;">Items:</h4>
+                    <div style="display: grid; gap: 1rem;">
+                        ${order.items.map(item => `
+                            <div style="display: flex; gap: 1rem; padding: 1rem; background: rgba(255,255,255,0.05); border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
+                                <img src="${item.image}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px;">
+                                <div style="flex: 1; color: rgba(255,255,255,0.9);">
+                                    <strong>${item.title}</strong><br>
+                                    <small style="color: rgba(255,255,255,0.6);">${item.category}</small><br>
+                                    <span>Qty: ${item.quantity} × ₹${item.price.toLocaleString('en-IN')}</span>
+                                </div>
+                                <div style="text-align: right; font-weight: 700; color: #8a63d2;">
+                                    ₹${(item.price * item.quantity).toLocaleString('en-IN')}
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('orderDetailsContent').innerHTML = content;
+            document.getElementById('viewOrderModal').style.display = 'block';
+        }
+        
+        function closeModal() {
+            document.getElementById('addProductModal').style.display = 'none';
+            editingProductId = null;
+        }
+        
+        function closeOrderModal() {
+            document.getElementById('viewOrderModal').style.display = 'none';
+        }
+        
+        function refreshData() {
+            loadAdminData();
+            displayAdminProducts();
+            showMessage('✅ Data refreshed successfully!', 'success');
+        }
+        
+        function refreshOrders() {
+            loadOrders();
+            displayAdminOrders();
+            loadAdminData();
+            showMessage('✅ Orders refreshed successfully!', 'success');
+        }
+        
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('sansora_user');
+                localStorage.removeItem('sansora_remember');
+                window.location.href = 'login.html';
+            }
+        }
+        
+        function showMessage(text, type) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message-popup ${type}`;
+            messageDiv.textContent = text;
+            messageDiv.style.cssText = `
+                position: fixed;
+                top: 100px;
+                right: 20px;
+                padding: 1.2rem 2rem;
+                border-radius: 15px;
+                color: white;
+                font-weight: 500;
+                z-index: 10001;
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+                background: ${type === 'success' ? 'linear-gradient(135deg, #27ae60, #2ecc71)' : 'linear-gradient(135deg, #e74c3c, #c0392b)'};
+            `;
+            
+            document.body.appendChild(messageDiv);
+            setTimeout(() => messageDiv.remove(), 3000);
+        }
+        
+        document.getElementById('productForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const title = document.getElementById('productTitle').value.trim();
+            const category = document.getElementById('productCategory').value;
+            const price = parseInt(document.getElementById('productPrice').value);
+            const image = document.getElementById('productImage').value.trim();
+            const description = document.getElementById('productDescription').value.trim();
+            const sku = document.getElementById('productSKU').value.trim();
+            const inventory_count = parseInt(document.getElementById('productInventory').value);
+            
+            if (!title || !category || !price || !image || !description || !sku) {
+                showMessage('❌ Please fill all required fields!', 'error');
+                return;
+            }
+            
+            let adminProducts = getAdminProducts();
+            
+            if (editingProductId) {
+                const productIndex = adminProducts.findIndex(p => p.id === editingProductId);
+                if (productIndex > -1) {
+                    adminProducts[productIndex] = {
+                        ...adminProducts[productIndex],
+                        title, 
+                        category, 
+                        price, 
+                        image, 
+                        description, 
+                        sku,
+                        inventory_count
+                    };
+                    
+                    localStorage.setItem('sansora_products', JSON.stringify(adminProducts));
+                    showMessage('✅ Product updated successfully!', 'success');
+                    console.log('✅ Product updated:', adminProducts[productIndex]);
+                }
+            } else {
+                const newId = adminProducts.length > 0 ? Math.max(...adminProducts.map(p => p.id)) + 1 : 1;
+                const newProduct = {
+                    id: newId,
+                    title,
+                    category,
+                    price,
+                    image,
+                    description,
+                    sku,
+                    rating: 4.5,
+                    reviews_count: 0,
+                    inventory_count,
+                    delivery_time: "2-3 business days",
+                    features: [
+                        "High quality product",
+                        "Fast delivery",
+                        "Warranty included",
+                        "Customer support available"
+                    ],
+                    specs: {
+                        "Brand": "Premium",
+                        "Quality": "High",
+                        "Warranty": "1 Year"
+                    },
+                    images: [
+                        { url: image, is_main: true, is_thumbnail: true }
+                    ]
+                };
+                
+                adminProducts.push(newProduct);
+                localStorage.setItem('sansora_products', JSON.stringify(adminProducts));
+                
+                showMessage('✅ Product added successfully!', 'success');
+                console.log('✅ New product added:', newProduct);
+                console.log('✅ Total products now:', adminProducts.length);
+            }
+            
+            loadAdminData();
+            displayAdminProducts();
+            closeModal();
+        });
+        
+        window.onclick = function(event) {
+            const modal = document.getElementById('addProductModal');
+            const orderModal = document.getElementById('viewOrderModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+            if (event.target === orderModal) {
+                closeOrderModal();
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(initializeAdmin, 100);
+        });
+    </script>
+</body>
+</html>

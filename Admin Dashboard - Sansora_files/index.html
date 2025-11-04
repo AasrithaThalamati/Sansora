@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sansora</title>
+    <link rel="icon" type="image/png" href="logo-black.png">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Authentication Check and Redirect -->
+    <script>
+        (function() {
+            const savedUser = localStorage.getItem('sansora_user');
+            
+            if (!savedUser) {
+                // User not logged in, redirect to login page
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            // User is logged in, load their data
+            try {
+                const userData = JSON.parse(savedUser);
+                console.log('User logged in:', userData.username);
+                window.currentUser = userData;
+            } catch (error) {
+                console.error('Error loading user data:', error);
+                // If data is corrupted, redirect to login
+                localStorage.removeItem('sansora_user');
+                window.location.href = 'login.html';
+            }
+        })();
+    </script>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <img src="logo-black.png" alt="Sansora Logo" class="logo">
+            </div>
+            <div class="nav-search">
+                <input type="text" id="search-input" placeholder="Search products..." class="search-input">
+                <button onclick="searchProducts()" class="search-btn">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html" class="nav-link active">Home</a></li>
+                <li><a href="deals.html" class="nav-link">Deals</a></li>
+                <li><a href="orders.html" class="nav-link">Orders</a></li>
+                <li id="adminNavLink" style="display: none;"><a href="admin.html" class="nav-link">Admin</a></li>
+                <li><a href="cart.html" class="nav-link"><i class="fas fa-shopping-cart"></i> Cart (<span id="cart-count">0</span>)</a></li>
+                <li><a href="contact.html"class="nav-link"><i class="fas fa-envelope"></i> Contact</a></li>
+                <li><a href="login.html" class="nav-link" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                <button id="profileBtn" onclick="showAccount()">
+                <i class="fas fa-user-circle"></i> Profile
+                </button>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Premium Hero Slider -->
+    <div class="hero-slider-container">
+        <div class="hero-slider">
+            <!-- Slide 1 -->
+            <div class="slide active">
+                <div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=1600&q=80');"></div>
+                <div class="slide-overlay"></div>
+                <div class="slide-gradient"></div>
+                <div class="slide-content">
+                    <div class="slide-badge">New Arrivals</div>
+                    <h1 class="slide-title">✨ Discover What's New at Sansora</h1>
+                    <p class="slide-text">Fresh styles, cutting-edge gadgets, and must-have essentials — all curated just for you.</p>
+                    <button class="cta-btn" onclick="document.getElementById('category-section').scrollIntoView({behavior: 'smooth'})">
+                        <span>Shop New Arrivals</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+                <div class="slide-decoration">
+                    <div class="decoration-circle circle-1"></div>
+                    <div class="decoration-circle circle-2"></div>
+                    <div class="decoration-circle circle-3"></div>
+                </div>
+            </div>
+
+            <!-- Slide 2 -->
+            <div class="slide">
+                <div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1607082349566-187342175e2f?w=1600&q=80');"></div>
+                <div class="slide-overlay"></div>
+                <div class="slide-gradient"></div>
+                <div class="slide-content">
+                    <div class="slide-badge fire">Mega Sale</div>
+                    <h1 class="slide-title">⚡ The Great Sansora Sale Is Live!</h1>
+                    <p class="slide-text">Grab unbeatable discounts across all categories — Electronics, Fashion, Beauty & more. Limited-time deals up to 60% OFF!</p>
+                    <button class="cta-btn sale-btn" onclick="document.getElementById('category-section').scrollIntoView({behavior: 'smooth'})">
+                        <span>🔥 Shop the Sale</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+                <div class="slide-decoration">
+                    <div class="decoration-circle circle-1"></div>
+                    <div class="decoration-circle circle-2"></div>
+                    <div class="decoration-circle circle-3"></div>
+                </div>
+            </div>
+
+            <!-- Slide 3 -->
+            <div class="slide">
+                <div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1600&q=80');"></div>
+                <div class="slide-overlay"></div>
+                <div class="slide-gradient"></div>
+                <div class="slide-content">
+                    <div class="slide-badge festive">Festive Special</div>
+                    <h1 class="slide-title">🎉 Celebrate the Season with Sansora</h1>
+                    <p class="slide-text">Gift more, spend less! Explore our festive picks and exclusive combo offers this season.</p>
+                    <button class="cta-btn festive-btn" onclick="document.getElementById('category-section').scrollIntoView({behavior: 'smooth'})">
+                        <span>🎁 Explore Festive Deals</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+                <div class="slide-decoration">
+                    <div class="decoration-circle circle-1"></div>
+                    <div class="decoration-circle circle-2"></div>
+                    <div class="decoration-circle circle-3"></div>
+                </div>
+            </div>
+
+            <!-- Navigation Arrows -->
+            <button class="slider-nav prev" onclick="changeSlide(-1)">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="slider-nav next" onclick="changeSlide(1)">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+
+            <!-- Progress Indicators -->
+            <div class="slider-indicators">
+                <div class="indicator active" onclick="goToSlide(0)">
+                    <div class="indicator-progress"></div>
+                </div>
+                <div class="indicator" onclick="goToSlide(1)">
+                    <div class="indicator-progress"></div>
+                </div>
+                <div class="indicator" onclick="goToSlide(2)">
+                    <div class="indicator-progress"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sales Banner -->
+    <div class="sales-banner">
+        <div class="banner-content">
+            <i class="fas fa-fire"></i>
+            <span>🎉 MEGA SALE: Up to 60% OFF + Free Shipping on orders above ₹999!</span>
+            <i class="fas fa-fire"></i>
+        </div>
+    </div>
+
+    <!-- ============================================
+         FEATURED PRODUCT VIDEO AD SECTION
+         Local Video with Autoplay & Loop
+         ============================================ -->
+    <div class="video-ad-section">
+        <div class="video-ad-container">
+            <div class="video-wrapper">
+                <div class="video-badge">
+                    <i class="fas fa-star"></i> Featured Product
+                </div>
+                <video 
+                    class="product-video"
+                    autoplay 
+                    muted 
+                    loop 
+                    playsinline
+                    style="width: 100%; height: 100%; object-fit: cover; border-radius: 20px;">
+                    <source src="3588274-hd_1280_720_30fps.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+            
+            <div class="video-ad-content">
+                <div class="ad-tag">
+                    <i class="fas fa-bolt"></i> Exclusive Offer
+                </div>
+                <h2 class="ad-title">Experience Innovation Like Never Before</h2>
+                <p class="ad-description">
+                    Discover our premium collection of cutting-edge products designed to elevate your lifestyle. 
+                    From smart technology to elegant fashion, we bring you the best of everything at unbeatable prices.
+                </p>
+                
+                <div class="ad-features">
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="feature-text">
+                            <h4>100% Authentic</h4>
+                            <p>Genuine products guaranteed</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-truck-fast"></i>
+                        </div>
+                        <div class="feature-text">
+                            <h4>Fast Delivery</h4>
+                            <p>Get it delivered in 1-2 days</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-tag"></i>
+                        </div>
+                        <div class="feature-text">
+                            <h4>Best Prices</h4>
+                            <p>Lowest price guarantee</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ad-cta-buttons">
+                    <button class="ad-cta-primary" onclick="document.getElementById('category-section').scrollIntoView({behavior: 'smooth'})">
+                        <i class="fas fa-shopping-bag"></i>
+                        <span>Shop Now</span>
+                    </button>
+                    <button class="ad-cta-secondary" onclick="window.location.href='deals.html'">
+                        <i class="fas fa-percent"></i>
+                        <span>View All Deals</span>
+                    </button>
+                </div>
+
+                <div class="ad-trust-badges">
+                    <div class="trust-item">
+                        <i class="fas fa-users"></i>
+                        <span>100K+ Happy Customers</span>
+                    </div>
+                    <div class="trust-item">
+                        <i class="fas fa-star"></i>
+                        <span>4.8/5 Average Rating</span>
+                    </div>
+                    <div class="trust-item">
+                        <i class="fas fa-medal"></i>
+                        <span>Award Winning Service</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Category Filter -->
+    <div class="category-filter" id="category-section">
+        <button class="filter-btn active" data-category="all" onclick="filterProducts('all')">All Products</button>
+        <button class="filter-btn" data-category="electronics" onclick="filterProducts('electronics')">Electronics</button>
+        <button class="filter-btn" data-category="fashion" onclick="filterProducts('fashion')">Fashion</button>
+        <button class="filter-btn" data-category="home" onclick="filterProducts('home')">Home & Kitchen</button>
+        <button class="filter-btn" data-category="books" onclick="filterProducts('books')">Books</button>
+        <button class="filter-btn" data-category="sports" onclick="filterProducts('sports')">Sports</button>
+    </div>
+
+    <!-- Products Grid -->
+    <div class="products-container">
+        <h2 class="section-title">Featured Products</h2>
+        <p class="section-subtitle">Discover our handpicked collection of premium products</p>
+        <div class="products-grid" id="products-grid">
+            <!-- Products will be loaded dynamically -->
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Sansora</h3>
+                <p>Your trusted partner for premium quality products at the best prices.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="deals.html">Deals</a></li>
+                    <li><a href="orders.html">Orders</a></li>
+                    <li><a href="contact.html">Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Customer Service</h4>
+                <ul>
+                    <li><a href="help-center.html" class="nav-link">Help Center</a></li>
+                    <li><a href="returns.html" class="nav-link">Returns</a></li>
+                    <li><a href="track-order.html" class="nav-link">Track Order</a></li>
+                    <li><a href="shipping-info.html" class="nav-link">Shipping Info</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Contact Info</h4>
+                <p><i class="fas fa-phone"></i> +91 98765 43210</p>
+                <p><i class="fas fa-envelope"></i> support@sansora.com</p>
+                <p><i class="fas fa-map-marker-alt"></i> Chennai, India</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Sansora. All rights reserved. | Designed with ❤️ for premium shopping experience</p>
+        </div>
+    </footer>
+
+    <!-- LOAD ONLY script.js - Remove index-script.js -->
+    <script src="script.js"></script>
+    
+    <script>
+        // Show admin link if user is admin
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedUser = localStorage.getItem('sansora_user');
+            if (savedUser) {
+                try {
+                    const userData = JSON.parse(savedUser);
+                    if (userData.isAdmin) {
+                        document.getElementById('adminNavLink').style.display = 'block';
+                    }
+                } catch (error) {
+                    console.error('Error checking admin status:', error);
+                }
+            }
+        });
+    </script>
+</body>
+</html>

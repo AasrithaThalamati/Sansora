@@ -1,0 +1,1549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - Sansora</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', -apple-system, sans-serif;
+            background: #0a0a0a;
+            color: #ffffff;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(236, 72, 153, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .grain {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 40px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 60px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ffffff 0%, #a78bfa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -2px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header h1 i {
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 3rem;
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 16px 32px;
+            border-radius: 16px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            backdrop-filter: blur(20px);
+            font-weight: 600;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(139, 92, 246, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .profile-grid {
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .profile-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.04) 100%);
+            backdrop-filter: blur(40px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 32px;
+            padding: 50px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profile-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .profile-avatar {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 30px;
+            font-size: 5rem;
+            font-weight: 800;
+            color: white;
+            border: 4px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 
+                0 20px 60px rgba(139, 92, 246, 0.4),
+                inset 0 2px 20px rgba(255, 255, 255, 0.2);
+            position: relative;
+            z-index: 1;
+        }
+
+        .profile-name {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+            position: relative;
+            z-index: 1;
+            letter-spacing: -1px;
+        }
+
+        .profile-role {
+            display: inline-block;
+            padding: 12px 28px;
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            border-radius: 50px;
+            font-size: 0.95rem;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.3);
+            position: relative;
+            z-index: 1;
+            font-weight: 600;
+        }
+
+        .profile-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 40px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stat-box {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 30px 20px;
+            border-radius: 20px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .stat-box:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(139, 92, 246, 0.5);
+            transform: translateY(-5px);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 500;
+        }
+
+        .achievement-badges {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .badge {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 16px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .badge:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: scale(1.05);
+        }
+
+        .badge-icon {
+            font-size: 2.5rem;
+            margin-bottom: 8px;
+            filter: drop-shadow(0 4px 8px rgba(139, 92, 246, 0.3));
+        }
+
+        .badge-label {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 600;
+        }
+
+        .details-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.04) 100%);
+            backdrop-filter: blur(40px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 32px;
+            padding: 50px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .details-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(236, 72, 153, 0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite reverse;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 50px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            overflow-x: auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .tab {
+            padding: 20px 32px;
+            background: transparent;
+            border: none;
+            font-size: 1rem;
+            cursor: pointer;
+            color: rgba(255, 255, 255, 0.6);
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+            white-space: nowrap;
+            font-weight: 600;
+        }
+
+        .tab:hover {
+            color: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .tab.active {
+            color: #ffffff;
+            border-bottom-color: #8b5cf6;
+        }
+
+        .tab-content {
+            display: none;
+            position: relative;
+            z-index: 1;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 28px 32px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s;
+            border-radius: 16px;
+        }
+
+        .info-row:hover {
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateX(8px);
+        }
+
+        .info-label {
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 600;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .info-label i {
+            color: #8b5cf6;
+            width: 24px;
+            font-size: 1.1rem;
+        }
+
+        .info-value {
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        .wallet-showcase {
+            background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+            padding: 60px;
+            border-radius: 32px;
+            margin-bottom: 50px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 
+                0 30px 80px rgba(139, 92, 246, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        .wallet-showcase::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            animation: rotate 15s linear infinite;
+        }
+
+        .wallet-showcase::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+        }
+
+        .wallet-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .wallet-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .wallet-label {
+            font-size: 1.2rem;
+            opacity: 0.95;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .wallet-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .wallet-balance {
+            font-size: 5rem;
+            font-weight: 900;
+            margin: 30px 0;
+            text-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+            letter-spacing: -3px;
+        }
+
+        .wallet-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: 40px;
+        }
+
+        .wallet-actions {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .wallet-btn {
+            padding: 22px 32px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            border-radius: 16px;
+            font-size: 1.05rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .wallet-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-4px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .transactions-container {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 24px;
+            backdrop-filter: blur(20px);
+        }
+
+        .transactions-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .transactions-header h3 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .filter-btn {
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .filter-btn:hover {
+            background: rgba(139, 92, 246, 0.2);
+            border-color: #8b5cf6;
+        }
+
+        .transaction-item {
+            display: flex;
+            align-items: center;
+            padding: 28px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s;
+            border-radius: 16px;
+            margin-bottom: 12px;
+        }
+
+        .transaction-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateX(8px);
+        }
+
+        .transaction-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin-right: 24px;
+            flex-shrink: 0;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .transaction-icon.credit {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(34, 197, 94, 0.1));
+            color: #22c55e;
+        }
+
+        .transaction-icon.debit {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.1));
+            color: #ef4444;
+        }
+
+        .transaction-info {
+            flex: 1;
+        }
+
+        .transaction-title {
+            font-weight: 700;
+            font-size: 1.15rem;
+            margin-bottom: 8px;
+        }
+
+        .transaction-date {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .transaction-method {
+            display: inline-block;
+            padding: 6px 14px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 8px;
+            font-weight: 600;
+        }
+
+        .transaction-amount {
+            font-size: 1.6rem;
+            font-weight: 800;
+            margin-left: 24px;
+        }
+
+        .transaction-amount.credit {
+            color: #22c55e;
+        }
+
+        .transaction-amount.debit {
+            color: #ef4444;
+        }
+
+        .edit-btn {
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            color: white;
+            padding: 18px 48px;
+            border: none;
+            border-radius: 16px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            margin-top: 40px;
+            transition: all 0.3s;
+            box-shadow: 0 12px 30px rgba(139, 92, 246, 0.3);
+            font-weight: 700;
+        }
+
+        .edit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 16px 40px rgba(139, 92, 246, 0.4);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(20px);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, rgba(26, 26, 26, 0.98) 0%, rgba(20, 20, 20, 0.98) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin: 5% auto;
+            padding: 60px;
+            border-radius: 32px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 40px 120px rgba(0, 0, 0, 0.9);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .modal-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.5), transparent);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .modal h2 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ffffff 0%, #a78bfa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .close-modal {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.6);
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-modal:hover {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: #ef4444;
+            color: #ef4444;
+            transform: rotate(90deg);
+        }
+
+        .form-group {
+            margin-bottom: 30px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 12px;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 700;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 18px 24px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            font-size: 1.05rem;
+            transition: all 0.3s;
+            color: white;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #8b5cf6;
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.2);
+        }
+
+        .amount-presets {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .preset-btn {
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: all 0.3s;
+            color: white;
+            font-size: 1rem;
+        }
+
+        .preset-btn:hover {
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            border-color: transparent;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(139, 92, 246, 0.4);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 20px;
+            border: none;
+            border-radius: 16px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 700;
+        }
+
+        .modal-btn.primary {
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            color: white;
+            box-shadow: 0 12px 30px rgba(139, 92, 246, 0.3);
+        }
+
+        .modal-btn.primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 16px 40px rgba(139, 92, 246, 0.4);
+        }
+
+        .modal-btn.secondary {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .modal-btn.secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .payment-methods {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .payment-method {
+            padding: 24px 20px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .payment-method:hover {
+            border-color: #8b5cf6;
+            background: rgba(139, 92, 246, 0.1);
+            transform: translateY(-4px);
+        }
+
+        .payment-method.selected {
+            border-color: #8b5cf6;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(236, 72, 153, 0.2));
+            box-shadow: 0 8px 24px rgba(139, 92, 246, 0.3);
+        }
+
+        .payment-method i {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .payment-method-name {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 80px 40px;
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            display: block;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        .empty-state p {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .empty-state small {
+            font-size: 0.95rem;
+            opacity: 0.7;
+        }
+
+        @media (max-width: 1200px) {
+            .profile-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .wallet-actions {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .wallet-balance {
+                font-size: 3.5rem;
+            }
+
+            .amount-presets,
+            .payment-methods {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="grain"></div>
+    
+    <div class="container">
+        <div class="header">
+            <h1>My Profile</h1>
+            <button class="back-btn" onclick="window.location.href='index.html'">
+                <i class="fas fa-arrow-left"></i> Back to Home
+            </button>
+        </div>
+
+        <div class="profile-grid">
+            <div class="profile-card">
+                <div class="profile-avatar" id="profileAvatar">A</div>
+                <div class="profile-name" id="profileName">Loading...</div>
+                <div class="profile-role" id="profileRole">User</div>
+                
+                <div class="profile-stats">
+                    <div class="stat-box">
+                        <div class="stat-number" id="totalOrders">0</div>
+                        <div class="stat-label">Total Orders</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number" id="totalSpent">₹0</div>
+                        <div class="stat-label">Total Spent</div>
+                    </div>
+                </div>
+
+                <div class="achievement-badges">
+                    <div class="badge">
+                        <div class="badge-icon">🎯</div>
+                        <div class="badge-label">Member</div>
+                    </div>
+                    <div class="badge">
+                        <div class="badge-icon">⭐</div>
+                        <div class="badge-label">Verified</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="details-card">
+                <div class="tabs">
+                    <button class="tab active" onclick="switchTab('personal')">
+                        <i class="fas fa-user"></i> Personal Info
+                    </button>
+                    <button class="tab" onclick="switchTab('wallet')">
+                        <i class="fas fa-wallet"></i> Wallet
+                    </button>
+                    <button class="tab" onclick="switchTab('security')">
+                        <i class="fas fa-shield-alt"></i> Security
+                    </button>
+                    <button class="tab" onclick="switchTab('activity')">
+                        <i class="fas fa-chart-line"></i> Activity
+                    </button>
+                </div>
+
+                <div id="personal" class="tab-content active">
+                    <div class="info-row">
+                        <span class="info-label"><i class="fas fa-user"></i> Username</span>
+                        <span class="info-value" id="infoUsername">-</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label"><i class="fas fa-envelope"></i> Email</span>
+                        <span class="info-value" id="infoEmail">-</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label"><i class="fas fa-phone"></i> Phone</span>
+                        <span class="info-value" id="infoPhone">-</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label"><i class="fas fa-calendar"></i> Member Since</span>
+                        <span class="info-value" id="infoMemberSince">-</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label"><i class="fas fa-crown"></i> Account Type</span>
+                        <span class="info-value" id="infoAccountType">-</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label"><i class="fas fa-map-marker-alt"></i> Location</span>
+                        <span class="info-value">Chennai, Tamil Nadu</span>
+                    </div>
+                    <button class="edit-btn" onclick="editProfile()">
+                        <i class="fas fa-edit"></i> Edit Profile
+                    </button>
+                </div>
+
+                <div id="wallet" class="tab-content">
+                    <div class="wallet-showcase">
+                        <div class="wallet-content">
+                            <div class="wallet-header">
+                                <div class="wallet-label">
+                                    <i class="fas fa-wallet"></i> Sansora Wallet Balance
+                                </div>
+                                <div class="wallet-icon">
+                                    <i class="fas fa-gem"></i>
+                                </div>
+                            </div>
+                            <div class="wallet-balance" id="walletBalance">₹1780.00</div>
+                            <div class="wallet-subtitle">Available for instant purchases • Zero transaction fees</div>
+                            
+                            <div class="wallet-actions">
+                                <button class="wallet-btn" onclick="addMoney()">
+                                    <i class="fas fa-plus-circle"></i> Add Money
+                                </button>
+                                <button class="wallet-btn" onclick="sendMoney()">
+                                    <i class="fas fa-paper-plane"></i> Send Money
+                                </button>
+                                <button class="wallet-btn" onclick="viewTransactions()">
+                                    <i class="fas fa-history"></i> History
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="transactions-container">
+                        <div class="transactions-header">
+                            <h3><i class="fas fa-receipt"></i> Recent Transactions</h3>
+                            <button class="filter-btn" onclick="filterTransactions()">
+                                <i class="fas fa-filter"></i> Filter
+                            </button>
+                        </div>
+                        <div id="transactionsList">
+                            <div class="empty-state">
+                                <i class="fas fa-inbox"></i>
+                                <p>No transactions yet</p>
+                                <small>Start by adding money to your wallet</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="security" class="tab-content">
+                    <div class="info-row">
+                        <span class="info-label"><i class="fas fa-lock"></i> Password</span>
+                        <span class="info-value">••••••••</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label"><i class="fas fa-mobile-alt"></i> Two-Factor Authentication</span>
+                        <span class="info-value" style="color: #ef4444;">Disabled</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label"><i class="fas fa-clock"></i> Last Login</span>
+                        <span class="info-value" id="lastLogin">-</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label"><i class="fas fa-laptop"></i> Active Sessions</span>
+                        <span class="info-value">1 Device</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label"><i class="fas fa-shield-alt"></i> Security Score</span>
+                        <span class="info-value" style="color: #fbbf24;">Medium</span>
+                    </div>
+                    <button class="edit-btn" onclick="changePassword()">
+                        <i class="fas fa-key"></i> Change Password
+                    </button>
+                </div>
+
+                <div id="activity" class="tab-content">
+                    <div class="info-row">
+                        <span class="info-label"><i class="fas fa-shopping-bag"></i> Orders This Month</span>
+                        <span class="info-value" id="monthlyOrders">0</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label"><i class="fas fa-star"></i> Average Rating</span>
+                        <span class="info-value">⭐⭐⭐⭐⭐ 5.0</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label"><i class="fas fa-heart"></i> Wishlist Items</span>
+                        <span class="info-value">0</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label"><i class="fas fa-truck"></i> Pending Deliveries</span>
+                        <span class="info-value">0</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label"><i class="fas fa-undo"></i> Returns/Refunds</span>
+                        <span class="info-value">0</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label"><i class="fas fa-percentage"></i> Savings This Year</span>
+                        <span class="info-value" style="color: #22c55e;">₹0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Money Modal -->
+    <div id="addMoneyModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-plus-circle"></i> Add Money</h2>
+                <button class="close-modal" onclick="closeModal('addMoneyModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="form-group">
+                <label><i class="fas fa-rupee-sign"></i> Enter Amount</label>
+                <input type="number" id="addAmount" placeholder="Minimum ₹100" min="100" step="100">
+                <div class="amount-presets">
+                    <button class="preset-btn" onclick="setAmount(500)">₹500</button>
+                    <button class="preset-btn" onclick="setAmount(1000)">₹1,000</button>
+                    <button class="preset-btn" onclick="setAmount(2000)">₹2,000</button>
+                    <button class="preset-btn" onclick="setAmount(5000)">₹5,000</button>
+                    <button class="preset-btn" onclick="setAmount(10000)">₹10,000</button>
+                    <button class="preset-btn" onclick="setAmount(20000)">₹20,000</button>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label><i class="fas fa-credit-card"></i> Payment Method</label>
+                <div class="payment-methods">
+                    <div class="payment-method selected" data-method="upi" onclick="selectPaymentMethod('upi')">
+                        <i class="fas fa-mobile-alt"></i>
+                        <div class="payment-method-name">UPI</div>
+                    </div>
+                    <div class="payment-method" data-method="card" onclick="selectPaymentMethod('card')">
+                        <i class="fas fa-credit-card"></i>
+                        <div class="payment-method-name">Card</div>
+                    </div>
+                    <div class="payment-method" data-method="netbanking" onclick="selectPaymentMethod('netbanking')">
+                        <i class="fas fa-university"></i>
+                        <div class="payment-method-name">Net Banking</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-actions">
+                <button class="modal-btn secondary" onclick="closeModal('addMoneyModal')">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+                <button class="modal-btn primary" onclick="processAddMoney()">
+                    <i class="fas fa-check"></i> Add Money
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div id="editProfileModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-edit"></i> Edit Profile</h2>
+                <button class="close-modal" onclick="closeModal('editProfileModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="form-group">
+                <label><i class="fas fa-envelope"></i> Email Address</label>
+                <input type="email" id="editEmail" placeholder="Enter your email">
+            </div>
+            
+            <div class="form-group">
+                <label><i class="fas fa-phone"></i> Phone Number</label>
+                <input type="tel" id="editPhone" placeholder="Enter phone number">
+            </div>
+            
+            <div class="form-group">
+                <label><i class="fas fa-map-marker-alt"></i> Location</label>
+                <input type="text" id="editLocation" placeholder="City, State" value="Chennai, Tamil Nadu">
+            </div>
+            
+            <div class="modal-actions">
+                <button class="modal-btn secondary" onclick="closeModal('editProfileModal')">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+                <button class="modal-btn primary" onclick="saveProfile()">
+                    <i class="fas fa-save"></i> Save Changes
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Send Money Modal -->
+    <div id="sendMoneyModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-paper-plane"></i> Send Money</h2>
+                <button class="close-modal" onclick="closeModal('sendMoneyModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="form-group">
+                <label><i class="fas fa-user"></i> Recipient Username</label>
+                <input type="text" id="recipientUsername" placeholder="Enter username">
+            </div>
+            
+            <div class="form-group">
+                <label><i class="fas fa-rupee-sign"></i> Amount</label>
+                <input type="number" id="sendAmount" placeholder="Enter amount" min="1">
+            </div>
+            
+            <div class="form-group">
+                <label><i class="fas fa-comment"></i> Note (Optional)</label>
+                <input type="text" id="sendNote" placeholder="Add a note">
+            </div>
+            
+            <div class="modal-actions">
+                <button class="modal-btn secondary" onclick="closeModal('sendMoneyModal')">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+                <button class="modal-btn primary" onclick="processSendMoney()">
+                    <i class="fas fa-paper-plane"></i> Send Money
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let userData = null;
+        let walletData = null;
+        let selectedPaymentMethod = 'upi';
+
+        window.addEventListener('DOMContentLoaded', function() {
+            loadUserProfile();
+            loadWalletData();
+            loadOrderStats();
+        });
+
+        function loadUserProfile() {
+            const savedUser = localStorage.getItem('sansora_user');
+            
+            if (!savedUser) {
+                showMessage('⚠️ Please login to view your profile', 'error');
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 2000);
+                return;
+            }
+
+            try {
+                userData = JSON.parse(savedUser);
+                
+                document.getElementById('profileName').textContent = userData.username || 'Aasritha Thalamati';
+                document.getElementById('profileRole').textContent = userData.isAdmin ? 'Administrator' : 'Premium Member';
+                document.getElementById('infoUsername').textContent = userData.username || '-';
+                document.getElementById('infoEmail').textContent = userData.email || 'user@sansora.com';
+                document.getElementById('infoPhone').textContent = userData.phone || '+91 XXXXXXXXXX';
+                document.getElementById('infoMemberSince').textContent = userData.memberSince || 'October 2025';
+                document.getElementById('infoAccountType').textContent = userData.isAdmin ? 'Administrator' : 'Premium Member';
+                document.getElementById('lastLogin').textContent = new Date().toLocaleDateString('en-GB', { 
+                    day: 'numeric', 
+                    month: 'short', 
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+
+                const initial = userData.username ? userData.username.charAt(0).toUpperCase() : 'U';
+                document.getElementById('profileAvatar').textContent = initial;
+
+            } catch (error) {
+                console.error('Error loading user profile:', error);
+                showMessage('❌ Error loading profile', 'error');
+            }
+        }
+
+        function loadWalletData() {
+            const savedWallet = localStorage.getItem('sansora_wallet_' + userData?.username);
+            
+            if (savedWallet) {
+                try {
+                    walletData = JSON.parse(savedWallet);
+                } catch (error) {
+                    walletData = { balance: 0, transactions: [] };
+                }
+            } else {
+                walletData = { balance: 0, transactions: [] };
+            }
+
+            updateWalletDisplay();
+        }
+
+        function updateWalletDisplay() {
+            const balanceElement = document.getElementById('walletBalance');
+            balanceElement.textContent = '₹' + walletData.balance.toLocaleString('en-IN', { 
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2 
+            });
+
+            displayTransactions();
+        }
+
+        function displayTransactions() {
+            const list = document.getElementById('transactionsList');
+            
+            if (!walletData.transactions || walletData.transactions.length === 0) {
+                list.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-inbox"></i>
+                        <p>No transactions yet</p>
+                        <small>Start by adding money to your wallet</small>
+                    </div>
+                `;
+                return;
+            }
+
+            list.innerHTML = walletData.transactions.slice(-10).reverse().map(txn => `
+                <div class="transaction-item">
+                    <div class="transaction-icon ${txn.type}">
+                        <i class="fas fa-${txn.type === 'credit' ? 'arrow-down' : 'arrow-up'}"></i>
+                    </div>
+                    <div class="transaction-info">
+                        <div class="transaction-title">${txn.description}</div>
+                        <div class="transaction-date">${txn.date}</div>
+                        ${txn.method ? `<span class="transaction-method">${txn.method.toUpperCase()}</span>` : ''}
+                    </div>
+                    <div class="transaction-amount ${txn.type}">
+                        ${txn.type === 'credit' ? '+' : '-'}₹${txn.amount.toLocaleString('en-IN')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function loadOrderStats() {
+            const orders = JSON.parse(localStorage.getItem('sansora_orders') || '[]');
+            const userOrders = orders.filter(order => 
+                order.userId === userData?.username || !order.userId
+            );
+
+            document.getElementById('totalOrders').textContent = userOrders.length;
+            
+            const totalSpent = userOrders.reduce((sum, order) => sum + (order.total || 0), 0);
+            document.getElementById('totalSpent').textContent = '₹' + totalSpent.toLocaleString('en-IN');
+
+            const currentMonth = new Date().getMonth();
+            const monthlyOrders = userOrders.filter(order => {
+                if (!order.date) return false;
+                const orderDate = new Date(order.date);
+                return orderDate.getMonth() === currentMonth;
+            });
+            document.getElementById('monthlyOrders').textContent = monthlyOrders.length;
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+            event.target.classList.add('active');
+            document.getElementById(tabName).classList.add('active');
+        }
+
+        function setAmount(amount) {
+            document.getElementById('addAmount').value = amount;
+        }
+
+        function selectPaymentMethod(method) {
+            selectedPaymentMethod = method;
+            document.querySelectorAll('.payment-method').forEach(pm => {
+                pm.classList.remove('selected');
+            });
+            event.currentTarget.classList.add('selected');
+        }
+
+        function addMoney() {
+            document.getElementById('addMoneyModal').style.display = 'block';
+            document.getElementById('addAmount').value = '';
+        }
+
+        function processAddMoney() {
+            const amount = parseFloat(document.getElementById('addAmount').value);
+            
+            if (!amount || amount < 100) {
+                showMessage('⚠️ Minimum amount is ₹100', 'error');
+                return;
+            }
+
+            if (amount > 100000) {
+                showMessage('⚠️ Maximum amount is ₹1,00,000', 'error');
+                return;
+            }
+
+            showMessage('⏳ Processing payment...', 'info');
+
+            setTimeout(() => {
+                const transaction = {
+                    type: 'credit',
+                    amount: amount,
+                    description: 'Money Added to Wallet',
+                    date: new Date().toLocaleDateString('en-GB', { 
+                        day: 'numeric', 
+                        month: 'short', 
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    }),
+                    method: selectedPaymentMethod
+                };
+
+                walletData.balance += amount;
+                walletData.transactions.push(transaction);
+
+                localStorage.setItem('sansora_wallet_' + userData.username, JSON.stringify(walletData));
+
+                updateWalletDisplay();
+                closeModal('addMoneyModal');
+                
+                showMessage('✅ ₹' + amount.toLocaleString('en-IN') + ' added successfully!', 'success');
+            }, 1500);
+        }
+
+        function sendMoney() {
+            document.getElementById('sendMoneyModal').style.display = 'block';
+        }
+
+        function processSendMoney() {
+            const recipient = document.getElementById('recipientUsername').value.trim();
+            const amount = parseFloat(document.getElementById('sendAmount').value);
+            const note = document.getElementById('sendNote').value.trim();
+
+            if (!recipient) {
+                showMessage('⚠️ Enter recipient username', 'error');
+                return;
+            }
+
+            if (!amount || amount < 1) {
+                showMessage('⚠️ Enter valid amount', 'error');
+                return;
+            }
+
+            if (amount > walletData.balance) {
+                showMessage('⚠️ Insufficient balance', 'error');
+                return;
+            }
+
+            const transaction = {
+                type: 'debit',
+                amount: amount,
+                description: `Sent to @${recipient}${note ? ' - ' + note : ''}`,
+                date: new Date().toLocaleDateString('en-GB', { 
+                    day: 'numeric', 
+                    month: 'short', 
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                })
+            };
+
+            walletData.balance -= amount;
+            walletData.transactions.push(transaction);
+
+            localStorage.setItem('sansora_wallet_' + userData.username, JSON.stringify(walletData));
+
+            updateWalletDisplay();
+            closeModal('sendMoneyModal');
+            
+            showMessage('✅ ₹' + amount.toLocaleString('en-IN') + ' sent!', 'success');
+        }
+
+        function viewTransactions() {
+            switchTab('wallet');
+            document.querySelectorAll('.tab').forEach((t, index) => {
+                t.classList.remove('active');
+                if (index === 1) t.classList.add('active');
+            });
+        }
+
+        function filterTransactions() {
+            showMessage('ℹ️ Filter feature coming soon!', 'info');
+        }
+
+        function editProfile() {
+            document.getElementById('editEmail').value = userData.email || '';
+            document.getElementById('editPhone').value = userData.phone || '';
+            document.getElementById('editProfileModal').style.display = 'block';
+        }
+
+        function saveProfile() {
+            const email = document.getElementById('editEmail').value.trim();
+            const phone = document.getElementById('editPhone').value.trim();
+
+            if (email && !email.includes('@')) {
+                showMessage('⚠️ Enter valid email', 'error');
+                return;
+            }
+
+            userData.email = email || userData.email;
+            userData.phone = phone || userData.phone;
+            
+            localStorage.setItem('sansora_user', JSON.stringify(userData));
+            
+            loadUserProfile();
+            closeModal('editProfileModal');
+            showMessage('✅ Profile updated!', 'success');
+        }
+
+        function changePassword() {
+            showMessage('ℹ️ Feature coming soon!', 'info');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        }
+
+        function showMessage(text, type) {
+            const messageDiv = document.createElement('div');
+            messageDiv.textContent = text;
+            
+            let bgGradient;
+            switch(type) {
+                case 'success':
+                    bgGradient = 'linear-gradient(135deg, #22c55e, #16a34a)';
+                    break;
+                case 'error':
+                    bgGradient = 'linear-gradient(135deg, #ef4444, #dc2626)';
+                    break;
+                case 'info':
+                    bgGradient = 'linear-gradient(135deg, #3b82f6, #2563eb)';
+                    break;
+                default:
+                    bgGradient = 'linear-gradient(135deg, #8b5cf6, #ec4899)';
+            }
+            
+            messageDiv.style.cssText = `
+                position: fixed;
+                top: 30px;
+                right: 30px;
+                padding: 20px 35px;
+                border-radius: 16px;
+                color: white;
+                font-weight: 700;
+                z-index: 10001;
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+                background: ${bgGradient};
+                animation: slideIn 0.4s ease;
+                font-size: 1.05rem;
+                border: 1px solid rgba(255, 255, 255, 0.2);
+            `;
+            
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes slideIn {
+                    from {
+                        transform: translateX(400px);
+                        opacity: 0;
+                    }
+                    to {
+                        transform: translateX(0);
+                        opacity: 1;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            document.body.appendChild(messageDiv);
+            
+            setTimeout(() => {
+                messageDiv.style.opacity = '0';
+                messageDiv.style.transform = 'translateX(400px)';
+                messageDiv.style.transition = 'all 0.4s ease';
+                setTimeout(() => {
+                    messageDiv.remove();
+                    style.remove();
+                }, 400);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

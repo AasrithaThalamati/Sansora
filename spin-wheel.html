@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spin the Wheel</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e22ce 100%);
+            min-height: 100vh;
+        }
+
+        .spin-wheel-section {
+            padding: 80px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .wheel-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .wheel-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .wheel-title {
+            font-size: 3rem;
+            color: white;
+            margin-bottom: 15px;
+            font-weight: 800;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .wheel-title i {
+            color: #ffd700;
+        }
+
+        .wheel-subtitle {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .wheel-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .wheel-wrapper {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 50px;
+        }
+
+        .wheel-pointer {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            font-size: 4rem;
+            color: #ffd700;
+            filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.5));
+        }
+
+        #wheelCanvas {
+            max-width: 500px;
+            max-height: 500px;
+            filter: drop-shadow(0 10px 40px rgba(0, 0, 0, 0.4));
+        }
+
+        .spin-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            border: 6px solid white;
+            cursor: pointer;
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: #1e3c72;
+            box-shadow: 0 8px 30px rgba(255, 215, 0, 0.6);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .spin-button:hover:not(:disabled) {
+            transform: translate(-50%, -50%) scale(1.1);
+            box-shadow: 0 12px 40px rgba(255, 215, 0, 0.8);
+        }
+
+        .spin-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .spin-button i {
+            font-size: 1.5rem;
+        }
+
+        .wheel-info {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .info-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .info-card i {
+            font-size: 3rem;
+            color: #ffd700;
+            margin-bottom: 15px;
+        }
+
+        .info-card h3 {
+            color: white;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .spin-count {
+            font-size: 4rem;
+            font-weight: 800;
+            color: #ffd700;
+            margin: 10px 0;
+        }
+
+        .info-subtitle {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1rem;
+        }
+
+        .prizes-card {
+            text-align: left;
+        }
+
+        .prizes-list {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0 0 0;
+        }
+
+        .prizes-list li {
+            color: white;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 1.1rem;
+        }
+
+        .prizes-list li:last-child {
+            border-bottom: none;
+        }
+
+        .prizes-list i {
+            color: #4ade80;
+            margin-right: 10px;
+            font-size: 1rem;
+        }
+
+        .reward-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .reward-modal.active {
+            display: flex;
+        }
+
+        .reward-modal-content {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 50px;
+            border-radius: 30px;
+            text-align: center;
+            max-width: 500px;
+            position: relative;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            color: white;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+
+        .reward-animation {
+            font-size: 6rem;
+            color: #ffd700;
+            margin-bottom: 20px;
+        }
+
+        .reward-title {
+            color: white;
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            font-weight: 800;
+        }
+
+        .reward-text {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.3rem;
+            margin-bottom: 25px;
+        }
+
+        .reward-code {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px dashed rgba(255, 255, 255, 0.5);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            font-size: 2rem;
+            font-weight: 800;
+            color: #ffd700;
+            letter-spacing: 3px;
+        }
+
+        .claim-button {
+            background: white;
+            color: #764ba2;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .claim-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.3);
+        }
+
+        @media (max-width: 1024px) {
+            .wheel-content {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .wheel-title {
+                font-size: 2rem;
+            }
+            
+            #wheelCanvas {
+                max-width: 350px;
+                max-height: 350px;
+            }
+            
+            .spin-button {
+                width: 90px;
+                height: 90px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <section class="spin-wheel-section">
+        <div class="wheel-container">
+            <div class="wheel-header">
+                <h2 class="wheel-title">
+                    <i class="fas fa-gift"></i> Spin & Win Amazing Rewards!
+                </h2>
+                <p class="wheel-subtitle">Try your luck and win exclusive discounts & prizes</p>
+            </div>
+            
+            <div class="wheel-content">
+                <div class="wheel-wrapper">
+                    <div class="wheel-pointer">
+                        <i class="fas fa-caret-down"></i>
+                    </div>
+                    
+                    <canvas id="wheelCanvas" width="500" height="500"></canvas>
+                    
+                    <button class="spin-button" id="spinButton" onclick="spinWheel()">
+                        <span class="spin-text">SPIN</span>
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>
+                
+                <div class="wheel-info">
+                    <div class="info-card">
+                        <i class="fas fa-trophy"></i>
+                        <h3>Your Spins Today</h3>
+                        <p class="spin-count" id="spinsRemaining">3</p>
+                        <span class="info-subtitle">Spins remaining</span>
+                    </div>
+                    
+                    <div class="info-card prizes-card">
+                        <h3><i class="fas fa-star"></i> Possible Rewards</h3>
+                        <ul class="prizes-list">
+                            <li><i class="fas fa-check-circle"></i> 50% OFF Coupon</li>
+                            <li><i class="fas fa-check-circle"></i> 30% OFF Coupon</li>
+                            <li><i class="fas fa-check-circle"></i> 20% OFF Coupon</li>
+                            <li><i class="fas fa-check-circle"></i> 10% OFF Coupon</li>
+                            <li><i class="fas fa-check-circle"></i> Free Shipping</li>
+                            <li><i class="fas fa-check-circle"></i> ₹500 Cashback</li>
+                            <li><i class="fas fa-check-circle"></i> ₹200 Cashback</li>
+                            <li><i class="fas fa-check-circle"></i> Try Again</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div id="rewardModal" class="reward-modal">
+        <div class="reward-modal-content">
+            <button class="modal-close" onclick="closeRewardModal()">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="reward-animation">
+                <i class="fas fa-gift"></i>
+            </div>
+            <h2 class="reward-title">Congratulations!</h2>
+            <p class="reward-text" id="rewardText">You won a prize!</p>
+            <div class="reward-code" id="rewardCode"></div>
+            <button class="claim-button" onclick="claimReward()">
+                <i class="fas fa-check"></i> Claim Reward
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let wheelSpinning = false;
+        let spinsRemaining = 3;
+        let currentRotation = 0;
+
+        const wheelSegments = [
+            { text: '50% OFF', color: '#ff6b6b', prize: '50% OFF Coupon' },
+            { text: 'Try Again', color: '#4ecdc4', prize: 'Better Luck Next Time' },
+            { text: '30% OFF', color: '#ffe66d', prize: '30% OFF Coupon' },
+            { text: '₹500', color: '#a8e6cf', prize: '₹500 Cashback' },
+            { text: '20% OFF', color: '#ff8b94', prize: '20% OFF Coupon' },
+            { text: 'Free Ship', color: '#c7ceea', prize: 'Free Shipping' },
+            { text: '10% OFF', color: '#ffd3b6', prize: '10% OFF Coupon' },
+            { text: '₹200', color: '#95e1d3', prize: '₹200 Cashback' }
+        ];
+
+        function drawWheel() {
+            const canvas = document.getElementById('wheelCanvas');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const radius = canvas.width / 2 - 10;
+            const segmentAngle = (2 * Math.PI) / wheelSegments.length;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            wheelSegments.forEach((segment, index) => {
+                const startAngle = index * segmentAngle;
+                const endAngle = startAngle + segmentAngle;
+
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+                ctx.fillStyle = segment.color;
+                ctx.fill();
+                ctx.strokeStyle = '#fff';
+                ctx.lineWidth = 4;
+                ctx.stroke();
+
+                ctx.save();
+                ctx.translate(centerX, centerY);
+                ctx.rotate(startAngle + segmentAngle / 2);
+                ctx.textAlign = 'center';
+                ctx.fillStyle = '#000';
+                ctx.font = 'bold 24px Arial';
+                ctx.fillText(segment.text, radius / 1.5, 10);
+                ctx.restore();
+            });
+
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, 50, 0, 2 * Math.PI);
+            ctx.fillStyle = '#fff';
+            ctx.fill();
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 4;
+            ctx.stroke();
+        }
+
+        function spinWheel() {
+            if (wheelSpinning || spinsRemaining <= 0) {
+                if (spinsRemaining <= 0) {
+                    alert('No spins remaining! Come back tomorrow.');
+                }
+                return;
+            }
+
+            wheelSpinning = true;
+            spinsRemaining--;
+            document.getElementById('spinsRemaining').textContent = spinsRemaining;
+            document.getElementById('spinButton').disabled = true;
+
+            const canvas = document.getElementById('wheelCanvas');
+            const spinAmount = Math.floor(Math.random() * 360) + 1800;
+            const finalRotation = currentRotation + spinAmount;
+            const duration = 4000;
+            const startTime = Date.now();
+            const startRotation = currentRotation;
+
+            function animate() {
+                const elapsed = Date.now() - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const easeOut = 1 - Math.pow(1 - progress, 3);
+                
+                currentRotation = startRotation + (spinAmount * easeOut);
+                canvas.style.transform = `rotate(${currentRotation}deg)`;
+
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                } else {
+                    wheelSpinning = false;
+                    const normalizedRotation = currentRotation % 360;
+                    const segmentAngle = 360 / wheelSegments.length;
+                    const winningIndex = Math.floor((360 - normalizedRotation) / segmentAngle) % wheelSegments.length;
+                    
+                    showReward(wheelSegments[winningIndex]);
+                    
+                    if (spinsRemaining > 0) {
+                        document.getElementById('spinButton').disabled = false;
+                    }
+                }
+            }
+
+            animate();
+        }
+
+        function showReward(segment) {
+            const modal = document.getElementById('rewardModal');
+            const rewardText = document.getElementById('rewardText');
+            const rewardCode = document.getElementById('rewardCode');
+
+            if (segment.text === 'Try Again') {
+                rewardText.textContent = 'Better luck next time!';
+                rewardCode.style.display = 'none';
+            } else {
+                rewardText.textContent = `You won: ${segment.prize}!`;
+                rewardCode.textContent = 'SANSORA' + Math.random().toString(36).substr(2, 6).toUpperCase();
+                rewardCode.style.display = 'block';
+            }
+
+            modal.classList.add('active');
+        }
+
+        function closeRewardModal() {
+            document.getElementById('rewardModal').classList.remove('active');
+        }
+
+        function claimReward() {
+            const code = document.getElementById('rewardCode').textContent;
+            if (code) {
+                alert(`Coupon code ${code} has been added to your account!`);
+            }
+            closeRewardModal();
+        }
+
+        window.addEventListener('load', function() {
+            drawWheel();
+            const today = new Date().toDateString();
+            const lastDate = localStorage.getItem('wheel_date');
+            
+            if (lastDate !== today) {
+                spinsRemaining = 3;
+                localStorage.setItem('wheel_date', today);
+            }
+            
+            document.getElementById('spinsRemaining').textContent = spinsRemaining;
+        });
+    </script>
+</body>
+</html>

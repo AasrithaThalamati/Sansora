@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help Center - Sansora</title>
+    <link rel="icon" type="image/png" href="logo-black.png">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .help-hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 8rem 2rem 4rem;
+            text-align: center;
+            color: white;
+            margin-top: 80px;
+        }
+
+        .help-hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .help-hero p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+
+        .help-search {
+            max-width: 600px;
+            margin: 0 auto;
+            display: flex;
+            gap: 0;
+        }
+
+        .help-search input {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            border: none;
+            border-radius: 50px 0 0 50px;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .help-search button {
+            padding: 1rem 2rem;
+            background: white;
+            color: #667eea;
+            border: none;
+            border-radius: 0 50px 50px 0;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .help-search button:hover {
+            background: #f0f0f0;
+        }
+
+        .help-container {
+            max-width: 1200px;
+            margin: -2rem auto 4rem;
+            padding: 0 2rem;
+        }
+
+        .quick-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 4rem;
+        }
+
+        .quick-link-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .quick-link-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+
+        .quick-link-card i {
+            font-size: 3rem;
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+
+        .quick-link-card h3 {
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .quick-link-card p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .faq-section {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+        }
+
+        .faq-section h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 2rem;
+            font-size: 2.5rem;
+        }
+
+        .faq-category {
+            margin-bottom: 3rem;
+        }
+
+        .faq-category h3 {
+            color: #667eea;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .faq-item {
+            border: 2px solid #f0f0f0;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .faq-item:hover {
+            border-color: #667eea;
+        }
+
+        .faq-question {
+            padding: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            color: #333;
+            transition: all 0.3s;
+        }
+
+        .faq-question:hover {
+            background: #f8f9ff;
+            color: #667eea;
+        }
+
+        .faq-question i {
+            transition: transform 0.3s;
+        }
+
+        .faq-item.active .faq-question i {
+            transform: rotate(180deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .faq-item.active .faq-answer {
+            max-height: 500px;
+        }
+
+        .faq-answer-content {
+            padding: 0 1.5rem 1.5rem;
+            color: #666;
+            line-height: 1.8;
+        }
+
+        .contact-help {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 3rem;
+            border-radius: 20px;
+            text-align: center;
+            margin-top: 3rem;
+        }
+
+        .contact-help h2 {
+            margin-bottom: 1rem;
+        }
+
+        .contact-help p {
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .contact-help-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .help-btn {
+            padding: 1rem 2rem;
+            background: white;
+            color: #667eea;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .help-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        @media (max-width: 768px) {
+            .help-hero h1 {
+                font-size: 2rem;
+            }
+
+            .help-search {
+                flex-direction: column;
+            }
+
+            .help-search input,
+            .help-search button {
+                border-radius: 50px;
+            }
+
+            .quick-links {
+                grid-template-columns: 1fr;
+            }
+
+            .faq-section {
+                padding: 2rem 1.5rem;
+            }
+
+            .contact-help-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <img src="logo-black.png" alt="Sansora Logo" class="logo">
+            </div>
+            <div class="nav-search">
+                <input type="text" id="search-input" placeholder="Search products..." class="search-input">
+                <button onclick="searchProducts()" class="search-btn">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="deals.html" class="nav-link">Deals</a></li>
+                <li><a href="orders.html" class="nav-link">Orders</a></li>
+                <li id="adminNavLink" style="display: none;"><a href="admin.html" class="nav-link">Admin</a></li>
+                <li><a href="cart.html" class="nav-link"><i class="fas fa-shopping-cart"></i> Cart (<span id="cart-count">0</span>)</a></li>
+                <li><a href="contact.html"class="nav-link"><i class="fas fa-envelope"></i> Contact</a></li>
+                <li><a href="login.html" class="nav-link" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                <li><a href="calculator.html" class="nav-link">Price Calculator</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="help-hero">
+        <h1><i class="fas fa-life-ring"></i> How Can We Help You?</h1>
+        <p>Search our knowledge base or browse popular topics below</p>
+        <div class="help-search">
+            <input type="text" id="help-search-input" placeholder="Search for help articles...">
+            <button onclick="searchHelp()"><i class="fas fa-search"></i> Search</button>
+        </div>
+    </div>
+
+    <div class="help-container">
+        <div class="quick-links">
+            <div class="quick-link-card" onclick="scrollToCategory('orders')">
+                <i class="fas fa-box"></i>
+                <h3>Orders & Delivery</h3>
+                <p>Track orders, delivery info, and shipping</p>
+            </div>
+            <div class="quick-link-card" onclick="scrollToCategory('returns')">
+                <i class="fas fa-undo"></i>
+                <h3>Returns & Refunds</h3>
+                <p>Return policy and refund process</p>
+            </div>
+            <div class="quick-link-card" onclick="scrollToCategory('payment')">
+                <i class="fas fa-credit-card"></i>
+                <h3>Payment & Pricing</h3>
+                <p>Payment methods and billing questions</p>
+            </div>
+            <div class="quick-link-card" onclick="scrollToCategory('account')">
+                <i class="fas fa-user"></i>
+                <h3>Account & Security</h3>
+                <p>Manage your account and privacy</p>
+            </div>
+        </div>
+
+        <div class="faq-section">
+            <h2>Frequently Asked Questions</h2>
+
+            <div class="faq-category" id="orders">
+                <h3><i class="fas fa-box"></i> Orders & Delivery</h3>
+                
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>How can I track my order?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            You can track your order by visiting the <a href="track-order.html" style="color: #667eea;">Track Order</a> page and entering your order ID and email address. You'll also receive tracking updates via email and SMS once your order is shipped.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>What are the delivery charges?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            We offer FREE shipping on all orders above ₹999. For orders below ₹999, a flat delivery charge of ₹99 applies. Express delivery options are available at checkout for faster delivery.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>How long does delivery take?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            Standard delivery takes 2-5 business days depending on your location. Metro cities usually receive orders within 1-2 days. You can check the estimated delivery time for each product on its detail page.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="faq-category" id="returns">
+                <h3><i class="fas fa-undo"></i> Returns & Refunds</h3>
+                
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>What is your return policy?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            We offer a 7-day return policy for most products. Items must be unused, in original packaging with tags intact. Electronics have a 3-day return window. Visit our <a href="returns.html" style="color: #667eea;">Returns page</a> to initiate a return.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>How do I initiate a return?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            Go to Orders > Select the item > Click "Return Item". Follow the instructions, pack the item securely, and our courier will pick it up from your address. You'll receive a confirmation email once the return is approved.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>When will I receive my refund?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            Refunds are processed within 5-7 business days after we receive and verify the returned item. The amount will be credited to your original payment method or Sansora wallet.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="faq-category" id="payment">
+                <h3><i class="fas fa-credit-card"></i> Payment & Pricing</h3>
+                
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>What payment methods do you accept?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            We accept Credit/Debit Cards, Net Banking, UPI, Wallets (Paytm, PhonePe, Google Pay), EMI options, and Cash on Delivery (COD) for eligible orders. All payments are 100% secure and encrypted.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>Is it safe to use my credit card on Sansora?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            Absolutely! We use industry-standard SSL encryption and comply with PCI DSS standards. Your card details are never stored on our servers and all transactions are processed through secure payment gateways.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>Can I cancel my order?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            Yes, you can cancel your order before it's shipped. Go to Orders > Select order > Click "Cancel Order". If the order has already been shipped, you can refuse delivery or initiate a return once received.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="faq-category" id="account">
+                <h3><i class="fas fa-user"></i> Account & Security</h3>
+                
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>How do I create an account?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            Click on "Login" in the navigation bar, then select "Sign Up". Enter your email, create a password, and verify your email address. You can also sign up using your Google or Facebook account.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>I forgot my password. What should I do?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            On the login page, click "Forgot Password". Enter your registered email address, and we'll send you a password reset link. Follow the link to create a new password for your account.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>How can I change my delivery address?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            Go to Account Settings > Addresses > Add/Edit Address. You can save multiple addresses and select your preferred address during checkout. Make sure to update your address before placing an order.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="contact-help">
+            <h2>Still Need Help?</h2>
+            <p>Our customer support team is here to assist you 24/7</p>
+            <div class="contact-help-buttons">
+                <button class="help-btn" onclick="window.location.href='contact.html'">
+                    <i class="fas fa-envelope"></i>
+                    Contact Support
+                </button>
+                <button class="help-btn" onclick="window.open('tel:+919876543210')">
+                    <i class="fas fa-phone"></i>
+                    Call Us
+                </button>
+                <button class="help-btn" onclick="alert('Live chat feature coming soon!')">
+                    <i class="fas fa-comments"></i>
+                    Live Chat
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Sansora</h3>
+                <p>Your trusted partner for premium quality products at the best prices.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="deals.html">Deals</a></li>
+                    <li><a href="orders.html">Orders</a></li>
+                    <li><a href="contact.html">Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Customer Service</h4>
+                <ul>
+                    <li><a href="help-center.html">Help Center</a></li>
+                    <li><a href="track-order.html">Track Order</a></li>
+                    <li><a href="returns.html">Returns</a></li>
+                    <li><a href="shipping-info.html">Shipping Info</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Contact Info</h4>
+                <p><i class="fas fa-phone"></i> +91 98765 43210</p>
+                <p><i class="fas fa-envelope"></i> support@sansora.com</p>
+                <p><i class="fas fa-map-marker-alt"></i> Mumbai, India</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Sansora. All rights reserved. | Designed with ❤️ for premium shopping experience</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        function toggleFAQ(element) {
+            const faqItem = element.parentElement;
+            const wasActive = faqItem.classList.contains('active');
+            
+            // Close all FAQs
+            document.querySelectorAll('.faq-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Open clicked FAQ if it wasn't active
+            if (!wasActive) {
+                faqItem.classList.add('active');
+            }
+        }
+
+        function scrollToCategory(categoryId) {
+            const element = document.getElementById(categoryId);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        function searchHelp() {
+            const query = document.getElementById('help-search-input').value.toLowerCase();
+            if (!query) return;
+
+            const faqItems = document.querySelectorAll('.faq-item');
+            let found = false;
+
+            faqItems.forEach(item => {
+                const question = item.querySelector('.faq-question span').textContent.toLowerCase();
+                const answer = item.querySelector('.faq-answer-content').textContent.toLowerCase();
+                
+                if (question.includes(query) || answer.includes(query)) {
+                    item.style.display = 'block';
+                    item.style.background = '#fff3cd';
+                    found = true;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+
+            if (!found) {
+                showMessage('No results found. Please try different keywords.', 'error');
+            }
+        }
+    </script>
+</body>
+</html>

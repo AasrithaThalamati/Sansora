@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gifts - Sansora</title>
+    <link rel="icon" type="image/png" href="logo-black.png">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Gift Page Specific Styles */
+        .gift-hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 120px 20px 80px 20px;
+            margin-top: 80px;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .gift-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y="50" font-size="50">🎁</text></svg>') repeat;
+            opacity: 0.1;
+            animation: float 20s linear infinite;
+        }
+
+        @keyframes float {
+            from { transform: translateY(0); }
+            to { transform: translateY(-100px); }
+        }
+
+        .gift-hero h1 {
+            font-size: 3rem;
+            margin: 0 0 20px 0;
+            position: relative;
+            z-index: 1;
+            line-height: 1.2;
+        }
+
+        .gift-hero p {
+            font-size: 1.3rem;
+            margin: 0 0 30px 0;
+            position: relative;
+            z-index: 1;
+            line-height: 1.5;
+        }
+
+        .gift-occasion-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            padding: 60px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .occasion-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .occasion-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+
+        .occasion-card-image {
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .occasion-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255,255,255,0.95);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #667eea;
+        }
+
+        .occasion-card-content {
+            padding: 25px;
+        }
+
+        .occasion-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .occasion-card p {
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .occasion-btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.3s;
+        }
+
+        .occasion-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .gift-card-section {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            padding: 80px 20px;
+            color: white;
+        }
+
+        .gift-card-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: center;
+        }
+
+        .gift-card-visual {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+        }
+
+        .card-preview {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 30px;
+            border-radius: 15px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-preview::before {
+            content: '🎁';
+            position: absolute;
+            font-size: 150px;
+            right: -30px;
+            bottom: -30px;
+            opacity: 0.2;
+        }
+
+        .card-amount {
+            font-size: 3rem;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .amount-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .amount-btn {
+            padding: 15px;
+            background: white;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #667eea;
+            transition: all 0.3s;
+        }
+
+        .amount-btn:hover, .amount-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .custom-amount {
+            margin-top: 20px;
+        }
+
+        .custom-amount input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1rem;
+            margin-top: 10px;
+        }
+
+        .gift-wrapping-section {
+            padding: 80px 20px;
+            background: #f8f9fa;
+        }
+
+        .wrapping-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 40px auto 0;
+        }
+
+        .wrapping-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .wrapping-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .wrapping-image {
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .wrapping-content {
+            padding: 20px;
+        }
+
+        .wrapping-price {
+            font-size: 1.5rem;
+            color: #667eea;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .select-wrapping-btn {
+            width: 100%;
+            padding: 12px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .select-wrapping-btn:hover {
+            background: #764ba2;
+        }
+
+        .features-section {
+            padding: 80px 20px;
+            background: white;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            max-width: 1200px;
+            margin: 40px auto 0;
+        }
+
+        .feature-item {
+            text-align: center;
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 2rem;
+            color: white;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 1.1rem;
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 1.1rem;
+            margin-bottom: 40px;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            background: #f8f9fa;
+        }
+
+        .product-info {
+            padding: 20px;
+        }
+
+        .product-category {
+            color: #667eea;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .product-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+
+        .product-description {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .product-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .product-rating {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 15px;
+            color: #ffa500;
+        }
+
+        .add-to-cart-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .add-to-cart-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .gift-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            box-shadow: 0 4px 15px rgba(245, 87, 108, 0.3);
+        }
+
+        .product-card {
+            position: relative;
+        }
+
+        @media (max-width: 768px) {
+            .gift-hero h1 {
+                font-size: 2rem;
+            }
+
+            .gift-card-container {
+                grid-template-columns: 1fr;
+            }
+
+            .gift-occasion-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Authentication Check -->
+    <script>
+        // Optional: Check if user is logged in (won't redirect if not)
+        (function() {
+            const savedUser = localStorage.getItem('sansora_user');
+            if (savedUser) {
+                try {
+                    const userData = JSON.parse(savedUser);
+                    window.currentUser = userData;
+                } catch (error) {
+                    console.error('Error loading user data:', error);
+                }
+            }
+        })();
+    </script>
+
+    <!-- Hamburger Menu -->
+    <button class="hamburger-menu" id="hamburger-menu" onclick="toggleSidebar()">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+
+    <!-- Sidebar Menu -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <img src="logo-black.png" alt="Sansora Logo" class="sidebar-logo">
+            <button class="close-sidebar" onclick="toggleSidebar()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="index.html" class="sidebar-link">
+                <i class="fas fa-home"></i> Home
+            </a>
+            <a href="deals.html" class="sidebar-link">
+                <i class="fas fa-tags"></i> Deals
+            </a>
+            <a href="gifts.html" class="sidebar-link active">
+                <i class="fas fa-gift"></i> Gifts
+            </a>
+            <a href="orders.html" class="sidebar-link">
+                <i class="fas fa-box"></i> Orders
+            </a>
+            <a href="cart.html" class="sidebar-link">
+                <i class="fas fa-shopping-cart"></i> Cart (<span id="sidebar-cart-count">0</span>)
+            </a>
+            <a href="contact.html" class="sidebar-link">
+                <i class="fas fa-envelope"></i> Contact
+            </a>
+            <a href="profile.html" class="sidebar-link">
+                <i class="fas fa-user-circle"></i> Profile
+            </a>
+            <a href="admin.html" class="sidebar-link" id="sidebar-admin-link" style="display: none;">
+                <i class="fas fa-cog"></i> Admin
+            </a>
+            <a href="login.html" class="sidebar-link logout-link" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </nav>
+    </div>
+
+    <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <img src="logo-black.png" alt="Sansora Logo" class="logo">
+            </div>
+            <div class="nav-search">
+                <input type="text" id="search-input" placeholder="Search gifts..." class="search-input">
+                <button onclick="searchProducts()" class="search-btn">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="deals.html" class="nav-link">Deals</a></li>
+                <li><a href="gifts.html" class="nav-link active">Gifts</a></li>
+                <li><a href="orders.html" class="nav-link">Orders</a></li>
+                <li id="adminNavLink" style="display: none;"><a href="admin.html" class="nav-link">Admin</a></li>
+                <li><a href="cart.html" class="nav-link"><i class="fas fa-shopping-cart"></i> Cart (<span id="cart-count">0</span>)</a></li>
+                <li><a href="contact.html" class="nav-link"><i class="fas fa-envelope"></i> Contact</a></li>
+                <li><a href="login.html" class="nav-link" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                <a href="profile.html" id="profileBtn" class="nav-btn">
+                    <i class="fas fa-user-circle"></i> Profile
+                </a>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Gift Hero Section -->
+    <div class="gift-hero">
+        <h1>🎁 Perfect Gifts for Every Occasion</h1>
+        <p>Find the perfect gift to make every moment special</p>
+    </div>
+
+    <!-- Featured Gift Products Section -->
+    <div class="products-container" style="padding: 60px 20px; max-width: 1200px; margin: 0 auto;">
+        <h2 class="section-title">✨ Featured Gift Items</h2>
+        <p class="section-subtitle">Handpicked products perfect for gifting</p>
+        <div class="products-grid" id="gift-products-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px; margin-top: 40px;">
+            <!-- Gift products will be loaded here -->
+        </div>
+    </div>
+
+    <!-- Gift Occasions Grid -->
+    <div class="gift-occasion-grid">
+        <div class="occasion-card" onclick="window.location.href='index.html?category=birthday'">
+            <div class="occasion-card-image" style="background-image: url('https://images.unsplash.com/photo-1513885535751-8b9238bd345a?w=500&q=80');">
+                <span class="occasion-badge">Popular</span>
+            </div>
+            <div class="occasion-card-content">
+                <h3>🎂 Birthday Gifts</h3>
+                <p>Celebrate with joy and surprises</p>
+                <a href="index.html?category=birthday" class="occasion-btn">Shop Now</a>
+            </div>
+        </div>
+
+        <div class="occasion-card" onclick="window.location.href='index.html?category=anniversary'">
+            <div class="occasion-card-image" style="background-image: url('https://images.unsplash.com/photo-1606800052052-a08af7148866?w=500&q=80');">
+                <span class="occasion-badge">Romantic</span>
+            </div>
+            <div class="occasion-card-content">
+                <h3>💕 Anniversary Gifts</h3>
+                <p>Celebrate love and togetherness</p>
+                <a href="index.html?category=anniversary" class="occasion-btn">Shop Now</a>
+            </div>
+        </div>
+
+        <div class="occasion-card" onclick="window.location.href='index.html?category=wedding'">
+            <div class="occasion-card-image" style="background-image: url('https://images.unsplash.com/photo-1519741497674-611481863552?w=500&q=80');">
+                <span class="occasion-badge">Premium</span>
+            </div>
+            <div class="occasion-card-content">
+                <h3>💍 Wedding Gifts</h3>
+                <p>Make their special day memorable</p>
+                <a href="index.html?category=wedding" class="occasion-btn">Shop Now</a>
+            </div>
+        </div>
+
+        <div class="occasion-card" onclick="window.location.href='index.html?category=graduation'">
+            <div class="occasion-card-image" style="background-image: url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=500&q=80');">
+                <span class="occasion-badge">Achievement</span>
+            </div>
+            <div class="occasion-card-content">
+                <h3>🎓 Graduation Gifts</h3>
+                <p>Celebrate their success story</p>
+                <a href="index.html?category=graduation" class="occasion-btn">Shop Now</a>
+            </div>
+        </div>
+
+        <div class="occasion-card" onclick="window.location.href='index.html?category=christmas'">
+            <div class="occasion-card-image" style="background-image: url('https://images.unsplash.com/photo-1512389142860-9c449e58a543?w=500&q=80');">
+                <span class="occasion-badge">Festive</span>
+            </div>
+            <div class="occasion-card-content">
+                <h3>🎄 Christmas Gifts</h3>
+                <p>Spread holiday cheer and joy</p>
+                <a href="index.html?category=christmas" class="occasion-btn">Shop Now</a>
+            </div>
+        </div>
+
+        <div class="occasion-card" onclick="window.location.href='index.html?category=corporate'">
+            <div class="occasion-card-image" style="background-image: url('https://images.unsplash.com/photo-1554774853-aae0a22c8aa4?w=500&q=80');">
+                <span class="occasion-badge">Professional</span>
+            </div>
+            <div class="occasion-card-content">
+                <h3>💼 Corporate Gifts</h3>
+                <p>Perfect for business relationships</p>
+                <a href="index.html?category=corporate" class="occasion-btn">Shop Now</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gift Card Section -->
+    <div class="gift-card-section">
+        <div class="gift-card-container">
+            <div>
+                <h2 class="section-title" style="color: white; text-align: left;">Give the Gift of Choice</h2>
+                <p class="section-subtitle" style="color: rgba(255,255,255,0.9); text-align: left;">
+                    Let them choose what they love with a Sansora Gift Card
+                </p>
+                <div class="amount-options">
+                    <button class="amount-btn" onclick="selectAmount(500)">₹500</button>
+                    <button class="amount-btn" onclick="selectAmount(1000)">₹1,000</button>
+                    <button class="amount-btn" onclick="selectAmount(2000)">₹2,000</button>
+                    <button class="amount-btn" onclick="selectAmount(5000)">₹5,000</button>
+                    <button class="amount-btn" onclick="selectAmount(10000)">₹10,000</button>
+                    <button class="amount-btn active" onclick="showCustomAmount()">Custom</button>
+                </div>
+                <div class="custom-amount">
+                    <label style="color: white; font-weight: 600;">Custom Amount:</label>
+                    <input type="number" id="customAmount" placeholder="Enter amount" min="100" value="1000">
+                </div>
+                <button class="occasion-btn" style="margin-top: 30px; padding: 15px 40px; font-size: 1.1rem;" onclick="addGiftCardToCart()">
+                    <i class="fas fa-shopping-cart"></i> Add to Cart
+                </button>
+            </div>
+            <div class="gift-card-visual">
+                <div class="card-preview">
+                    <h3>Sansora Gift Card</h3>
+                    <div class="card-amount">₹<span id="displayAmount">1,000</span></div>
+                    <p style="margin: 0; opacity: 0.9;">Valid for 1 year from purchase</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gift Wrapping Section -->
+    <div class="gift-wrapping-section">
+        <h2 class="section-title">🎀 Premium Gift Wrapping</h2>
+        <p class="section-subtitle">Add that extra special touch to your gifts</p>
+        
+        <div class="wrapping-options">
+            <div class="wrapping-card">
+                <div class="wrapping-image" style="background-image: url('https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=500&q=80');"></div>
+                <div class="wrapping-content">
+                    <h3>Classic Elegance</h3>
+                    <p>Traditional gift wrap with ribbon and bow</p>
+                    <div class="wrapping-price">₹99</div>
+                    <button class="select-wrapping-btn" onclick="addWrappingService('classic', 99)">Select This</button>
+                </div>
+            </div>
+
+            <div class="wrapping-card">
+                <div class="wrapping-image" style="background-image: url('https://images.unsplash.com/photo-1512909006721-3d6018887383?w=500&q=80');"></div>
+                <div class="wrapping-content">
+                    <h3>Premium Luxury</h3>
+                    <p>Luxury paper with designer embellishments</p>
+                    <div class="wrapping-price">₹199</div>
+                    <button class="select-wrapping-btn" onclick="addWrappingService('premium', 199)">Select This</button>
+                </div>
+            </div>
+
+            <div class="wrapping-card">
+                <div class="wrapping-image" style="background-image: url('https://images.unsplash.com/photo-1513885535751-8b9238bd345a?w=500&q=80');"></div>
+                <div class="wrapping-content">
+                    <h3>Birthday Special</h3>
+                    <p>Fun and colorful birthday-themed wrap</p>
+                    <div class="wrapping-price">₹149</div>
+                    <button class="select-wrapping-btn" onclick="addWrappingService('birthday', 149)">Select This</button>
+                </div>
+            </div>
+
+            <div class="wrapping-card">
+                <div class="wrapping-image" style="background-image: url('https://images.unsplash.com/photo-1576020799627-aeac74d58064?w=500&q=80');"></div>
+                <div class="wrapping-content">
+                    <h3>Eco-Friendly</h3>
+                    <p>Sustainable wrapping with natural materials</p>
+                    <div class="wrapping-price">₹129</div>
+                    <button class="select-wrapping-btn" onclick="addWrappingService('eco', 129)">Select This</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="features-section">
+        <h2 class="section-title">Why Choose Sansora for Gifting?</h2>
+        <div class="features-grid">
+            <div class="feature-item">
+                <div class="feature-icon">
+                    <i class="fas fa-gift"></i>
+                </div>
+                <h3>Curated Selection</h3>
+                <p>Handpicked gifts for every occasion and personality</p>
+            </div>
+
+            <div class="feature-item">
+                <div class="feature-icon">
+                    <i class="fas fa-truck-fast"></i>
+                </div>
+                <h3>Express Delivery</h3>
+                <p>Same-day and next-day delivery options available</p>
+            </div>
+
+            <div class="feature-item">
+                <div class="feature-icon">
+                    <i class="fas fa-ribbon"></i>
+                </div>
+                <h3>Gift Wrapping</h3>
+                <p>Professional wrapping service with personalized cards</p>
+            </div>
+
+            <div class="feature-item">
+                <div class="feature-icon">
+                    <i class="fas fa-credit-card"></i>
+                </div>
+                <h3>Gift Cards</h3>
+                <p>Digital and physical gift cards available instantly</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Sansora</h3>
+                <p>Your trusted partner for premium quality products at the best prices.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="deals.html">Deals</a></li>
+                    <li><a href="gifts.html">Gifts</a></li>
+                    <li><a href="orders.html">Orders</a></li>
+                    <li><a href="contact.html">Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Customer Service</h4>
+                <ul>
+                    <li><a href="#">Help Center</a></li>
+                    <li><a href="#">Track Order</a></li>
+                    <li><a href="#">Returns</a></li>
+                    <li><a href="#">Shipping Info</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Contact Info</h4>
+                <p><i class="fas fa-phone"></i> +91 98765 43210</p>
+                <p><i class="fas fa-envelope"></i> support@sansora.com</p>
+                <p><i class="fas fa-map-marker-alt"></i> Chennai, India</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Sansora. All rights reserved. | Designed with love for premium shopping experience</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Gift Products Data
+        const giftProducts = [
+            {
+                id: 1001,
+                title: "Premium Gift Hamper",
+                description: "Luxury gift basket with assorted chocolates, cookies, and premium snacks",
+                price: 2499,
+                image: "https://images.unsplash.com/photo-1558985250-f2526c4d99c5?w=500&q=80",
+                category: "Gift Hampers",
+                rating: 4.8
+            },
+            {
+                id: 1002,
+                title: "Personalized Photo Frame",
+                description: "Custom engraved wooden photo frame with elegant design",
+                price: 899,
+                image: "https://images.unsplash.com/photo-1513885535751-8b9238bd345a?w=500&q=80",
+                category: "Personalized Gifts",
+                rating: 4.7
+            },
+            {
+                id: 1003,
+                title: "Luxury Perfume Set",
+                description: "Premium fragrance collection for men and women",
+                price: 3999,
+                image: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=500&q=80",
+                category: "Beauty & Fragrance",
+                rating: 4.9
+            },
+            {
+                id: 1004,
+                title: "Smart Watch Gift Box",
+                description: "Latest smartwatch with fitness tracking and notifications",
+                price: 5999,
+                image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&q=80",
+                category: "Electronics",
+                rating: 4.6
+            },
+            {
+                id: 1005,
+                title: "Handcrafted Jewelry Set",
+                description: "Elegant necklace and earring set in premium packaging",
+                price: 4500,
+                image: "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=500&q=80",
+                category: "Jewelry",
+                rating: 4.8
+            },
+            {
+                id: 1006,
+                title: "Gourmet Chocolate Box",
+                description: "Assorted Belgian chocolates in luxury gift box",
+                price: 1299,
+                image: "https://images.unsplash.com/photo-1549007994-cb92caebd54b?w=500&q=80",
+                category: "Food & Treats",
+                rating: 4.9
+            },
+            {
+                id: 1007,
+                title: "Premium Wine Gift Set",
+                description: "Fine wine collection with elegant wine glasses",
+                price: 6999,
+                image: "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=500&q=80",
+                category: "Beverages",
+                rating: 4.7
+            },
+            {
+                id: 1008,
+                title: "Spa & Wellness Kit",
+                description: "Luxury spa products for ultimate relaxation",
+                price: 2999,
+                image: "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=500&q=80",
+                category: "Beauty & Wellness",
+                rating: 4.8
+            },
+            {
+                id: 1009,
+                title: "Designer Wallet Set",
+                description: "Premium leather wallet with card holder",
+                price: 3499,
+                image: "https://images.unsplash.com/photo-1627123424574-724758594e93?w=500&q=80",
+                category: "Accessories",
+                rating: 4.6
+            },
+            {
+                id: 1010,
+                title: "Bluetooth Speaker Gift",
+                description: "Portable wireless speaker with premium sound",
+                price: 2799,
+                image: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=500&q=80",
+                category: "Electronics",
+                rating: 4.7
+            },
+            {
+                id: 1011,
+                title: "Aromatherapy Diffuser Set",
+                description: "Essential oil diffuser with premium oils",
+                price: 1899,
+                image: "https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=500&q=80",
+                category: "Home & Living",
+                rating: 4.8
+            },
+            {
+                id: 1012,
+                title: "Premium Tea Gift Set",
+                description: "Assorted luxury tea collection with teapot",
+                price: 1599,
+                image: "https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9?w=500&q=80",
+                category: "Food & Beverages",
+                rating: 4.7
+            }
+        ];
+
+        // Load and display gift products
+        function displayGiftProducts() {
+            const grid = document.getElementById('gift-products-grid');
+            if (!grid) return;
+
+            grid.innerHTML = giftProducts.map(product => `
+                <div class="product-card">
+                    <span class="gift-badge">🎁 Gift Item</span>
+                    <img src="${product.image}" alt="${product.title}" class="product-image" 
+                         onerror="this.src='https://via.placeholder.com/280x250?text=Gift'">
+                    <div class="product-info">
+                        <div class="product-category">${product.category}</div>
+                        <h3 class="product-title">${product.title}</h3>
+                        <p class="product-description">${product.description}</p>
+                        <div class="product-rating">
+                            ${'★'.repeat(Math.floor(product.rating))}${'☆'.repeat(5 - Math.floor(product.rating))}
+                            <span style="color: #666; margin-left: 5px;">(${product.rating})</span>
+                        </div>
+                        <div class="product-price">₹${product.price.toLocaleString('en-IN')}</div>
+                        <button class="add-to-cart-btn" onclick="addGiftToCart(${product.id})">
+                            <i class="fas fa-shopping-cart"></i> Add to Cart
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Add gift product to cart
+        function addGiftToCart(productId) {
+            const product = giftProducts.find(p => p.id === productId);
+            if (!product) return;
+
+            // Get cart from localStorage (matching cart.html format)
+            let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+
+            // Check if product already exists in cart
+            const existingItem = cart.find(item => item.id === product.id);
+            
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({
+                    id: product.id,
+                    title: product.title,
+                    description: product.description,
+                    price: product.price,
+                    image: product.image,
+                    category: product.category,
+                    quantity: 1
+                });
+            }
+
+            // Save to localStorage
+            localStorage.setItem('cart', JSON.stringify(cart));
+            
+            updateCartCount();
+            showMessage(`✅ ${product.title} added to cart!`, 'success');
+        }
+
+        function updateCartCount() {
+            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const cartCountElements = document.querySelectorAll('#cart-count, #sidebar-cart-count');
+            cartCountElements.forEach(el => el.textContent = totalItems);
+        }
+
+        function showMessage(text, type) {
+            const messageDiv = document.createElement('div');
+            messageDiv.textContent = text;
+            messageDiv.style.cssText = `
+                position: fixed;
+                top: 100px;
+                right: 20px;
+                background: ${type === 'success' ? 'linear-gradient(135deg, #28a745, #20c997)' : 'linear-gradient(135deg, #e74c3c, #c0392b)'};
+                color: white;
+                padding: 1.2rem 2rem;
+                border-radius: 12px;
+                box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+                z-index: 10000;
+                font-weight: 600;
+                animation: slideIn 0.4s ease;
+            `;
+            
+            document.body.appendChild(messageDiv);
+            
+            setTimeout(() => {
+                messageDiv.style.opacity = '0';
+                messageDiv.style.transition = 'opacity 0.3s';
+                setTimeout(() => messageDiv.remove(), 300);
+            }, 3000);
+        }
+        // Sidebar Toggle
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            const hamburger = document.getElementById('hamburger-menu');
+            
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+            hamburger.classList.toggle('active');
+        }
+
+        // Gift Card Amount Selection
+        let selectedAmount = 1000;
+
+        function selectAmount(amount) {
+            selectedAmount = amount;
+            document.getElementById('displayAmount').textContent = amount.toLocaleString();
+            document.getElementById('customAmount').value = amount;
+            
+            // Update button styles
+            document.querySelectorAll('.amount-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+
+        function showCustomAmount() {
+            document.querySelectorAll('.amount-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+
+        document.getElementById('customAmount').addEventListener('input', function(e) {
+            const value = parseInt(e.target.value) || 1000;
+            selectedAmount = value;
+            document.getElementById('displayAmount').textContent = value.toLocaleString();
+        });
+
+        function addGiftCardToCart() {
+            const amount = parseInt(document.getElementById('customAmount').value) || 1000;
+            const giftCard = {
+                id: 'gift-card-' + Date.now(),
+                name: 'Sansora Gift Card',
+                price: amount,
+                quantity: 1,
+                image: 'logo-black.png',
+                category: 'gift-card'
+            };
+
+            let cart = JSON.parse(localStorage.getItem('sansora_cart') || '[]');
+            cart.push(giftCard);
+            localStorage.setItem('sansora_cart', JSON.stringify(cart));
+            
+            updateCartCount();
+            alert('Gift card added to cart! Amount: ₹' + amount.toLocaleString());
+        }
+
+        function addWrappingService(type, price) {
+            const wrapping = {
+                id: 'wrapping-' + type + '-' + Date.now(),
+                name: 'Gift Wrapping - ' + type.charAt(0).toUpperCase() + type.slice(1),
+                price: price,
+                quantity: 1,
+                image: 'logo-black.png',
+                category: 'service'
+            };
+
+            let cart = JSON.parse(localStorage.getItem('sansora_cart') || '[]');
+            cart.push(wrapping);
+            localStorage.setItem('sansora_cart', JSON.stringify(cart));
+            
+            updateCartCount();
+            alert('Gift wrapping service added to cart!');
+        }
+
+        function updateCartCount() {
+            const cart = JSON.parse(localStorage.getItem('sansora_cart') || '[]');
+            const count = cart.reduce((total, item) => total + item.quantity, 0);
+            const cartCountElements = document.querySelectorAll('#cart-count, #sidebar-cart-count');
+            cartCountElements.forEach(el => el.textContent = count);
+        }
+
+        // Show admin link if user is admin
+        document.addEventListener('DOMContentLoaded', function() {
+            displayGiftProducts();
+            updateCartCount();
+            
+            const savedUser = localStorage.getItem('sansora_user');
+            if (savedUser) {
+                try {
+                    const userData = JSON.parse(savedUser);
+                    if (userData.isAdmin) {
+                        document.getElementById('adminNavLink').style.display = 'block';
+                        document.getElementById('sidebar-admin-link').style.display = 'block';
+                    }
+                } catch (error) {
+                    console.error('Error checking admin status:', error);
+                }
+            }
+        });
+
+        function logout() {
+            localStorage.removeItem('sansora_user');
+            window.location.href = 'login.html';
+        }
+    </script>
+</body>
+</html>

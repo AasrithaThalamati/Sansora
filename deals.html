@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exclusive Offers - Sansora</title>
+    <link rel="icon" type="image/png" href="favicon-32x32.png">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="deals.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <img src="logo-black.png" alt="Sansora Logo" class="logo">
+            </div>
+            <div class="nav-search">
+                <input type="text" id="search-input" placeholder="Search luxury products..." class="search-input">
+                <button onclick="searchProducts()" class="search-btn">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="deals.html" class="nav-link active">Deals</a></li>
+                <li><a href="orders.html" class="nav-link">Orders</a></li>
+                <li><a href="interest-list.html" class="nav-link">
+                    <i class="fas fa-heart"></i> Interest List (<span id="interest-count">0</span>)
+                </a></li>
+                <li><a href="cart.html" class="nav-link">
+                    <i class="fas fa-shopping-cart"></i> Cart (<span id="cart-count">0</span>)
+                </a></li>
+                <li><a href="contact.html" class="nav-link">
+                    <i class="fas fa-envelope"></i> Contact
+                </a></li>
+                <li><a href="#" class="nav-link" onclick="logout()">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Deals Hero Section -->
+    <div class="deals-hero">
+        <h1><i class="fas fa-crown"></i> Exclusive Offers</h1>
+        <p>Discover exceptional value on premium products. Handpicked deals for discerning tastes.</p>
+    </div>
+
+    <!-- Banner Slider Section -->
+    <div class="deals-banner-slider">
+        <div class="deals-banner-container">
+            <div class="deals-banner-slide active">
+                <img src="banners/banners1.jpg" alt="Premium Electronics Collection">
+                <div class="deals-banner-overlay">
+                    <h3><i class="fas fa-laptop"></i> Premium Electronics Collection</h3>
+                    <p>Exceptional savings on cutting-edge technology and innovation</p>
+                </div>
+            </div>
+            <div class="deals-banner-slide">
+                <img src="banners/banners2.jpg" alt="Fashion Excellence">
+                <div class="deals-banner-overlay">
+                    <h3><i class="fas fa-gem"></i> Fashion Excellence</h3>
+                    <p>Timeless style meets contemporary elegance</p>
+                </div>
+            </div>
+            <div class="deals-banner-slide">
+                <img src="banners/banners3.jpg" alt="Refined Living Spaces">
+                <div class="deals-banner-overlay">
+                    <h3><i class="fas fa-home"></i> Refined Living Spaces</h3>
+                    <p>Transform your home with premium essentials</p>
+                </div>
+            </div>
+            <div class="deals-banner-slide">
+                <img src="banners/banners4.jpg" alt="Wellness & Performance">
+                <div class="deals-banner-overlay">
+                    <h3><i class="fas fa-dumbbell"></i> Wellness & Performance</h3>
+                    <p>Premium equipment for your active lifestyle</p>
+                </div>
+            </div>
+            <button class="banner-nav banner-prev" onclick="changeBannerSlide(-1)" aria-label="Previous banner">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="banner-nav banner-next" onclick="changeBannerSlide(1)" aria-label="Next banner">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+        <div class="banner-dots" id="banner-dots"></div>
+    </div>
+
+    <!-- Quick Stats Section -->
+    <div class="deals-stats-section">
+        <div class="stat-box">
+            <div class="stat-icon">
+                <i class="fas fa-tags"></i>
+            </div>
+            <div class="stat-content">
+                <h3>20+</h3>
+                <p>Active Deals</p>
+            </div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-icon">
+                <i class="fas fa-percentage"></i>
+            </div>
+            <div class="stat-content">
+                <h3>Up to 50%</h3>
+                <p>Off Selected Items</p>
+            </div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-icon">
+                <i class="fas fa-truck"></i>
+            </div>
+            <div class="stat-content">
+                <h3>Free Shipping</h3>
+                <p>Orders Above ₹999</p>
+            </div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-icon">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <div class="stat-content">
+                <h3>100%</h3>
+                <p>Authentic Products</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Electronics Deals Section -->
+    <div class="category-deals-section">
+        <div class="category-deal-card">
+            <div class="category-deal-header">
+                <h2><span class="category-icon">📱</span> Premium Electronics</h2>
+                <span class="deal-badge">Exceptional Value</span>
+            </div>
+            <div class="deals-grid" id="electronics-grid">
+                <!-- Electronics deals will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Fashion Deals Section -->
+        <div class="category-deal-card">
+            <div class="category-deal-header">
+                <h2><span class="category-icon">👗</span> Fashion Collection</h2>
+                <span class="deal-badge">Premium Style</span>
+            </div>
+            <div class="deals-grid" id="fashion-grid">
+                <!-- Fashion deals will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Home & Kitchen Deals Section -->
+        <div class="category-deal-card">
+            <div class="category-deal-header">
+                <h2><span class="category-icon">🏠</span> Home & Kitchen</h2>
+                <span class="deal-badge">Refined Living</span>
+            </div>
+            <div class="deals-grid" id="home-grid">
+                <!-- Home deals will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Sports & Fitness Deals Section -->
+        <div class="category-deal-card">
+            <div class="category-deal-header">
+                <h2><span class="category-icon">⚽</span> Sports & Fitness</h2>
+                <span class="deal-badge">Active Life</span>
+            </div>
+            <div class="deals-grid" id="sports-grid">
+                <!-- Sports deals will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Books & Stationery Deals Section -->
+        <div class="category-deal-card">
+            <div class="category-deal-header">
+                <h2><span class="category-icon">📚</span> Books & Learning</h2>
+                <span class="deal-badge">Knowledge</span>
+            </div>
+            <div class="deals-grid" id="books-grid">
+                <!-- Books deals will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Photo Gallery Section -->
+    <div class="photo-gallery-section">
+        <div class="gallery-header">
+            <h2><i class="fas fa-images"></i> Featured Collection</h2>
+            <p>Browse through our curated selection of exceptional products</p>
+        </div>
+        <div class="photo-gallery">
+            <div class="gallery-item">
+                <img src="images/image1.jpg" alt="Premium Electronics">
+                <div class="gallery-overlay">
+                    <h4>Premium Electronics</h4>
+                    <p>Latest gadgets at exceptional value</p>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <img src="images/image2.jpg" alt="Fashion Excellence">
+                <div class="gallery-overlay">
+                    <h4>Fashion Excellence</h4>
+                    <p>Style meets sophistication</p>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <img src="images/image3.jpg" alt="Home Essentials">
+                <div class="gallery-overlay">
+                    <h4>Home Essentials</h4>
+                    <p>Transform your living space</p>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <img src="images/image4.jpg" alt="Fitness Equipment">
+                <div class="gallery-overlay">
+                    <h4>Fitness Equipment</h4>
+                    <p>Premium wellness solutions</p>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <img src="images/image5.jpg" alt="Smart Devices">
+                <div class="gallery-overlay">
+                    <h4>Smart Devices</h4>
+                    <p>Technology for modern living</p>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <img src="images/image6.jpg" alt="Kitchen Appliances">
+                <div class="gallery-overlay">
+                    <h4>Kitchen Appliances</h4>
+                    <p>Culinary excellence</p>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <img src="images/image7.jpg" alt="Accessories">
+                <div class="gallery-overlay">
+                    <h4>Accessories</h4>
+                    <p>Complete your look</p>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <img src="images/image8.jpg" alt="Outdoor Gear">
+                <div class="gallery-overlay">
+                    <h4>Outdoor Gear</h4>
+                    <p>Adventure awaits</p>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <img src="images/image9.jpg" alt="Gaming Accessories">
+                <div class="gallery-overlay">
+                    <h4>Gaming Accessories</h4>
+                    <p>Premium performance</p>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <img src="images/image10.jpg" alt="Beauty Products">
+                <div class="gallery-overlay">
+                    <h4>Beauty Products</h4>
+                    <p>Radiant elegance</p>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <img src="images/image11.jpg" alt="Camera Equipment">
+                <div class="gallery-overlay">
+                    <h4>Camera Equipment</h4>
+                    <p>Capture perfection</p>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <img src="images/image12.jpg" alt="Audio Systems">
+                <div class="gallery-overlay">
+                    <h4>Audio Systems</h4>
+                    <p>Premium sound quality</p>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <img src="images/image13.jpg" alt="Smart Home">
+                <div class="gallery-overlay">
+                    <h4>Smart Home</h4>
+                    <p>Intelligent living</p>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <img src="images/image14.jpg" alt="Travel Bags">
+                <div class="gallery-overlay">
+                    <h4>Travel Bags</h4>
+                    <p>Journey in style</p>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <img src="images/image15.jpg" alt="Watches">
+                <div class="gallery-overlay">
+                    <h4>Watches</h4>
+                    <p>Timeless elegance</p>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <img src="images/image16.jpg" alt="Pet Supplies">
+                <div class="gallery-overlay">
+                    <h4>Pet Supplies</h4>
+                    <p>Care for companions</p>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <img src="images/image17.jpg" alt="Office Supplies">
+                <div class="gallery-overlay">
+                    <h4>Office Supplies</h4>
+                    <p>Professional essentials</p>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <img src="images/image18.jpg" alt="Toys & Games">
+                <div class="gallery-overlay">
+                    <h4>Toys & Games</h4>
+                    <p>Premium entertainment</p>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <img src="images/image19.jpg" alt="Garden Tools">
+                <div class="gallery-overlay">
+                    <h4>Garden Tools</h4>
+                    <p>Cultivate beauty</p>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <img src="images/image20.jpg" alt="Musical Instruments">
+                <div class="gallery-overlay">
+                    <h4>Musical Instruments</h4>
+                    <p>Create harmony</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Newsletter Section -->
+    <div class="newsletter-section">
+        <div class="newsletter-content">
+            <h2><i class="fas fa-bell"></i> Never Miss a Deal!</h2>
+            <p>Subscribe to get notifications about exclusive offers and new deals</p>
+            <div class="newsletter-form">
+                <input type="email" placeholder="Enter your email address" id="newsletter-email">
+                <button onclick="subscribeNewsletter()">
+                    <i class="fas fa-paper-plane"></i> Subscribe
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Sansora</h3>
+                <p>Where luxury meets exceptional value. Your destination for premium quality products.</p>
+                <div class="social-links">
+                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="deals.html">Deals</a></li>
+                    <li><a href="orders.html">Orders</a></li>
+                    <li><a href="interest-list.html">Interest List</a></li>
+                    <li><a href="contact.html">Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Customer Service</h4>
+                <ul>
+                    <li><a href="#">Help Center</a></li>
+                    <li><a href="#">Track Order</a></li>
+                    <li><a href="#">Returns</a></li>
+                    <li><a href="#">Shipping Info</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Contact Info</h4>
+                <p><i class="fas fa-phone"></i> +91 98765 43210</p>
+                <p><i class="fas fa-envelope"></i> support@sansora.com</p>
+                <p><i class="fas fa-map-marker-alt"></i> Mumbai, India</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Sansora. All rights reserved. | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button id="back-to-top" class="back-to-top" onclick="scrollToTop()">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script src="script.js"></script>
+    <script src="deals.js"></script>
+</body>
+</html>

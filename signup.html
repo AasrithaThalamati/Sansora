@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Sansora</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .signup-body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        
+        .signup-container {
+            width: 100%;
+            max-width: 500px;
+        }
+        
+        .signup-card {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem 2.5rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            animation: slideUp 0.6s ease;
+        }
+        
+        .signup-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+        
+        .signup-logo {
+            height: 50px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .signup-header h2 {
+            color: #333;
+            margin-bottom: 0.5rem;
+            font-size: 2rem;
+        }
+        
+        .signup-header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #333;
+            font-weight: 500;
+        }
+        
+        .input-wrapper {
+            position: relative;
+        }
+        
+        .input-wrapper i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+        }
+        
+        .input-wrapper input,
+        .input-wrapper select {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .input-wrapper input:focus,
+        .input-wrapper select:focus {
+            outline: none;
+            border-color: #0066cc;
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .password-strength {
+            margin-top: 0.5rem;
+            font-size: 0.8rem;
+        }
+        
+        .strength-bar {
+            width: 100%;
+            height: 4px;
+            background: #e9ecef;
+            border-radius: 2px;
+            margin: 0.5rem 0;
+            overflow: hidden;
+        }
+        
+        .strength-progress {
+            height: 100%;
+            transition: all 0.3s ease;
+        }
+        
+        .strength-weak {
+            width: 33%;
+            background: #e74c3c;
+        }
+        
+        .strength-medium {
+            width: 66%;
+            background: #f39c12;
+        }
+        
+        .strength-strong {
+            width: 100%;
+            background: #27ae60;
+        }
+        
+        .terms-checkbox {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.8rem;
+            margin-bottom: 2rem;
+        }
+        
+        .terms-checkbox input {
+            margin-top: 0.2rem;
+        }
+        
+        .terms-checkbox label {
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: #666;
+        }
+        
+        .terms-checkbox a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+        
+        .terms-checkbox a:hover {
+            text-decoration: underline;
+        }
+        
+        .signup-btn {
+            width: 100%;
+            background: linear-gradient(45deg, #0066cc, #004499);
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 2rem;
+        }
+        
+        .signup-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 102, 204, 0.3);
+        }
+        
+        .signup-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .login-link {
+            text-align: center;
+            color: #666;
+        }
+        
+        .login-link a {
+            color: #0066cc;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+        
+        .benefits-section {
+            background: #f8f9ff;
+            padding: 2rem;
+            border-radius: 15px;
+            margin-top: 2rem;
+        }
+        
+        .benefits-title {
+            text-align: center;
+            color: #333;
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+        }
+        
+        .benefits-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .benefits-list li {
+            padding: 0.8rem 0;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: #666;
+        }
+        
+        .benefits-list i {
+            color: #27ae60;
+            font-size: 1.2rem;
+            width: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .signup-container {
+                max-width: 400px;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .signup-card {
+                padding: 2rem 1.5rem;
+            }
+            
+            .signup-header h2 {
+                font-size: 1.7rem;
+            }
+        }
+    </style>
+</head>
+<body class="signup-body">
+    <div class="signup-container">
+        <div class="signup-card">
+            <div class="signup-header">
+                <img src="logo-black.png" alt="Sansora Logo" class="signup-logo">
+                <h2>Create Account</h2>
+                <p>Join Sansora for exclusive deals and premium shopping</p>
+            </div>
+            
+            <form class="signup-form" id="signupForm">
+                <div class="form-row">
+                    <div class="input-group">
+                        <label for="firstName">First Name</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-user"></i>
+                            <input type="text" id="firstName" name="firstName" placeholder="First name" required>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="lastName">Last Name</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-user"></i>
+                            <input type="text" id="lastName" name="lastName" placeholder="Last name" required>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="email">Email Address</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="phone">Phone Number</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-phone"></i>
+                        <input type="tel" id="phone" name="phone" placeholder="Enter phone number" required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="input-group">
+                        <label for="gender">Gender</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-venus-mars"></i>
+                            <select id="gender" name="gender" required>
+                                <option value="">Select Gender</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                                <option value="other">Other</option>
+                                <option value="prefer-not-to-say">Prefer not to say</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="birthdate">Date of Birth</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-calendar"></i>
+                            <input type="date" id="birthdate" name="birthdate">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="password" name="password" placeholder="Create a password" required>
+                    </div>
+                    <div class="password-strength" id="passwordStrength">
+                        <div class="strength-bar">
+                            <div class="strength-progress" id="strengthProgress"></div>
+                        </div>
+                        <span id="strengthText">Password strength</span>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password" required>
+                    </div>
+                </div>
+                
+                <div class="terms-checkbox">
+                    <input type="checkbox" id="agreeTerms" name="agreeTerms" required>
+                    <label for="agreeTerms">
+                        I agree to the <a href="#" onclick="showTerms()">Terms of Service</a> and 
+                        <a href="#" onclick="showPrivacy()">Privacy Policy</a>. 
+                        I also agree to receive promotional emails and updates from Sansora.
+                    </label>
+                </div>
+                
+                <button type="submit" class="signup-btn">
+                    <i class="fas fa-user-plus"></i> Create Account
+                </button>
+            </form>
+            
+            <div class="login-link">
+                <p>Already have an account? <a href="login.html">Sign in here</a></p>
+            </div>
+        </div>
+        
+        <div class="benefits-section">
+            <h3 class="benefits-title">Why Join Sansora?</h3>
+            <ul class="benefits-list">
+                <li>
+                    <i class="fas fa-shipping-fast"></i>
+                    <span>Free shipping on orders above ₹999</span>
+                </li>
+                <li>
+                    <i class="fas fa-undo"></i>
+                    <span>Easy 30-day returns and exchanges</span>
+                </li>
+                <li>
+                    <i class="fas fa-star"></i>
+                    <span>Exclusive member discounts and early access</span>
+                </li>
+                <li>
+                    <i class="fas fa-headset"></i>
+                    <span>24/7 premium customer support</span>
+                </li>
+                <li>
+                    <i class="fas fa-gift"></i>
+                    <span>Birthday rewards and special offers</span>
+                </li>
+                <li>
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Secure payments and data protection</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+    
+    <div id="signupMessage" class="message-popup"></div>
+    
+    <script>
+        // Password strength checker
+        document.getElementById('password').addEventListener('input', function(e) {
+            const password = e.target.value;
+            const strengthProgress = document.getElementById('strengthProgress');
+            const strengthText = document.getElementById('strengthText');
+            
+            let strength = 0;
+            let feedback = '';
+            
+            if (password.length >= 8) strength++;
+            if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
+            if (/\d/.test(password)) strength++;
+            if (/[^a-zA-Z0-9]/.test(password)) strength++;
+            
+            strengthProgress.className = 'strength-progress';
+            
+            if (strength === 0 || password.length === 0) {
+                strengthProgress.className += '';
+                strengthText.textContent = 'Password strength';
+                strengthText.style.color = '#999';
+            } else if (strength <= 2) {
+                strengthProgress.className += ' strength-weak';
+                strengthText.textContent = 'Weak password';
+                strengthText.style.color = '#e74c3c';
+                feedback = 'Use 8+ characters with uppercase, lowercase, numbers, and symbols';
+            } else if (strength === 3) {
+                strengthProgress.className += ' strength-medium';
+                strengthText.textContent = 'Medium password';
+                strengthText.style.color = '#f39c12';
+                feedback = 'Add symbols for a stronger password';
+            } else {
+                strengthProgress.className += ' strength-strong';
+                strengthText.textContent = 'Strong password';
+                strengthText.style.color = '#27ae60';
+                feedback = 'Excellent! Your password is secure';
+            }
+            
+            if (feedback) {
+                strengthText.textContent = feedback;
+            }
+        });
+        
+        // Confirm password validation
+        document.getElementById('confirmPassword').addEventListener('input', function(e) {
+            const password = document.getElementById('password').value;
+            const confirmPassword = e.target.value;
+            
+            if (confirmPassword && password !== confirmPassword) {
+                e.target.setCustomValidity('Passwords do not match');
+                e.target.style.borderColor = '#e74c3c';
+            } else {
+                e.target.setCustomValidity('');
+                e.target.style.borderColor = '#e9ecef';
+            }
+        });
+        
+        // Form submission
+        document.getElementById('signupForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
+            
+            // Validate required fields
+            if (!data.firstName || !data.lastName || !data.email || !data.phone || !data.password || !data.confirmPassword) {
+                showMessage('Please fill in all required fields', 'error');
+                return;
+            }
+            
+            // Validate email format
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(data.email)) {
+                showMessage('Please enter a valid email address', 'error');
+                return;
+            }
+            
+            // Validate phone number (Indian format)
+            const phoneRegex = /^[6-9]\d{9}$/;
+            if (!phoneRegex.test(data.phone)) {
+                showMessage('Please enter a valid 10-digit phone number', 'error');
+                return;
+            }
+            
+            // Validate password strength
+            if (data.password.length < 8) {
+                showMessage('Password must be at least 8 characters long', 'error');
+                return;
+            }
+            
+            // Validate password match
+            if (data.password !== data.confirmPassword) {
+                showMessage('Passwords do not match', 'error');
+                return;
+            }
+            
+            // Check terms agreement
+            if (!data.agreeTerms) {
+                showMessage('Please agree to the Terms of Service and Privacy Policy', 'error');
+                return;
+            }
+            
+            // Simulate signup process
+            const submitBtn = document.querySelector('.signup-btn');
+            const originalText = submitBtn.innerHTML;
+            
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating Account...';
+            submitBtn.disabled = true;
+            
+            setTimeout(() => {
+                // Simulate successful signup
+                showMessage('Account created successfully! Please check your email to verify your account.', 'success');
+                
+                // Reset form
+                document.getElementById('signupForm').reset();
+                document.getElementById('strengthProgress').className = 'strength-progress';
+                document.getElementById('strengthText').textContent = 'Password strength';
+                document.getElementById('strengthText').style.color = '#999';
+                
+                // Re-enable button
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+                
+                // Redirect to login after 3 seconds
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 3000);
+                
+            }, 2000);
+        });
+        
+        function showMessage(text, type) {
+            const messageDiv = document.getElementById('signupMessage');
+            messageDiv.className = `message-popup ${type}`;
+            messageDiv.textContent = text;
+            
+            setTimeout(() => messageDiv.classList.add('show'), 100);
+            
+            setTimeout(() => {
+                messageDiv.classList.remove('show');
+            }, 5000);
+        }
+        
+        function showTerms() {
+            alert('Terms of Service\n\n1. Use of the website is subject to applicable laws.\n2. Users must provide accurate information.\n3. Sansora reserves the right to terminate accounts for violations.\n4. All purchases are subject to our return policy.\n5. Prices and availability are subject to change without notice.');
+        }
+        
+        function showPrivacy() {
+            alert('Privacy Policy\n\n1. We collect information to provide better services.\n2. Personal information is kept secure and confidential.\n3. We do not sell or rent personal information to third parties.\n4. Cookies may be used to enhance user experience.\n5. Users can request data deletion at any time.');
+        }
+        
+        // Auto-focus on first name field
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('firstName').focus();
+        });
+    </script>
+</body>
+</html>

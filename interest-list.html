@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Interest List - Sansora</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="interest-list.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <img src="logo-black.png" alt="Sansora Logo" class="logo">
+            </div>
+            <div class="nav-search">
+                <input type="text" id="search-input" placeholder="Search luxury products..." class="search-input">
+                <button onclick="searchProducts()" class="search-btn">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="deals.html" class="nav-link">Deals</a></li>
+                <li><a href="orders.html" class="nav-link">Orders</a></li>
+                <li><a href="interest-list.html" class="nav-link active"><i class="fas fa-heart"></i> Interest List (<span id="interest-count">0</span>)</a></li>
+                <li><a href="cart.html" class="nav-link"><i class="fas fa-shopping-cart"></i> Cart (<span id="cart-count">0</span>)</a></li>
+                <li><a href="contact.html" class="nav-link"><i class="fas fa-envelope"></i> Contact</a></li>
+                <li><a href="#" class="nav-link" onclick="logout()">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="interest-header">
+            <h1><i class="fas fa-heart"></i> My Interest List</h1>
+            <p class="subtitle">Track products you're interested in and get notified about deals</p>
+        </div>
+
+        <div class="interest-stats">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-shopping-bag"></i></div>
+                <div class="stat-number" id="total-items">0</div>
+                <div class="stat-label">Items Saved</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-tag"></i></div>
+                <div class="stat-number" id="total-savings">₹0</div>
+                <div class="stat-label">Potential Savings</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-wallet"></i></div>
+                <div class="stat-number" id="total-value">₹0</div>
+                <div class="stat-label">Total Value</div>
+            </div>
+        </div>
+
+        <div class="filter-section">
+            <button class="filter-btn active" data-filter="all">
+                <i class="fas fa-th"></i> All Items
+            </button>
+            <button class="filter-btn" data-filter="electronics">
+                <i class="fas fa-laptop"></i> Electronics
+            </button>
+            <button class="filter-btn" data-filter="fashion">
+                <i class="fas fa-tshirt"></i> Fashion
+            </button>
+            <button class="filter-btn" data-filter="home">
+                <i class="fas fa-home"></i> Home
+            </button>
+            <button class="filter-btn" data-filter="sports">
+                <i class="fas fa-dumbbell"></i> Sports
+            </button>
+            <button class="filter-btn" data-filter="books">
+                <i class="fas fa-book"></i> Books
+            </button>
+            <button class="clear-all-btn" id="clear-all">
+                <i class="fas fa-trash"></i> Clear All
+            </button>
+        </div>
+
+        <div id="interest-list" class="interest-grid">
+            <!-- Interest items will be dynamically loaded here -->
+        </div>
+
+        <div id="empty-state" class="empty-state" style="display: none;">
+            <div class="empty-icon"><i class="fas fa-heart-broken"></i></div>
+            <h2>Your Interest List is Empty</h2>
+            <p>Start exploring our deals and add items you're interested in!</p>
+            <a href="deals.html" class="explore-btn">
+                <i class="fas fa-shopping-bag"></i> Explore Deals
+            </a>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Sansora</h3>
+                <p>Where luxury meets exceptional value. Your destination for premium quality products.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="deals.html">Deals</a></li>
+                    <li><a href="orders.html">Orders</a></li>
+                    <li><a href="interest-list.html">Interest List</a></li>
+                    <li><a href="contact.html">Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Customer Service</h4>
+                <ul>
+                    <li><a href="#">Help Center</a></li>
+                    <li><a href="#">Track Order</a></li>
+                    <li><a href="#">Returns</a></li>
+                    <li><a href="#">Shipping Info</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Contact Info</h4>
+                <p><i class="fas fa-phone"></i> +91 98765 43210</p>
+                <p><i class="fas fa-envelope"></i> support@sansora.com</p>
+                <p><i class="fas fa-map-marker-alt"></i> Mumbai, India</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Sansora. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Load JavaScript files at the end -->
+    <script>
+        // Initialize sample data IMMEDIATELY before other scripts
+        (function() {
+            const existing = localStorage.getItem('interestList');
+            if (!existing || existing === '[]' || existing === 'null') {
+                const sampleProducts = [
+                    {
+                        id: 'laptop-001',
+                        name: 'Premium Gaming Laptop',
+                        description: 'High-performance laptop with RTX 4080, 32GB RAM, and 1TB SSD. Perfect for gaming and creative work.',
+                        icon: '💻',
+                        category: 'electronics',
+                        price: 125000,
+                        originalPrice: 185000,
+                        addedDate: Date.now() - (2 * 24 * 60 * 60 * 1000)
+                    },
+                    {
+                        id: 'watch-001',
+                        name: 'Luxury Swiss Watch',
+                        description: 'Elegant timepiece with automatic movement and sapphire crystal. Water resistant up to 100m.',
+                        icon: '⌚',
+                        category: 'fashion',
+                        price: 45000,
+                        originalPrice: 75000,
+                        addedDate: Date.now() - (5 * 24 * 60 * 60 * 1000)
+                    },
+                    {
+                        id: 'sofa-001',
+                        name: 'Designer Leather Sofa',
+                        description: 'Handcrafted Italian leather sofa with premium cushioning. Modern design with exceptional comfort.',
+                        icon: '🛋️',
+                        category: 'home',
+                        price: 85000,
+                        originalPrice: 135000,
+                        addedDate: Date.now() - (1 * 24 * 60 * 60 * 1000)
+                    },
+                    {
+                        id: 'bike-001',
+                        name: 'Carbon Fiber Road Bike',
+                        description: 'Professional-grade road bike with Shimano components. Ultra-lightweight carbon frame.',
+                        icon: '🚴',
+                        category: 'sports',
+                        price: 95000,
+                        originalPrice: 145000,
+                        addedDate: Date.now() - (7 * 24 * 60 * 60 * 1000)
+                    },
+                    {
+                        id: 'camera-001',
+                        name: 'Professional DSLR Camera',
+                        description: 'Full-frame mirrorless camera with 45MP sensor. Includes premium lens kit and accessories.',
+                        icon: '📷',
+                        category: 'electronics',
+                        price: 185000,
+                        originalPrice: 265000,
+                        addedDate: Date.now()
+                    },
+                    {
+                        id: 'shoes-001',
+                        name: 'Premium Running Shoes',
+                        description: 'High-performance athletic shoes with advanced cushioning technology. Limited edition colorway.',
+                        icon: '👟',
+                        category: 'fashion',
+                        price: 12000,
+                        originalPrice: 18000,
+                        addedDate: Date.now() - (3 * 24 * 60 * 60 * 1000)
+                    },
+                    {
+                        id: 'book-001',
+                        name: 'Luxury Book Collection',
+                        description: 'Limited edition leather-bound classics collection. Gold-embossed premium binding.',
+                        icon: '📚',
+                        category: 'books',
+                        price: 15000,
+                        originalPrice: 25000,
+                        addedDate: Date.now() - (4 * 24 * 60 * 60 * 1000)
+                    }
+                ];
+                localStorage.setItem('interestList', JSON.stringify(sampleProducts));
+                console.log('✅ Sample products added to localStorage');
+            }
+        })();
+    </script>
+    <script src="script.js"></script>
+    <script src="interest-list.js"></script>
+</body>
+</html>

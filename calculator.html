@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Price Calculator - Sansora</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(102, 126, 234, 0.2);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+        }
+
+        .nav-logo img {
+            height: 60px;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+        }
+
+        .nav-link {
+            color: #333;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .calculator-container {
+            max-width: 1300px;
+            margin: 100px auto 40px;
+            padding: 20px;
+        }
+
+        .calculator-card {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            overflow: hidden;
+            animation: slideUp 0.6s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .calculator-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .calculator-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .calculator-header h1 {
+            margin: 0 0 10px 0;
+            font-size: 32px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .calculator-header p {
+            margin: 0;
+            opacity: 0.95;
+            font-size: 16px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .calculator-body {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            padding: 40px;
+        }
+
+        .config-section h2 {
+            font-size: 22px;
+            margin-bottom: 25px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .config-section h2::before {
+            content: '';
+            width: 4px;
+            height: 24px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        .form-group {
+            margin-bottom: 30px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 15px;
+            font-size: 15px;
+        }
+
+        .variant-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .variant-option {
+            padding: 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .variant-option::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 100%;
+            background: linear-gradient(90deg, rgba(102, 126, 234, 0.05), transparent);
+            transition: width 0.3s ease;
+        }
+
+        .variant-option:hover::before {
+            width: 100%;
+        }
+
+        .variant-option:hover {
+            border-color: #667eea;
+            transform: translateX(5px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.15);
+        }
+
+        .variant-option.active {
+            border-color: #667eea;
+            background: linear-gradient(135deg, #f0f3ff 0%, #e8ebff 100%);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+            transform: scale(1.02);
+        }
+
+        .variant-option.active::after {
+            content: '\f00c';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            right: 20px;
+            color: #667eea;
+            font-size: 20px;
+            animation: checkmark 0.3s ease;
+        }
+
+        @keyframes checkmark {
+            0% {
+                opacity: 0;
+                transform: scale(0);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .variant-name {
+            font-weight: 600;
+            color: #333;
+            font-size: 16px;
+        }
+
+        .variant-price {
+            color: #667eea;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .quantity-selector {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .qty-btn {
+            width: 50px;
+            height: 50px;
+            border: none;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 20px;
+            color: white;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .qty-btn:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .qty-btn:active {
+            transform: translateY(0) scale(0.95);
+        }
+
+        .qty-input {
+            width: 90px;
+            height: 50px;
+            text-align: center;
+            font-size: 22px;
+            font-weight: 700;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            outline: none;
+            background: white;
+            transition: all 0.3s ease;
+        }
+
+        .qty-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+
+        .discount-badge {
+            margin-top: 15px;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+            color: #155724;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            display: inline-block;
+            animation: bounceIn 0.5s ease;
+            box-shadow: 0 4px 15px rgba(39, 174, 96, 0.2);
+        }
+
+        @keyframes bounceIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.3);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.05);
+            }
+            70% {
+                transform: scale(0.9);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .addon-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .addon-item {
+            padding: 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: white;
+        }
+
+        .addon-item:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+            transform: translateX(5px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
+        }
+
+        .addon-checkbox {
+            width: 22px;
+            height: 22px;
+            cursor: pointer;
+            accent-color: #667eea;
+        }
+
+        .addon-details {
+            flex: 1;
+        }
+
+        .addon-name {
+            font-weight: 500;
+            color: #333;
+            font-size: 15px;
+        }
+
+        .addon-price {
+            color: #667eea;
+            font-weight: 700;
+            font-size: 15px;
+            margin-left: auto;
+        }
+
+        .summary-section {
+            position: sticky;
+            top: 120px;
+        }
+
+        .price-breakdown {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 20px;
+            padding: 35px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .price-breakdown h2 {
+            font-size: 22px;
+            margin-bottom: 25px;
+            color: #333;
+            text-align: center;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            color: #555;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .price-row:hover {
+            color: #333;
+        }
+
+        .price-row.total {
+            border-top: 3px solid #667eea;
+            margin-top: 20px;
+            padding-top: 25px;
+            font-size: 28px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .price-row.total .amount {
+            color: #667eea;
+            text-shadow: 0 2px 4px rgba(102, 126, 234, 0.2);
+        }
+
+        .price-divider {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #ddd, transparent);
+            margin: 20px 0;
+        }
+
+        .discount-row {
+            color: #28a745;
+            font-weight: 600;
+        }
+
+        .add-to-cart-btn {
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            border: none;
+            border-radius: 14px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 25px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .add-to-cart-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .add-to-cart-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .add-to-cart-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(40, 167, 69, 0.4);
+        }
+
+        .add-to-cart-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .add-to-cart-btn i {
+            font-size: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .add-to-cart-btn span {
+            position: relative;
+            z-index: 1;
+        }
+
+        .shipping-note {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #666;
+            padding: 12px;
+            background: white;
+            border-radius: 10px;
+            border-left: 4px solid #28a745;
+        }
+
+        .discount-tiers {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+        }
+
+        .discount-tiers h3 {
+            margin: 0 0 20px 0;
+            font-size: 18px;
+            color: #333;
+            text-align: center;
+        }
+
+        .tier-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .tier-card {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #f0f3ff, #e8ebff);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .tier-card:hover {
+            border-color: #667eea;
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.2);
+        }
+
+        .tier-qty {
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 8px;
+            font-size: 18px;
+        }
+
+        .tier-save {
+            color: #555;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .info-banner {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 18px 30px;
+            text-align: center;
+            margin-top: 80px;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .features-info {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+        }
+
+        .features-info h3 {
+            margin: 0 0 20px 0;
+            font-size: 18px;
+            color: #333;
+            text-align: center;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px;
+            margin-bottom: 10px;
+            background: #f8f9ff;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .feature-item:hover {
+            background: linear-gradient(135deg, #f0f3ff, #e8ebff);
+            transform: translateX(5px);
+        }
+
+        .feature-item i {
+            color: #667eea;
+            font-size: 20px;
+            width: 30px;
+            text-align: center;
+        }
+
+        .feature-item span {
+            color: #555;
+            font-size: 14px;
+        }
+
+        .footer {
+            background: #1a1a1a;
+            color: white;
+            padding: 3rem 0 1rem;
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .footer-section h3 {
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+
+        .footer-section p {
+            color: #ccc;
+            line-height: 1.8;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            margin-top: 2rem;
+            border-top: 1px solid #333;
+            color: #999;
+        }
+
+        .message-popup {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            padding: 1.2rem 2rem;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            z-index: 10000;
+            animation: slideInRight 0.4s ease;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .message-popup.success {
+            background: linear-gradient(135deg, #28a745, #20c997);
+        }
+
+        .message-popup.error {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .calculator-body {
+                grid-template-columns: 1fr;
+            }
+
+            .summary-section {
+                position: static;
+            }
+
+            .tier-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .calculator-container {
+                margin-top: 90px;
+                padding: 15px;
+            }
+
+            .calculator-header h1 {
+                font-size: 24px;
+            }
+
+            .calculator-body {
+                padding: 25px;
+            }
+
+            .nav-links {
+                gap: 0.5rem;
+            }
+
+            .nav-link {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <img src="logo-black.png" alt="Sansora Logo" class="logo">
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html" class="nav-link"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="deals.html" class="nav-link"><i class="fas fa-tag"></i> Deals</a></li>
+                <li><a href="orders.html" class="nav-link"><i class="fas fa-box"></i> Orders</a></li>
+                <li><a href="cart.html" class="nav-link"><i class="fas fa-shopping-cart"></i> Cart (<span id="cart-count">0</span>)</a></li>
+                <li><a href="contact.html" class="nav-link"><i class="fas fa-envelope"></i> Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="info-banner">
+        <i class="fas fa-info-circle"></i>
+        <span><strong>How it works:</strong> Select your product variant, choose quantity for bulk discounts, add optional services, and see real-time pricing!</span>
+    </div>
+
+    <div class="calculator-container">
+        <div class="calculator-card">
+            <div class="calculator-header">
+                <h1>
+                    <i class="fas fa-calculator"></i>
+                    Custom Price Calculator
+                </h1>
+                <p>Configure your product and see real-time pricing with automatic discounts</p>
+            </div>
+
+            <div class="calculator-body">
+                <div class="config-section">
+                    <h2>Product Configuration</h2>
+
+                    <div class="form-group">
+                        <label class="form-label">Select Edition</label>
+                        <div class="variant-options" id="variant-options">
+                            <div class="variant-option active" data-variant="standard" onclick="selectVariant('standard')">
+                                <span class="variant-name">Standard Edition</span>
+                                <span class="variant-price">₹2,499</span>
+                            </div>
+                            <div class="variant-option" data-variant="premium" onclick="selectVariant('premium')">
+                                <span class="variant-name">Premium Edition</span>
+                                <span class="variant-price">₹3,749</span>
+                            </div>
+                            <div class="variant-option" data-variant="deluxe" onclick="selectVariant('deluxe')">
+                                <span class="variant-name">Deluxe Edition</span>
+                                <span class="variant-price">₹4,999</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Quantity</label>
+                        <div class="quantity-selector">
+                            <button class="qty-btn" onclick="updateQuantity(-1)">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <input type="number" id="quantity-input" class="qty-input" value="1" min="1" onchange="onQuantityChange()">
+                            <button class="qty-btn" onclick="updateQuantity(1)">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                        <div id="discount-message"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Add-ons & Services</label>
+                        <div class="addon-list">
+                            <div class="addon-item" onclick="toggleAddon('warranty')">
+                                <input type="checkbox" id="addon-warranty" class="addon-checkbox">
+                                <div class="addon-details">
+                                    <div class="addon-name">Extended Warranty (2 Years)</div>
+                                </div>
+                                <div class="addon-price">+₹999</div>
+                            </div>
+                            <div class="addon-item" onclick="toggleAddon('gift-wrap')">
+                                <input type="checkbox" id="addon-gift-wrap" class="addon-checkbox">
+                                <div class="addon-details">
+                                    <div class="addon-name">Premium Gift Wrapping</div>
+                                </div>
+                                <div class="addon-price">+₹249</div>
+                            </div>
+                            <div class="addon-item" onclick="toggleAddon('insurance')">
+                                <input type="checkbox" id="addon-insurance" class="addon-checkbox">
+                                <div class="addon-details">
+                                    <div class="addon-name">Shipping Insurance</div>
+                                </div>
+                                <div class="addon-price">+₹499</div>
+                            </div>
+                            <div class="addon-item" onclick="toggleAddon('setup')">
+                                <input type="checkbox" id="addon-setup" class="addon-checkbox">
+                                <div class="addon-details">
+                                    <div class="addon-name">Professional Setup Service</div>
+                                </div>
+                                <div class="addon-price">+₹1,499</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="addon-item" onclick="toggleUrgentDelivery()">
+                            <input type="checkbox" id="urgent-delivery" class="addon-checkbox">
+                            <div class="addon-details">
+                                <div class="addon-name">Urgent Delivery (1-2 days)</div>
+                            </div>
+                            <div class="addon-price">+₹750</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="summary-section">
+                    <div class="price-breakdown">
+                        <h2><i class="fas fa-receipt"></i> Price Breakdown</h2>
+                        
+                        <div class="price-row">
+                            <span>Base Price (<span id="selected-variant-name">Standard Edition</span>)</span>
+                            <span id="base-price">₹2,499</span>
+                        </div>
+
+                        <div class="price-row discount-row" id="discount-row" style="display: none;">
+                            <span><i class="fas fa-percentage"></i> Quantity Discount (<span id="discount-percent">0</span>%)</span>
+                            <span id="discount-amount">-₹0</span>
+                        </div>
+
+                        <div class="price-row">
+                            <span>Quantity</span>
+                            <span>× <span id="display-quantity">1</span></span>
+                        </div>
+
+                        <div class="price-divider"></div>
+
+                        <div class="price-row">
+                            <span>Subtotal</span>
+                            <span id="subtotal-amount">₹2,499</span>
+                        </div>
+
+                        <div class="price-row" id="addons-row" style="display: none;">
+                            <span><i class="fas fa-plus-circle"></i> Add-ons</span>
+                            <span id="addons-amount">₹0</span>
+                        </div>
+
+                        <div class="price-row" id="delivery-row" style="display: none;">
+                            <span><i class="fas fa-shipping-fast"></i> Urgent Delivery</span>
+                            <span id="delivery-amount">₹750</span>
+                        </div>
+
+                        <div class="price-row total">
+                            <span>Total</span>
+                            <span class="amount" id="total-amount">₹2,499</span>
+                        </div>
+
+                        <button class="add-to-cart-btn" onclick="addToCart()">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span>Add to Cart</span>
+                        </button>
+
+                        <div class="shipping-note">
+                            <i class="fas fa-truck"></i> Free standard shipping on orders above ₹999
+                        </div>
+                    </div>
+
+                    <div class="features-info">
+                        <h3><i class="fas fa-star"></i> Why Choose Us?</h3>
+                        <div class="feature-item">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>100% Secure Payment & Data Protection</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-undo"></i>
+                            <span>30-Day Easy Return Policy</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-headset"></i>
+                            <span>24/7 Customer Support Available</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-certificate"></i>
+                            <span>Genuine Products with Warranty</span>
+                        </div>
+                    </div>
+
+                    <div class="discount-tiers">
+                        <h3><i class="fas fa-gift"></i> Volume Discounts</h3>
+                        <div class="tier-grid">
+                            <div class="tier-card">
+                                <div class="tier-qty">3+ items</div>
+                                <div class="tier-save">Save 10%</div>
+                            </div>
+                            <div class="tier-card">
+                                <div class="tier-qty">5+ items</div>
+                                <div class="tier-save">Save 15%</div>
+                            </div>
+                            <div class="tier-card">
+                                <div class="tier-qty">10+ items</div>
+                                <div class="tier-save">Save 20%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Sansora</h3>
+                <p>Your trusted partner for premium quality products at the best prices.</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Sansora. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="calculator-logic.js"></script>
+    <script>
+        // Update cart count on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCartCount();
+        });
+    </script>
+</body>
+</html>

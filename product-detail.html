@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details - Sansora Shopping</title>
+    <link rel="stylesheet" href="product-detail.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Wishlist Sidebar Styles */
+        .wishlist-sidebar {
+            position: fixed;
+            right: -400px;
+            top: 0;
+            width: 400px;
+            height: 100vh;
+            background: white;
+            box-shadow: -5px 0 20px rgba(0,0,0,0.2);
+            transition: right 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .wishlist-sidebar.open {
+            right: 0;
+        }
+
+        .wishlist-header {
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .wishlist-header h2 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 0;
+            font-size: 22px;
+        }
+
+        .close-wishlist {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .close-wishlist:hover {
+            transform: rotate(90deg);
+        }
+
+        .wishlist-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .wishlist-empty {
+            text-align: center;
+            padding: 50px 20px;
+            color: #999;
+        }
+
+        .wishlist-empty i {
+            font-size: 64px;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        .wishlist-item {
+            display: flex;
+            gap: 15px;
+            padding: 15px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            background: white;
+            transition: all 0.3s;
+        }
+
+        .wishlist-item:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+
+        .wishlist-item-image {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .wishlist-item-info {
+            flex: 1;
+        }
+
+        .wishlist-item-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .wishlist-item-price {
+            color: #667eea;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .wishlist-item-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .wishlist-btn {
+            background: none;
+            border: none;
+            color: #999;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.3s;
+            padding: 5px;
+        }
+
+        .wishlist-btn:hover {
+            color: #667eea;
+            transform: scale(1.1);
+        }
+
+        .wishlist-btn.remove:hover {
+            color: #ff4757;
+        }
+
+        .wishlist-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            z-index: 999;
+        }
+
+        .wishlist-overlay.active {
+            display: block;
+        }
+
+        .wishlist-toggle {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s;
+            z-index: 998;
+        }
+
+        .wishlist-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 25px rgba(102, 126, 234, 0.6);
+        }
+
+        .wishlist-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ff4757;
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .wishlist-badge.show {
+            display: flex;
+        }
+
+        @media (max-width: 768px) {
+            .wishlist-sidebar {
+                width: 100%;
+                right: -100%;
+            }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(400px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(400px); opacity: 0; }
+        }
+
+        .notification {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            z-index: 10000;
+            animation: slideIn 0.3s ease;
+        }
+
+        .notification.success {
+            background: #2ecc71;
+            color: white;
+        }
+
+        .notification.info {
+            background: #3498db;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <a href="index.html">
+                    <img src="logo-black.png" alt="Sansora Shopping">
+                </a>
+            </div>
+            <div class="nav-links">
+                <a href="index.html"><i class="fas fa-home"></i> Home</a>
+                <a href="calculator.html"><i class="fas fa-calculator"></i> Price Calculator</a>
+                <a href="contact.html"><i class="fas fa-envelope"></i> Contact</a>
+                <a href="cart.html" class="cart-icon">
+                    
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count" id="cart-count">0</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Wishlist Overlay -->
+    <div class="wishlist-overlay" id="wishlistOverlay" onclick="toggleWishlistSidebar()"></div>
+
+    <!-- Wishlist Sidebar -->
+    <div class="wishlist-sidebar" id="wishlistSidebar">
+        <div class="wishlist-header">
+            <h2><i class="fas fa-heart"></i> My Wishlist</h2>
+            <button class="close-wishlist" onclick="toggleWishlistSidebar()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="wishlist-content" id="wishlistContent">
+            <div class="wishlist-empty">
+                <i class="far fa-heart"></i>
+                <h3>Your wishlist is empty</h3>
+                <p>Add products you love to save them for later</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Wishlist Toggle -->
+    <button class="wishlist-toggle" onclick="toggleWishlistSidebar()">
+        <i class="fas fa-heart"></i>
+        <span class="wishlist-badge" id="wishlistBadge">0</span>
+    </button>
+
+    <div class="product-detail-container">
+        <div class="product-detail-wrapper">
+            <div class="product-image-section">
+                <div class="main-image-container">
+                    <img id="productImage" src="" alt="Product Image" class="main-image">
+                    <div class="image-badge">
+                        <i class="fas fa-star"></i> Featured
+                    </div>
+                </div>
+                <div class="image-thumbnails" id="thumbnailContainer"></div>
+            </div>
+
+            <div class="product-info-section">
+                <div class="product-category-badge">
+                    <span id="productCategory"></span>
+                </div>
+                
+                <h1 id="productTitle" class="product-title"></h1>
+                
+                <div class="product-rating">
+                    <div class="stars">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star-half-alt"></i>
+                    </div>
+                    <span class="rating-text">4.8 (2,547 reviews)</span>
+                </div>
+
+                <div class="product-price-container">
+                    <span id="productPrice" class="product-price"></span>
+                    <span class="price-badge">Best Price</span>
+                </div>
+
+                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; border-radius: 12px; margin: 20px 0; color: white;">
+                    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 10px;">
+                        <i class="fas fa-calculator" style="font-size: 24px;"></i>
+                        <div>
+                            <h3 style="margin: 0; font-size: 18px;">Need Custom Pricing?</h3>
+                            <p style="margin: 5px 0 0 0; font-size: 14px; opacity: 0.9;">Calculate bulk discounts, add-ons, and delivery options</p>
+                        </div>
+                    </div>
+                    <a href="calculator.html" style="display: inline-block; background: white; color: #667eea; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; transition: all 0.3s;">
+                        <i class="fas fa-arrow-right"></i> Open Price Calculator
+                    </a>
+                </div>
+
+                <div class="product-actions">
+                    <button class="btn-add-cart" onclick="addToCart()">
+                        <i class="fas fa-shopping-cart"></i> Add to Cart
+                    </button>
+                    <button class="btn-buy-now" onclick="buyNow()">
+                        <i class="fas fa-bolt"></i> Buy Now
+                    </button>
+                    <button class="btn-wishlist" id="wishlistBtn" onclick="addToWishlist()">
+                        <i class="far fa-heart"></i>
+                    </button>
+                </div>
+
+                <div class="quick-info">
+                    <div class="info-item">
+                        <i class="fas fa-shipping-fast"></i>
+                        <div>
+                            <strong>Fast Delivery</strong>
+                            <p>2-3 Days Shipping</p>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-shield-alt"></i>
+                        <div>
+                            <strong>Secure Payment</strong>
+                            <p>100% Protected</p>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-undo"></i>
+                        <div>
+                            <strong>Easy Returns</strong>
+                            <p>30 Days Return</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product-section">
+                    <h3><i class="fas fa-info-circle"></i> Product Description</h3>
+                    <p id="productDescription"></p>
+                </div>
+
+                <div class="product-section" id="technicalSpecs">
+                    <h3><i class="fas fa-cog"></i> Technical Specifications</h3>
+                    <div id="specsList" class="specs-grid"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="quiz-section" id="quizSection">
+            <div class="quiz-header">
+                <i class="fas fa-question-circle quiz-icon"></i>
+                <h2>Is This Product Right for You?</h2>
+                <p>Take our quick quiz to find out if this product matches your needs!</p>
+            </div>
+
+            <div class="quiz-content" id="quizContent">
+                <div class="quiz-progress">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <span class="progress-text" id="progressText">Question 1 of 3</span>
+                </div>
+
+                <div class="quiz-questions" id="quizQuestions"></div>
+
+                <div class="quiz-navigation">
+                    <button class="quiz-btn quiz-prev" id="prevBtn" onclick="previousQuestion()" style="display: none;">
+                        <i class="fas fa-arrow-left"></i> Previous
+                    </button>
+                    <button class="quiz-btn quiz-next" id="nextBtn" onclick="nextQuestion()">
+                        Next <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="quiz-result" id="quizResult" style="display: none;">
+                <div class="result-content">
+                    <i class="fas fa-check-circle result-icon"></i>
+                    <h3 id="resultTitle"></h3>
+                    <p id="resultMessage"></p>
+                    <div class="result-score">
+                        <span id="resultScore"></span>
+                    </div>
+                    <button class="quiz-btn" onclick="restartQuiz()">
+                        <i class="fas fa-redo"></i> Retake Quiz
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-tabs-section">
+            <div class="tabs-header">
+                <button class="tab-btn active" onclick="switchTab('shipping')">
+                    <i class="fas fa-truck"></i> Shipping & Returns
+                </button>
+                <button class="tab-btn" onclick="switchTab('warranty')">
+                    <i class="fas fa-certificate"></i> Warranty
+                </button>
+                <button class="tab-btn" onclick="switchTab('reviews')">
+                    <i class="fas fa-comments"></i> Reviews
+                </button>
+            </div>
+
+            <div class="tabs-content">
+                <div class="tab-panel active" id="shipping-tab">
+                    <h3>Shipping Information</h3>
+                    <ul>
+                        <li><i class="fas fa-check"></i> Free shipping on orders above ₹999</li>
+                        <li><i class="fas fa-check"></i> Same-day delivery available in select cities</li>
+                        <li><i class="fas fa-check"></i> Track your order in real-time</li>
+                        <li><i class="fas fa-check"></i> 30-day hassle-free returns</li>
+                    </ul>
+                </div>
+
+                <div class="tab-panel" id="warranty-tab">
+                    <h3>Warranty Details</h3>
+                    <ul>
+                        <li><i class="fas fa-check"></i> Manufacturer warranty included</li>
+                        <li><i class="fas fa-check"></i> Extended warranty available</li>
+                        <li><i class="fas fa-check"></i> Free replacement for defects</li>
+                        <li><i class="fas fa-check"></i> 24/7 customer support</li>
+                    </ul>
+                </div>
+
+                <div class="tab-panel" id="reviews-tab">
+                    <h3>Customer Reviews</h3>
+                    <div class="review-summary">
+                        <div class="rating-breakdown">
+                            <div class="rating-bar">
+                                <span>5 ★</span>
+                                <div class="bar"><div class="fill" style="width: 75%"></div></div>
+                                <span>75%</span>
+                            </div>
+                            <div class="rating-bar">
+                                <span>4 ★</span>
+                                <div class="bar"><div class="fill" style="width: 15%"></div></div>
+                                <span>15%</span>
+                            </div>
+                            <div class="rating-bar">
+                                <span>3 ★</span>
+                                <div class="bar"><div class="fill" style="width: 7%"></div></div>
+                                <span>7%</span>
+                            </div>
+                            <div class="rating-bar">
+                                <span>2 ★</span>
+                                <div class="bar"><div class="fill" style="width: 2%"></div></div>
+                                <span>2%</span>
+                            </div>
+                            <div class="rating-bar">
+                                <span>1 ★</span>
+                                <div class="bar"><div class="fill" style="width: 1%"></div></div>
+                                <span>1%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="product-sku">
+            <p><strong>SKU:</strong> <span id="productSku"></span></p>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2025 Sansora Shopping. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="product-detail.js"></script>
+    <script>
+        // Wishlist Management System
+        let wishlistData = [];
+
+        // Load wishlist from localStorage
+        function loadWishlist() {
+            const stored = localStorage.getItem('sansora_wishlist');
+            wishlistData = stored ? JSON.parse(stored) : [];
+            updateWishlistBadge();
+            updateWishlistButton();
+        }
+
+        // Save wishlist to localStorage
+        function saveWishlist() {
+            localStorage.setItem('sansora_wishlist', JSON.stringify(wishlistData));
+        }
+
+        // Toggle wishlist sidebar
+        function toggleWishlistSidebar() {
+            const sidebar = document.getElementById('wishlistSidebar');
+            const overlay = document.getElementById('wishlistOverlay');
+            
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('active');
+            
+            if (sidebar.classList.contains('open')) {
+                renderWishlistItems();
+            }
+        }
+
+        // Update wishlist badge count
+        function updateWishlistBadge() {
+            const badge = document.getElementById('wishlistBadge');
+            badge.textContent = wishlistData.length;
+            if (wishlistData.length > 0) {
+                badge.classList.add('show');
+            } else {
+                badge.classList.remove('show');
+            }
+        }
+
+        // Check if product is in wishlist
+        function isProductInWishlist() {
+            const productId = document.getElementById('productSku')?.textContent;
+            if (!productId) return false;
+            return wishlistData.some(item => item.sku === productId);
+        }
+
+        // Update wishlist button state
+        function updateWishlistButton() {
+            const btn = document.getElementById('wishlistBtn');
+            if (!btn) return;
+            
+            if (isProductInWishlist()) {
+                btn.classList.add('active');
+                btn.innerHTML = '<i class="fas fa-heart"></i>';
+            } else {
+                btn.classList.remove('active');
+                btn.innerHTML = '<i class="far fa-heart"></i>';
+            }
+        }
+
+        // Add/Remove from wishlist - Enhanced to work with existing addToWishlist()
+        const originalAddToWishlist = window.addToWishlist;
+        window.addToWishlist = function() {
+            const productTitle = document.getElementById('productTitle')?.textContent;
+            const productPrice = document.getElementById('productPrice')?.textContent;
+            const productImage = document.getElementById('productImage')?.src;
+            const productSku = document.getElementById('productSku')?.textContent;
+            const productCategory = document.getElementById('productCategory')?.textContent;
+
+            if (!productTitle || !productSku) {
+                showNotification('Product information not available', 'info');
+                return;
+            }
+
+            const product = {
+                title: productTitle,
+                price: productPrice,
+                image: productImage,
+                sku: productSku,
+                category: productCategory,
+                addedDate: new Date().toISOString()
+            };
+
+            if (isProductInWishlist()) {
+                // Remove from wishlist
+                wishlistData = wishlistData.filter(item => item.sku !== productSku);
+                showNotification('Removed from wishlist', 'info');
+            } else {
+                // Add to wishlist
+                wishlistData.push(product);
+                showNotification('Added to wishlist!', 'success');
+            }
+
+            saveWishlist();
+            updateWishlistBadge();
+            updateWishlistButton();
+            renderWishlistItems();
+
+            // Call original function if it exists
+            if (originalAddToWishlist && typeof originalAddToWishlist === 'function') {
+                originalAddToWishlist();
+            }
+        };
+
+        // Render wishlist items
+        function renderWishlistItems() {
+            const content = document.getElementById('wishlistContent');
+            
+            if (wishlistData.length === 0) {
+                content.innerHTML = `
+                    <div class="wishlist-empty">
+                        <i class="far fa-heart"></i>
+                        <h3>Your wishlist is empty</h3>
+                        <p>Add products you love to save them for later</p>
+                    </div>
+                `;
+                return;
+            }
+
+            content.innerHTML = wishlistData.map(item => `
+                <div class="wishlist-item">
+                    <img src="${item.image || 'placeholder.jpg'}" alt="${item.title}" class="wishlist-item-image">
+                    <div class="wishlist-item-info">
+                        <div class="wishlist-item-title">${item.title}</div>
+                        <div class="wishlist-item-price">${item.price}</div>
+                    </div>
+                    <div class="wishlist-item-actions">
+                        <button class="wishlist-btn" onclick="addWishlistItemToCart('${item.sku}')" title="Add to Cart">
+                            <i class="fas fa-shopping-cart"></i>
+                        </button>
+                        <button class="wishlist-btn remove" onclick="removeFromWishlistBySku('${item.sku}')" title="Remove">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Remove item from wishlist by SKU
+        function removeFromWishlistBySku(sku) {
+            wishlistData = wishlistData.filter(item => item.sku !== sku);
+            saveWishlist();
+            updateWishlistBadge();
+            updateWishlistButton();
+            renderWishlistItems();
+            showNotification('Removed from wishlist', 'info');
+        }
+
+        // Add wishlist item to cart
+        function addWishlistItemToCart(sku) {
+            showNotification('Added to cart!', 'success');
+            // You can add more cart logic here
+        }
+
+        // Show notification
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // Initialize wishlist on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadWishlist();
+            
+            // Update wishlist button when product data loads
+            const observer = new MutationObserver(function() {
+                updateWishlistButton();
+            });
+            
+            const skuElement = document.getElementById('productSku');
+            if (skuElement) {
+                observer.observe(skuElement, { childList: true, characterData: true, subtree: true });
+            }
+        });
+    </script>
+</body>
+</html>

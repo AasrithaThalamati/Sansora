@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Returns & Refunds - Sansora</title>
+    <link rel="icon" type="image/png" href="logo-black.png">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .returns-hero {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            padding: 8rem 2rem 4rem;
+            text-align: center;
+            color: white;
+            margin-top: 80px;
+        }
+
+        .returns-hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .returns-container {
+            max-width: 1200px;
+            margin: -2rem auto 4rem;
+            padding: 0 2rem;
+        }
+
+        .policy-card {
+            background: white;
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            margin-bottom: 3rem;
+        }
+
+        .policy-card h2 {
+            color: #333;
+            margin-bottom: 2rem;
+            font-size: 2rem;
+        }
+
+        .policy-section {
+            margin-bottom: 2.5rem;
+        }
+
+        .policy-section h3 {
+            color: #e74c3c;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .policy-section p, .policy-section li {
+            color: #666;
+            line-height: 1.8;
+            margin-bottom: 0.8rem;
+        }
+
+        .policy-section ul {
+            padding-left: 2rem;
+        }
+
+        .highlight-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin: 2rem 0;
+        }
+
+        .highlight-box strong {
+            color: #856404;
+        }
+
+        .return-process {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .process-step {
+            text-align: center;
+            padding: 2rem;
+            background: #f8f9fa;
+            border-radius: 15px;
+            transition: all 0.3s;
+        }
+
+        .process-step:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .process-number {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0 auto 1rem;
+        }
+
+        .process-step h4 {
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .process-step p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .return-form-card {
+            background: white;
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.3s;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #e74c3c;
+            box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1.2rem;
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(231, 76, 60, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .returns-hero h1 {
+                font-size: 2rem;
+            }
+
+            .policy-card,
+            .return-form-card {
+                padding: 2rem;
+            }
+
+            .return-process {
+                grid-template-columns: 1fr;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <img src="logo-black.png" alt="Sansora Logo" class="logo">
+            </div>
+            <div class="nav-search">
+                <input type="text" id="search-input" placeholder="Search products..." class="search-input">
+                <button onclick="searchProducts()" class="search-btn">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="deals.html" class="nav-link">Deals</a></li>
+                <li><a href="orders.html" class="nav-link">Orders</a></li>
+                <li id="adminNavLink" style="display: none;"><a href="admin.html" class="nav-link">Admin</a></li>
+                <li><a href="cart.html" class="nav-link"><i class="fas fa-shopping-cart"></i> Cart (<span id="cart-count">0</span>)</a></li>
+                <li><a href="contact.html"class="nav-link"><i class="fas fa-envelope"></i> Contact</a></li>
+                <li><a href="login.html" class="nav-link" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                <li><a href="calculator.html" class="nav-link">Price Calculator</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="returns-hero">
+        <h1><i class="fas fa-undo"></i> Returns & Refunds</h1>
+        <p>Hassle-free returns within 7 days of delivery</p>
+    </div>
+
+    <div class="returns-container">
+        <div class="policy-card">
+            <h2>Return Policy</h2>
+
+            <div class="highlight-box">
+                <strong><i class="fas fa-info-circle"></i> Important:</strong> We offer a 7-day return policy for most products. Items must be unused, in original packaging with all tags and accessories intact.
+            </div>
+
+            <div class="policy-section">
+                <h3><i class="fas fa-check-circle"></i> Eligible for Return</h3>
+                <ul>
+                    <li>Products with manufacturing defects or damages</li>
+                    <li>Wrong product delivered</li>
+                    <li>Product not matching description</li>
+                    <li>Missing parts or accessories</li>
+                    <li>Changed your mind (within 7 days for non-electronics)</li>
+                </ul>
+            </div>
+
+            <div class="policy-section">
+                <h3><i class="fas fa-times-circle"></i> Not Eligible for Return</h3>
+                <ul>
+                    <li>Products with signs of use or wear</li>
+                    <li>Items without original packaging, tags, or accessories</li>
+                    <li>Personalized or customized products</li>
+                    <li>Perishable goods and intimate wear</li>
+                    <li>Software products with opened seal</li>
+                    <li>Products returned after 7 days from delivery</li>
+                </ul>
+            </div>
+
+            <div class="policy-section">
+                <h3><i class="fas fa-clock"></i> Return Timeline</h3>
+                <p><strong>Standard Products:</strong> 7 days from delivery date</p>
+                <p><strong>Electronics:</strong> 3 days from delivery date</p>
+                <p><strong>Books & Media:</strong> 7 days from delivery date</p>
+                <p><strong>Fashion Items:</strong> 7 days from delivery date</p>
+            </div>
+
+            <div class="policy-section">
+                <h3><i class="fas fa-rupee-sign"></i> Refund Process</h3>
+                <ul>
+                    <li>Refunds are processed within 5-7 business days after item verification</li>
+                    <li>Amount will be credited to your original payment method</li>
+                    <li>For COD orders, refund will be processed to your bank account or Sansora wallet</li>
+                    <li>Original shipping charges are non-refundable unless the product is defective</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="policy-card">
+            <h2>How to Return</h2>
+            
+            <div class="return-process">
+                <div class="process-step">
+                    <div class="process-number">1</div>
+                    <h4>Request Return</h4>
+                    <p>Visit Orders page or fill the form below to initiate return</p>
+                </div>
+
+                <div class="process-step">
+                    <div class="process-number">2</div>
+                    <h4>Pack the Item</h4>
+                    <p>Pack the product securely in original packaging with all accessories</p>
+                </div>
+
+                <div class="process-step">
+                    <div class="process-number">3</div>
+                    <h4>Pickup Scheduled</h4>
+                    <p>Our courier will pick up the package from your address</p>
+                </div>
+
+                <div class="process-step">
+                    <div class="process-number">4</div>
+                    <h4>Get Refund</h4>
+                    <p>Receive refund within 5-7 days after verification</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="return-form-card">
+            <h2>Initiate Return Request</h2>
+            <form id="returnForm" onsubmit="submitReturn(event)">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="returnOrderId"><i class="fas fa-hashtag"></i> Order ID *</label>
+                        <input type="text" id="returnOrderId" placeholder="SNS-2024-001234" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="returnEmail"><i class="fas fa-envelope"></i> Email Address *</label>
+                        <input type="email" id="returnEmail" placeholder="your.email@example.com" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="returnReason"><i class="fas fa-question-circle"></i> Reason for Return *</label>
+                    <select id="returnReason" required>
+                        <option value="">Select a reason</option>
+                        <option value="defective">Product is defective/damaged</option>
+                        <option value="wrong">Wrong product delivered</option>
+                        <option value="not-match">Product doesn't match description</option>
+                        <option value="missing">Missing parts/accessories</option>
+                        <option value="changed-mind">Changed my mind</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="returnDetails"><i class="fas fa-comment"></i> Additional Details</label>
+                    <textarea id="returnDetails" placeholder="Please provide more information about your return request..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="refundMethod"><i class="fas fa-money-bill-wave"></i> Preferred Refund Method *</label>
+                    <select id="refundMethod" required>
+                        <option value="">Select refund method</option>
+                        <option value="original">Original Payment Method</option>
+                        <option value="wallet">Sansora Wallet</option>
+                        <option value="bank">Bank Transfer</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-paper-plane"></i> Submit Return Request
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Sansora</h3>
+                <p>Your trusted partner for premium quality products at the best prices.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="deals.html">Deals</a></li>
+                    <li><a href="orders.html">Orders</a></li>
+                    <li><a href="contact.html">Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Customer Service</h4>
+                <ul>
+                    <li><a href="help-center.html">Help Center</a></li>
+                    <li><a href="track-order.html">Track Order</a></li>
+                    <li><a href="returns.html">Returns</a></li>
+                    <li><a href="shipping-info.html">Shipping Info</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Contact Info</h4>
+                <p><i class="fas fa-phone"></i> +91 98765 43210</p>
+                <p><i class="fas fa-envelope"></i> support@sansora.com</p>
+                <p><i class="fas fa-map-marker-alt"></i> Mumbai, India</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Sansora. All rights reserved. | Designed with ❤️ for premium shopping experience</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        function submitReturn(event) {
+            event.preventDefault();
+            
+            const orderId = document.getElementById('returnOrderId').value;
+            const email = document.getElementById('returnEmail').value;
+            const reason = document.getElementById('returnReason').value;
+            const details = document.getElementById('returnDetails').value;
+            const refundMethod = document.getElementById('refundMethod').value;
+            
+            if (orderId && email && reason && refundMethod) {
+                showMessage('✅ Return request submitted successfully! We will contact you within 24 hours.', 'success');
+                document.getElementById('returnForm').reset();
+                
+                // Scroll to top
+                setTimeout(() => {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }, 1000);
+            } else {
+                showMessage('❌ Please fill in all required fields', 'error');
+            }
+        }
+    </script>
+</body>
+</html>

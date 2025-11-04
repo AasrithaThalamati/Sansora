@@ -1,0 +1,271 @@
+/* ========================================
+   SANSORA DARK MODE THEME STYLESHEET
+   Add this to your existing CSS file
+   ======================================== */
+
+/* CSS Variables for Light Mode (Default) */
+:root {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f8f9fa;
+    --text-primary: #212529;
+    --text-secondary: #6c757d;
+    --nav-bg: #ffffff;
+    --card-bg: #ffffff;
+    --border-color: #dee2e6;
+    --button-bg: #6366f1;
+    --button-hover: #4f46e5;
+    --promo-bg: #ff9999;
+    --promo-text: #000000;
+    --shadow-sm: rgba(0, 0, 0, 0.1);
+    --shadow-md: rgba(0, 0, 0, 0.15);
+    --shadow-lg: rgba(0, 0, 0, 0.2);
+}
+
+/* CSS Variables for Dark Mode */
+[data-theme="dark"] {
+    --bg-primary: #0f172a;
+    --bg-secondary: #1e293b;
+    --text-primary: #f1f5f9;
+    --text-secondary: #cbd5e1;
+    --nav-bg: #1e293b;
+    --card-bg: #1e293b;
+    --border-color: #334155;
+    --button-bg: #6366f1;
+    --button-hover: #818cf8;
+    --promo-bg: #dc2626;
+    --promo-text: #ffffff;
+    --shadow-sm: rgba(0, 0, 0, 0.3);
+    --shadow-md: rgba(0, 0, 0, 0.4);
+    --shadow-lg: rgba(0, 0, 0, 0.5);
+}
+
+/* Apply smooth transitions to all theme-dependent properties */
+body {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Navigation Bar */
+nav,
+.navbar,
+.header {
+    background-color: var(--nav-bg);
+    border-color: var(--border-color);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Text Elements */
+h1, h2, h3, h4, h5, h6,
+p, span, a, label {
+    color: var(--text-primary);
+    transition: color 0.3s ease;
+}
+
+/* Secondary Text */
+.text-secondary,
+.description,
+.subtitle {
+    color: var(--text-secondary);
+}
+
+/* Input Fields */
+input,
+textarea,
+select {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+    transition: all 0.3s ease;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    border-color: var(--button-bg);
+    outline: none;
+}
+
+/* Buttons */
+button,
+.btn {
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background-color: var(--button-bg);
+    border-color: var(--button-bg);
+}
+
+.btn-primary:hover {
+    background-color: var(--button-hover);
+    border-color: var(--button-hover);
+}
+
+/* Cards */
+.card,
+.product-card,
+.feature-card {
+    background-color: var(--card-bg);
+    border-color: var(--border-color);
+    box-shadow: 0 4px 6px var(--shadow-sm);
+    transition: all 0.3s ease;
+}
+
+.card:hover,
+.product-card:hover,
+.feature-card:hover {
+    box-shadow: 0 8px 12px var(--shadow-md);
+}
+
+/* Sections */
+.section,
+section {
+    background-color: var(--bg-secondary);
+    transition: background-color 0.3s ease;
+}
+
+/* Promo Banner */
+.promo-banner,
+.announcement-bar {
+    background-color: var(--promo-bg);
+    color: var(--promo-text);
+    transition: all 0.3s ease;
+}
+
+/* Theme Toggle Button Styles */
+.theme-toggle {
+    background: var(--bg-secondary);
+    border: 2px solid var(--border-color);
+    border-radius: 50%;
+    width: 42px;
+    height: 42px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    font-size: 1.2rem;
+    color: var(--text-primary);
+}
+
+.theme-toggle:hover {
+    border-color: var(--button-bg);
+    transform: rotate(180deg);
+}
+
+.theme-toggle:active {
+    transform: rotate(180deg) scale(0.95);
+}
+
+/* Tables */
+table,
+.table {
+    background-color: var(--card-bg);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+th {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+tr:hover {
+    background-color: var(--bg-secondary);
+}
+
+/* Modal/Dialog */
+.modal,
+.dialog {
+    background-color: var(--card-bg);
+    color: var(--text-primary);
+}
+
+.modal-backdrop {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+[data-theme="dark"] .modal-backdrop {
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+/* Dropdown Menus */
+.dropdown-menu {
+    background-color: var(--card-bg);
+    border-color: var(--border-color);
+    box-shadow: 0 8px 16px var(--shadow-md);
+}
+
+.dropdown-item {
+    color: var(--text-primary);
+}
+
+.dropdown-item:hover {
+    background-color: var(--bg-secondary);
+}
+
+/* Links */
+a {
+    color: var(--button-bg);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: var(--button-hover);
+}
+
+/* Scrollbar Styling (Optional) */
+/* For Webkit browsers (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--text-secondary);
+}
+
+/* For Firefox */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-color) var(--bg-secondary);
+}
+
+/* Dark Mode Images (Optional - adds slight transparency to images in dark mode) */
+[data-theme="dark"] img {
+    opacity: 0.9;
+}
+
+[data-theme="dark"] img:hover {
+    opacity: 1;
+}
+
+/* Ensure hero section text stays visible */
+.hero,
+.hero * {
+    color: white !important;
+}
+
+/* Border utilities */
+.border {
+    border-color: var(--border-color) !important;
+}
+
+/* Background utilities */
+.bg-primary {
+    background-color: var(--bg-primary) !important;
+}
+
+.bg-secondary {
+    background-color: var(--bg-secondary) !important;
+}

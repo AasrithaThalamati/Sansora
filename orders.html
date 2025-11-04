@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders - Sansora</title>
+    <link rel="icon" type="image/png" href="logo-black.png">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .orders-container {
+            max-width: 1200px;
+            margin: 100px auto 2rem;
+            padding: 0 2rem;
+        }
+        
+        .orders-header {
+            background: linear-gradient(45deg, #0066cc, #004499);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .orders-tabs {
+            display: flex;
+            background: white;
+            border-radius: 10px;
+            padding: 0.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            gap: 0.5rem;
+        }
+        
+        .tab-btn {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            background: transparent;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .tab-btn.active {
+            background: linear-gradient(45deg, #0066cc, #004499);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 102, 204, 0.3);
+        }
+        
+        .order-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .order-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .order-header {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr auto;
+            gap: 2rem;
+            align-items: center;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #f0f0f0;
+            margin-bottom: 1.5rem;
+        }
+        
+        .order-info h3 {
+            color: #0066cc;
+            margin-bottom: 0.5rem;
+        }
+        
+        .order-info p {
+            color: #666;
+            margin: 0.2rem 0;
+        }
+        
+        .order-status {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            text-align: center;
+        }
+        
+        .status-confirmed, .status-processing {
+            background: #e8f5e8;
+            color: #27ae60;
+        }
+        
+        .status-shipped {
+            background: #e6f3ff;
+            color: #0066cc;
+        }
+        
+        .status-delivered {
+            background: #f0f8ff;
+            color: #2ecc71;
+        }
+        
+        .status-cancelled {
+            background: #ffe6e6;
+            color: #e74c3c;
+        }
+        
+        .order-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .action-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: #0066cc;
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #333;
+            border: 2px solid #e9ecef;
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .order-items {
+            display: grid;
+            gap: 1rem;
+        }
+        
+        .order-item {
+            display: grid;
+            grid-template-columns: 80px 2fr 1fr 1fr;
+            gap: 1rem;
+            align-items: center;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .item-image {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        
+        .item-details h4 {
+            color: #333;
+            margin-bottom: 0.3rem;
+        }
+        
+        .item-category {
+            color: #0066cc;
+            font-size: 0.8rem;
+            text-transform: capitalize;
+        }
+        
+        .item-quantity {
+            color: #666;
+            font-weight: 600;
+        }
+        
+        .item-price {
+            color: #0066cc;
+            font-weight: 700;
+        }
+        
+        .empty-orders {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #666;
+        }
+        
+        .empty-orders i {
+            font-size: 5rem;
+            color: #ddd;
+            margin-bottom: 2rem;
+        }
+        
+        .empty-orders h2 {
+            margin-bottom: 1rem;
+            color: #333;
+        }
+        
+        .shop-now-btn {
+            background: linear-gradient(45deg, #0066cc, #004499);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+        
+        .shop-now-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 102, 204, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .orders-tabs {
+                flex-direction: column;
+            }
+            
+            .order-header {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+                text-align: center;
+            }
+            
+            .order-item {
+                grid-template-columns: 60px 2fr;
+                gap: 0.5rem;
+            }
+            
+            .item-quantity,
+            .item-price {
+                grid-column: 2;
+                justify-self: start;
+                margin-top: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <img src="logo-black.png" alt="Sansora Logo" class="logo">
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="deals.html" class="nav-link">Deals</a></li>
+                <li><a href="orders.html" class="nav-link active">Orders</a></li>
+                <li><a href="cart.html" class="nav-link"><i class="fas fa-shopping-cart"></i> Cart (<span id="cart-count">0</span>)</a></li>
+                <li><a href="contact.html"class="nav-link"><i class="fas fa-envelope"></i> Contact</a></li>
+                <li><a href="login.html" class="nav-link" onclick="logout()">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="orders-container">
+        <div class="orders-header">
+            <h1><i class="fas fa-box"></i> My Orders</h1>
+            <p>Track your orders and view order history</p>
+        </div>
+
+        <div class="orders-tabs">
+            <button class="tab-btn active" onclick="switchTab('all')">
+                <i class="fas fa-list"></i> All Orders
+            </button>
+            <button class="tab-btn" onclick="switchTab('delivered')">
+                <i class="fas fa-check-circle"></i> Delivered
+            </button>
+        </div>
+
+        <div id="ordersContent">
+            <!-- Orders content will be loaded here -->
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Sansora</h3>
+                <p>Your trusted partner for premium quality products at the best prices.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="orders.html">Orders</a></li>
+                    <li><a href="contact.html">Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Contact Info</h4>
+                <p><i class="fas fa-phone"></i> +91 98765 43210</p>
+                <p><i class="fas fa-envelope"></i> support@sansora.com</p>
+                <p><i class="fas fa-map-marker-alt"></i> Mumbai, India</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Sansora. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        let currentTab = 'all';
+        let userOrders = [];
+
+        function loadOrders() {
+            const savedOrders = localStorage.getItem('user_orders');
+            if (savedOrders) {
+                userOrders = JSON.parse(savedOrders);
+            } else {
+                // Sample orders
+                userOrders = [
+                    {
+                        id: 'ORD-1699123456789',
+                        date: '15/11/2023',
+                        items: [
+                            {
+                                id: 1,
+                                title: 'iPhone 15 Pro Max',
+                                category: 'electronics',
+                                price: 134900,
+                                quantity: 1,
+                                image: 'https://images.unsplash.com/photo-1678685888221-cda773a3dcdb?w=400&h=300&fit=crop'
+                            }
+                        ],
+                        total: 134900,
+                        status: 'Delivered',
+                        paymentMethod: 'card'
+                    },
+                    {
+                        id: 'ORD-1698987654321',
+                        date: '10/11/2023',
+                        items: [
+                            {
+                                id: 9,
+                                title: 'Premium Leather Jacket',
+                                category: 'fashion',
+                                price: 12999,
+                                quantity: 1,
+                                image: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=400&h=300&fit=crop'
+                            }
+                        ],
+                        total: 12999,
+                        status: 'Shipped',
+                        paymentMethod: 'upi'
+                    }
+                ];
+                localStorage.setItem('user_orders', JSON.stringify(userOrders));
+            }
+            displayOrders();
+        }
+
+        function switchTab(tab) {
+            currentTab = tab;
+            
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            displayOrders();
+        }
+
+        function displayOrders() {
+            const ordersContent = document.getElementById('ordersContent');
+            
+            let filteredOrders = userOrders;
+            if (currentTab === 'delivered') {
+                filteredOrders = userOrders.filter(order => order.status === 'Delivered');
+            }
+            
+            if (filteredOrders.length === 0) {
+                ordersContent.innerHTML = `
+                    <div class="empty-orders">
+                        <i class="fas fa-box-open"></i>
+                        <h2>No orders found</h2>
+                        <p>You haven't placed any orders yet. Start shopping!</p>
+                        <button class="shop-now-btn" onclick="window.location.href='index.html'">
+                            <i class="fas fa-shopping-bag"></i> Start Shopping
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+            
+            ordersContent.innerHTML = filteredOrders.map(order => `
+                <div class="order-card">
+                    <div class="order-header">
+                        <div class="order-info">
+                            <h3>Order #${order.id}</h3>
+                            <p>Placed on ${order.date}</p>
+                            <p>Payment: ${order.paymentMethod.toUpperCase()}</p>
+                        </div>
+                        <div class="order-info">
+                            <h3>Total Amount</h3>
+                            <p style="font-size: 1.2rem; font-weight: 700; color: #0066cc;">₹${order.total.toLocaleString('en-IN')}</p>
+                        </div>
+                        <div class="order-status">
+                            <span class="status-${order.status.toLowerCase()}">${order.status}</span>
+                        </div>
+                        <div class="order-actions">
+                            <button class="action-btn btn-primary" onclick="trackOrder('${order.id}')">
+                                <i class="fas fa-truck"></i> Track
+                            </button>
+                            <button class="action-btn btn-secondary" onclick="downloadInvoice('${order.id}')">
+                                <i class="fas fa-download"></i> Invoice
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="order-items">
+                        ${order.items.map(item => `
+                            <div class="order-item">
+                                <img src="${item.image}" alt="${item.title}" class="item-image">
+                                <div class="item-details">
+                                    <h4>${item.title}</h4>
+                                    <div class="item-category">${item.category}</div>
+                                </div>
+                                <div class="item-quantity">Qty: ${item.quantity}</div>
+                                <div class="item-price">₹${(item.price * item.quantity).toLocaleString('en-IN')}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function trackOrder(orderId) {
+            const order = userOrders.find(o => o.id === orderId);
+            if (!order) return;
+            
+            let trackingInfo = '';
+            if (order.status === 'Confirmed' || order.status === 'Processing') {
+                trackingInfo = '📦 Order confirmed and being prepared for shipment';
+            } else if (order.status === 'Shipped') {
+                trackingInfo = '🚚 Order shipped and on the way to your address';
+            } else if (order.status === 'Delivered') {
+                trackingInfo = '✅ Order successfully delivered';
+            }
+            
+            alert(`Order Tracking - #${orderId}\n\nStatus: ${order.status}\n${trackingInfo}\n\nEstimated delivery: 3-5 business days`);
+        }
+
+        function downloadInvoice(orderId) {
+            if (typeof showMessage === 'function') {
+                showMessage(`Invoice for order #${orderId} downloaded successfully!`, 'success');
+            } else {
+                alert(`Invoice for order #${orderId} downloaded successfully!`);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadOrders();
+            
+            // Update cart count
+            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            const cartCount = document.getElementById('cart-count');
+            if (cartCount) {
+                const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+                cartCount.textContent = totalItems;
+            }
+        });
+    </script>
+</body>
+</html>

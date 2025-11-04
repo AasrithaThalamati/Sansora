@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Checkout - Sansora</title>
+    <link rel="icon" type="image/png" href="favicon-32x32.png">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .checkout-container {
+            max-width: 1200px;
+            margin: 100px auto 2rem;
+            padding: 0 2rem;
+        }
+        
+        .checkout-header {
+            background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
+            color: white;
+            padding: 3rem 2rem;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 3rem;
+            box-shadow: 0 10px 40px rgba(74, 144, 226, 0.3);
+        }
+        
+        .checkout-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+        
+        .checkout-content {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 2rem;
+        }
+        
+        .checkout-form {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+        }
+        
+        .form-section {
+            margin-bottom: 2.5rem;
+        }
+        
+        .form-section h2 {
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 3px solid #4a90e2;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-size: 1.4rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.6rem;
+            font-weight: 600;
+            color: #34495e;
+            font-size: 0.95rem;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e8ecf1;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+            box-sizing: border-box;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #4a90e2;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(74, 144, 226, 0.1);
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        .payment-methods {
+            display: grid;
+            gap: 1rem;
+        }
+        
+        .payment-option {
+            padding: 1.2rem;
+            border: 2px solid #e8ecf1;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: #f8f9fa;
+        }
+        
+        .payment-option:hover {
+            border-color: #4a90e2;
+            background: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(74, 144, 226, 0.15);
+        }
+        
+        .payment-option input[type="radio"] {
+            width: 20px;
+            height: 20px;
+            accent-color: #4a90e2;
+        }
+        
+        .payment-option.selected {
+            border-color: #4a90e2;
+            background: #e3f2fd;
+            box-shadow: 0 5px 20px rgba(74, 144, 226, 0.2);
+        }
+        
+        .order-summary {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+        }
+        
+        .order-summary h2 {
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 3px solid #4a90e2;
+            font-size: 1.4rem;
+        }
+        
+        .cart-item-summary {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+            border-bottom: 1px solid #ecf0f1;
+            margin-bottom: 1rem;
+        }
+        
+        .cart-item-summary img {
+            width: 70px;
+            height: 70px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+        
+        .item-summary-details {
+            flex: 1;
+        }
+        
+        .item-summary-details h4 {
+            color: #2c3e50;
+            margin-bottom: 0.3rem;
+            font-size: 0.95rem;
+        }
+        
+        .item-summary-details .quantity {
+            color: #7f8c8d;
+            font-size: 0.85rem;
+        }
+        
+        .item-summary-price {
+            font-weight: 700;
+            color: #4a90e2;
+            font-size: 1.1rem;
+        }
+        
+        .summary-totals {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid #ecf0f1;
+        }
+        
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+        
+        .summary-row.total {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #2c3e50;
+            padding-top: 1rem;
+            border-top: 2px solid #4a90e2;
+        }
+        
+        .place-order-btn {
+            width: 100%;
+            padding: 1.2rem;
+            background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 5px 20px rgba(74, 144, 226, 0.3);
+        }
+        
+        .place-order-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(74, 144, 226, 0.4);
+        }
+        
+        .place-order-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .place-order-btn:active {
+            transform: translateY(-1px);
+        }
+        
+        .security-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            color: #27ae60;
+            font-size: 0.9rem;
+        }
+
+        .empty-cart-message {
+            text-align: center;
+            padding: 3rem 2rem;
+            background: #f8f9fa;
+            border-radius: 12px;
+        }
+
+        .empty-cart-message i {
+            font-size: 4rem;
+            color: #ccc;
+            margin-bottom: 1rem;
+        }
+
+        .empty-cart-message h3 {
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        .empty-cart-message p {
+            color: #666;
+            margin-bottom: 1.5rem;
+        }
+
+        .continue-shopping-btn {
+            display: inline-block;
+            padding: 0.8rem 2rem;
+            background: #4a90e2;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .continue-shopping-btn:hover {
+            background: #357abd;
+            transform: translateY(-2px);
+        }
+        
+        @media (max-width: 968px) {
+            .checkout-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .order-summary {
+                position: static;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <img src="logo-black.png" alt="Sansora Logo" class="logo">
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="deals.html" class="nav-link">Deals</a></li>
+                <li><a href="orders.html" class="nav-link">Orders</a></li>
+                <li><a href="cart.html" class="nav-link"><i class="fas fa-shopping-cart"></i> Cart (<span id="cart-count">0</span>)</a></li>
+                <li><a href="#" class="nav-link" onclick="logout()">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="checkout-container">
+        <div class="checkout-header">
+            <h1><i class="fas fa-credit-card"></i> Secure Checkout</h1>
+            <p>Complete your order safely and securely</p>
+        </div>
+
+        <div class="checkout-content">
+            <div class="checkout-form">
+                <form id="checkoutForm">
+                    <!-- Shipping Information -->
+                    <div class="form-section">
+                        <h2><i class="fas fa-shipping-fast"></i> Shipping Information</h2>
+                        <div class="form-group">
+                            <label for="fullName">Full Name *</label>
+                            <input type="text" id="fullName" required placeholder="Enter your full name">
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email Address *</label>
+                            <input type="email" id="email" required placeholder="your.email@example.com">
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Phone Number *</label>
+                            <input type="tel" id="phone" required placeholder="+91 98765 43210">
+                        </div>
+                        <div class="form-group">
+                            <label for="address">Street Address *</label>
+                            <input type="text" id="address" required placeholder="House/Flat No., Street Name">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="city">City *</label>
+                                <input type="text" id="city" required placeholder="City">
+                            </div>
+                            <div class="form-group">
+                                <label for="state">State *</label>
+                                <input type="text" id="state" required placeholder="State">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="pincode">PIN Code *</label>
+                                <input type="text" id="pincode" required placeholder="400001">
+                            </div>
+                            <div class="form-group">
+                                <label for="country">Country *</label>
+                                <input type="text" id="country" value="India" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payment Method -->
+                    <div class="form-section">
+                        <h2><i class="fas fa-wallet"></i> Payment Method</h2>
+                        <div class="payment-methods">
+                            <label class="payment-option">
+                                <input type="radio" name="payment" value="card" required>
+                                <i class="fas fa-credit-card"></i>
+                                <span>Credit/Debit Card</span>
+                            </label>
+                            <label class="payment-option">
+                                <input type="radio" name="payment" value="upi" required>
+                                <i class="fas fa-mobile-alt"></i>
+                                <span>UPI Payment</span>
+                            </label>
+                            <label class="payment-option">
+                                <input type="radio" name="payment" value="netbanking" required>
+                                <i class="fas fa-university"></i>
+                                <span>Net Banking</span>
+                            </label>
+                            <label class="payment-option">
+                                <input type="radio" name="payment" value="cod" required>
+                                <i class="fas fa-money-bill-wave"></i>
+                                <span>Cash on Delivery</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Card Details (shown when card is selected) -->
+                    <div class="form-section" id="cardDetails" style="display: none;">
+                        <h2><i class="fas fa-credit-card"></i> Card Details</h2>
+                        <div class="form-group">
+                            <label for="cardNumber">Card Number</label>
+                            <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19">
+                        </div>
+                        <div class="form-group">
+                            <label for="cardName">Cardholder Name</label>
+                            <input type="text" id="cardName" placeholder="Name on Card">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="expiry">Expiry Date</label>
+                                <input type="text" id="expiry" placeholder="MM/YY" maxlength="5">
+                            </div>
+                            <div class="form-group">
+                                <label for="cvv">CVV</label>
+                                <input type="text" id="cvv" placeholder="123" maxlength="3">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Order Summary -->
+            <div class="order-summary">
+                <h2>Order Summary</h2>
+                <div id="cartContent">
+                    <!-- Cart items will be loaded here -->
+                    <div class="empty-cart-message">
+                        <i class="fas fa-shopping-cart"></i>
+                        <h3>Loading your cart...</h3>
+                    </div>
+                </div>
+                <div class="summary-totals" id="summaryTotals" style="display: none;">
+                    <div class="summary-row">
+                        <span>Subtotal:</span>
+                        <span id="subtotal">₹0</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Shipping:</span>
+                        <span id="shipping">₹99</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Tax (10%):</span>
+                        <span id="tax">₹0</span>
+                    </div>
+                    <div class="summary-row total">
+                        <span>Total:</span>
+                        <span id="total">₹0</span>
+                    </div>
+                </div>
+                <button type="button" class="place-order-btn" id="placeOrderBtn" onclick="placeOrder()" disabled>
+                    <i class="fas fa-lock"></i> Place Order
+                </button>
+                <div class="security-badge">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Secure Payment - Your data is protected</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Sansora</h3>
+                <p>Your trusted partner for premium quality products at the best prices.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="orders.html">Orders</a></li>
+                    <li><a href="contact.html">Contact Us</a></li>
+                    <li><a href="signup.html">Sign Up</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Contact Info</h4>
+                <p><i class="fas fa-phone"></i> +91 98765 43210</p>
+                <p><i class="fas fa-envelope"></i> support@sansora.com</p>
+                <p><i class="fas fa-map-marker-alt"></i> Mumbai, India</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Sansora. All rights reserved. | Designed with ❤️ for premium shopping experience</p>
+        </div>
+    </footer>
+
+    <script src="product-data.js"></script>
+    <script src="script.js"></script>
+    <script>
+        // Checkout Page Specific Code
+        let checkoutCart = [];
+        let subtotal = 0;
+        let shipping = 99;
+        let tax = 0;
+        let total = 0;
+
+        // Load cart when page loads
+        window.addEventListener('DOMContentLoaded', function() {
+            console.log('Checkout page loaded');
+            loadCheckoutCart();
+            setupPaymentOptions();
+            setupCardFormatting();
+        });
+
+        // Load cart from localStorage
+        function loadCheckoutCart() {
+            try {
+                const savedCart = localStorage.getItem('cart');
+                console.log('Raw cart data:', savedCart);
+                
+                if (!savedCart || savedCart === '[]' || savedCart === 'null' || savedCart === '') {
+                    showEmptyCart();
+                    return;
+                }
+                
+                checkoutCart = JSON.parse(savedCart);
+                console.log('Parsed cart:', checkoutCart);
+                
+                if (!checkoutCart || !Array.isArray(checkoutCart) || checkoutCart.length === 0) {
+                    showEmptyCart();
+                    return;
+                }
+                
+                displayCartSummary();
+                calculateTotals();
+                document.getElementById('placeOrderBtn').disabled = false;
+                
+            } catch (error) {
+                console.error('Error loading cart:', error);
+                showEmptyCart();
+            }
+        }
+
+        // Show empty cart message
+        function showEmptyCart() {
+            const cartContent = document.getElementById('cartContent');
+            cartContent.innerHTML = `
+                <div class="empty-cart-message">
+                    <i class="fas fa-shopping-cart"></i>
+                    <h3>Your cart is empty</h3>
+                    <p>Add some items to your cart before checking out</p>
+                    <a href="index.html" class="continue-shopping-btn">
+                        <i class="fas fa-arrow-left"></i> Continue Shopping
+                    </a>
+                </div>
+            `;
+            document.getElementById('summaryTotals').style.display = 'none';
+            document.getElementById('placeOrderBtn').disabled = true;
+        }
+
+        // Display cart items in summary
+        function displayCartSummary() {
+            const cartContentContainer = document.getElementById('cartContent');
+            
+            if (!checkoutCart || checkoutCart.length === 0) {
+                showEmptyCart();
+                return;
+            }
+
+            let html = '';
+            checkoutCart.forEach(function(item) {
+                const itemTotal = item.price * item.quantity;
+                html += `
+                    <div class="cart-item-summary">
+                        <img src="${item.image}" alt="${item.title}" onerror="this.src='https://via.placeholder.com/70x70?text=Product'">
+                        <div class="item-summary-details">
+                            <h4>${item.title}</h4>
+                            <p class="quantity">Quantity: ${item.quantity}</p>
+                        </div>
+                        <div class="item-summary-price">
+                            ₹${itemTotal.toLocaleString('en-IN')}
+                        </div>
+                    </div>
+                `;
+            });
+
+            cartContentContainer.innerHTML = html;
+            document.getElementById('summaryTotals').style.display = 'block';
+        }
+
+        // Calculate totals
+        function calculateTotals() {
+            try {
+                subtotal = 0;
+                
+                checkoutCart.forEach(function(item) {
+                    subtotal += (item.price * item.quantity);
+                });
+                
+                console.log('Calculated subtotal:', subtotal);
+                
+                // Free shipping for orders above 999
+                shipping = subtotal > 999 ? 0 : 99;
+                
+                // Calculate tax (10% GST)
+                tax = Math.round(subtotal * 0.10);
+                
+                // Calculate total
+                total = subtotal + shipping + tax;
+                
+                console.log('Totals - Subtotal:', subtotal, 'Shipping:', shipping, 'Tax:', tax, 'Total:', total);
+                
+                // Update DOM
+                document.getElementById('subtotal').textContent = '₹' + subtotal.toLocaleString('en-IN');
+                document.getElementById('shipping').textContent = shipping === 0 ? 'FREE' : '₹' + shipping.toLocaleString('en-IN');
+                document.getElementById('tax').textContent = '₹' + tax.toLocaleString('en-IN');
+                document.getElementById('total').textContent = '₹' + total.toLocaleString('en-IN');
+                
+            } catch (error) {
+                console.error('Error calculating totals:', error);
+            }
+        }
+
+        // Setup payment options
+        function setupPaymentOptions() {
+            document.querySelectorAll('.payment-option').forEach(function(option) {
+                option.addEventListener('click', function() {
+                    // Remove selected class from all options
+                    document.querySelectorAll('.payment-option').forEach(function(opt) {
+                        opt.classList.remove('selected');
+                    });
+                    
+                    // Add selected class to clicked option
+                    this.classList.add('selected');
+                    this.querySelector('input[type="radio"]').checked = true;
+
+                    // Show/hide card details
+                    const cardDetails = document.getElementById('cardDetails');
+                    if (this.querySelector('input').value === 'card') {
+                        cardDetails.style.display = 'block';
+                    } else {
+                        cardDetails.style.display = 'none';
+                    }
+                });
+            });
+        }
+
+        // Setup card number and expiry formatting
+        function setupCardFormatting() {
+            // Format card number input
+            const cardNumberInput = document.getElementById('cardNumber');
+            if (cardNumberInput) {
+                cardNumberInput.addEventListener('input', function(e) {
+                    let value = e.target.value.replace(/\s/g, '');
+                    let match = value.match(/.{1,4}/g);
+                    let formattedValue = match ? match.join(' ') : value;
+                    e.target.value = formattedValue;
+                });
+            }
+
+            // Format expiry date input
+            const expiryInput = document.getElementById('expiry');
+            if (expiryInput) {
+                expiryInput.addEventListener('input', function(e) {
+                    let value = e.target.value.replace(/\D/g, '');
+                    if (value.length >= 2) {
+                        value = value.slice(0, 2) + '/' + value.slice(2, 4);
+                    }
+                    e.target.value = value;
+                });
+            }
+        }
+
+        // Place order function
+        function placeOrder() {
+            const form = document.getElementById('checkoutForm');
+            
+            // Validate form
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+
+            // Check if payment method is selected
+            const paymentMethod = document.querySelector('input[name="payment"]:checked');
+            if (!paymentMethod) {
+                alert('Please select a payment method');
+                return;
+            }
+
+            // Validate card details if card payment is selected
+            if (paymentMethod.value === 'card') {
+                const cardNumber = document.getElementById('cardNumber').value.trim();
+                const cardName = document.getElementById('cardName').value.trim();
+                const expiry = document.getElementById('expiry').value.trim();
+                const cvv = document.getElementById('cvv').value.trim();
+                
+                if (!cardNumber || !cardName || !expiry || !cvv) {
+                    alert('Please fill in all card details');
+                    return;
+                }
+            }
+
+            // Check if cart has items
+            if (!checkoutCart || checkoutCart.length === 0) {
+                alert('Your cart is empty');
+                return;
+            }
+
+            // Create order object
+            const order = {
+                id: 'ORD-' + Date.now(),
+                date: new Date().toLocaleDateString('en-IN', { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                }),
+                items: checkoutCart,
+                subtotal: subtotal,
+                shipping: shipping,
+                tax: tax,
+                total: total,
+                status: 'Processing',
+                paymentMethod: paymentMethod.value.toUpperCase(),
+                shippingInfo: {
+                    name: document.getElementById('fullName').value,
+                    email: document.getElementById('email').value,
+                    phone: document.getElementById('phone').value,
+                    address: document.getElementById('address').value,
+                    city: document.getElementById('city').value,
+                    state: document.getElementById('state').value,
+                    pincode: document.getElementById('pincode').value,
+                    country: document.getElementById('country').value
+                }
+            };
+
+            console.log('Creating order:', order);
+
+            try {
+                // Save order to localStorage
+                let orders = JSON.parse(localStorage.getItem('user_orders') || '[]');
+                orders.push(order);
+                localStorage.setItem('user_orders', JSON.stringify(orders));
+                console.log('Order saved successfully');
+
+                // Clear cart from localStorage
+                localStorage.removeItem('cart');
+                console.log('Cart cleared');
+
+                // Show success message
+                alert(`🎉 Order Placed Successfully!\n\nOrder ID: ${order.id}\nTotal Amount: ₹${total.toLocaleString('en-IN')}\n\nThank you for shopping with Sansora!`);
+
+                // Redirect to orders page
+                setTimeout(function() {
+                    window.location.href = 'orders.html';
+                }, 1000);
+
+            } catch (error) {
+                console.error('Error placing order:', error);
+                alert('There was an error processing your order. Please try again.');
+            }
+        }
+
+        // Update cart count in navbar
+        function updateCartCount() {
+            const cartCount = document.getElementById('cart-count');
+            if (cartCount && checkoutCart) {
+                let totalItems = 0;
+                checkoutCart.forEach(function(item) {
+                    totalItems += item.quantity;
+                });
+                cartCount.textContent = totalItems;
+            }
+        }
+
+        // Call updateCartCount initially
+        updateCartCount();
+    </script>
+</body>
+</html>

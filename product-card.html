@@ -1,0 +1,45 @@
+<div class="product-card">
+    <div class="product-image">
+        <img src="https://via.placeholder.com/300x300" alt="Product Image">
+        <div class="product-actions">
+            <button class="quick-view" data-product-id="1">Quick View</button>
+        </div>
+    </div>
+    <div class="product-info">
+        <h3 class="product-title">Premium Wireless Headphones</h3>
+        <div class="product-price">
+            <span class="current-price">$199.99</span>
+            <span class="original-price">$249.99</span>
+        </div>
+        <div class="product-rating">
+            <span class="stars">★★★★☆</span>
+            <span class="rating-count">(128)</span>
+        </div>
+    </div>
+    <a href="product-detail.html" class="product-link"></a>
+</div>
+
+<style>
+.product-card {
+    position: relative;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 15px;
+    background: whitAAe;
+    transition: all 0.3s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.product-link {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+}
+</style>
