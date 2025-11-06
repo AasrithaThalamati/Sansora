@@ -1,7 +1,12 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
-const path = require('path');
+// server.js
+import express from 'express';
+import mongoose from 'mongoose';
+import cors from 'cors';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 
@@ -9,33 +14,45 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(__dirname));
 
-// MongoDB
-mongoose.connect(process.env.MONGODB_URI)
-  .then(() => console.log('MongoDB connected'))
-  .catch(err => console.error('DB Error:', err));
+// === MONGOOSE CONNECTION (VERCEL-PROOF) ===
+let cachedConn = null;
 
-// Product API
+async function connectDB() {
+  if (cachedConn) return cachedConn;
+
+  if (!process.env.MONGODB_URI) {
+    console.error('MONGODB_URI missing!');
+    throw new Error('Add MONGODB_URI in Vercel Environment Variables');
+  }
+
+  cachedConn = await mongoose.connect(process.env.MONGODB_URI, {
+    serverSelectionTimeoutMS: 10000,
+    socketTimeoutMS: 45000,
+  });
+
+  console.log('MongoDB connected successfully');
+  return cachedConn;
+}
+
+// === API ROUTE ===
 app.get('/api/product/:sku', async (req, res) => {
   try {
-    const Product = mongoose.model('Product', new mongoose.Schema({}, { collection: 'products' }));
-    const product = await Product.findOne({ sku: req.params.sku });
-    if (!product) return res.status(404).json({ error: 'Not found' });
+    await connectDB();
+
+    const Product = mongoose.model('Product', new mongoose.Schema({}, { strict: false }), 'products');
+    const product = await Product.findOne({ sku: req.params.sku }).lean();
+
+    if (!product) return res.status(404).json({ error: 'Product not found' });
     res.json(product);
   } catch (err) {
-    console.error('API Error:', err);
-    res.status(500).json({ error: 'Server error' });
+    console.error('API Error:', err.message);
+    res.status(500).json({ error: 'Server error', details: err.message });
   }
 });
 
-// SERVE index.html
+// === SERVE FRONTEND ===
 app.get('*', (req, res) => {
-  const filePath = path.join(__dirname, 'index.html');
-  res.sendFile(filePath, err => {
-    if (err) {
-      console.error('File not found:', filePath);
-      res.status(500).send('Server error: index.html missing');
-    }
-  });
+  res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-module.exports = app;
+export default app;
