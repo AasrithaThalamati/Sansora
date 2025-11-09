@@ -1,3 +1,4 @@
+cat > vercel.json << 'EOF'
 {
   "version": 2,
   "builds": [
@@ -9,13 +10,8 @@
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "server.js"
+      "dest": "/"
     }
-  ],
-  "functions": {
-    "server.js": {
-      "memory": 3008,
-      "maxDuration": 60
-    }
-  }
+  ]
 }
+EOF
