@@ -10,7 +10,7 @@ cat > vercel.json << 'EOF'
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "/"
+      "dest": "server.js"
     }
   ]
 }

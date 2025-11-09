@@ -1,5 +1,5 @@
 // ============================================
-// PRODUCT DETAIL PAGE - QUIZ FIXED
+// PRODUCT DETAIL PAGE - WITH API SUPPORT
 // ============================================
 
 let currentProduct = null;
@@ -40,25 +40,41 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Get product ID
+    // Get product ID or SKU
     const urlParams = new URLSearchParams(window.location.search);
     const productId = parseInt(urlParams.get('id'));
+    const productSku = urlParams.get('sku');
 
-    if (!productId) {
+    if (!productId && !productSku) {
         showError('No product selected');
         return;
     }
 
-    loadProduct(productId);
+    loadProduct(productId, productSku);
     updateCartCount();
     initializeQuiz();
 });
 
 // ============================================
-// LOAD PRODUCT
+// LOAD PRODUCT - WITH API FALLBACK
 // ============================================
 
-function loadProduct(productId) {
+async function loadProduct(productId, productSku) {
+    // Try loading from API first (if SKU provided)
+    if (productSku) {
+        try {
+            const response = await fetch(`/api/product?sku=${productSku}`);
+            if (response.ok) {
+                currentProduct = await response.json();
+                displayProduct();
+                return;
+            }
+        } catch (error) {
+            console.warn('API failed, falling back to localStorage', error);
+        }
+    }
+
+    // Fallback to localStorage
     const savedProducts = localStorage.getItem('sansora_products');
     if (!savedProducts) {
         showError('No products found. Please add from admin panel.');
@@ -73,9 +89,9 @@ function loadProduct(productId) {
         return;
     }
 
-    currentProduct = products.find(p => p.id === productId);
+    currentProduct = products.find(p => p.id === productId || p.sku === productSku);
     if (!currentProduct) {
-        showError(`Product ID ${productId} not found`);
+        showError(`Product not found`);
         return;
     }
 
@@ -175,7 +191,7 @@ function updateCartCount() {
 }
 
 // ============================================
-// QUIZ - FIXED VERSION
+// QUIZ
 // ============================================
 
 function initializeQuiz() {
@@ -185,23 +201,12 @@ function initializeQuiz() {
 }
 
 function displayQuizQuestion() {
-    console.log('displayQuizQuestion called, question:', currentQuizQuestion);
-    
     const container = document.getElementById('quizQuestions');
-    console.log('Quiz container found:', container);
-    
-    if (!container) {
-        console.error('Quiz container not found!');
-        return;
-    }
+    if (!container) return;
 
     const q = quizQuestions[currentQuizQuestion];
-    console.log('Current question:', q);
-    
-    // Clear container first
     container.innerHTML = '';
     
-    // Create question element
     const questionDiv = document.createElement('div');
     questionDiv.className = 'quiz-question active';
     questionDiv.style.padding = '20px';
@@ -213,17 +218,13 @@ function displayQuizQuestion() {
     questionTitle.style.color = '#333';
     questionDiv.appendChild(questionTitle);
     
-    // Create options container
     const optionsDiv = document.createElement('div');
     optionsDiv.className = 'quiz-options';
     optionsDiv.style.display = 'grid';
     optionsDiv.style.gap = '15px';
     optionsDiv.style.marginTop = '20px';
     
-    // Create option buttons
-    q.options.forEach((opt, index) => {
-        console.log(`Creating button for option ${index}:`, opt);
-        
+    q.options.forEach((opt) => {
         const button = document.createElement('button');
         button.className = 'quiz-option';
         button.textContent = opt;
@@ -235,7 +236,6 @@ function displayQuizQuestion() {
         button.style.fontSize = '16px';
         button.style.transition = 'all 0.3s';
         
-        // Check if this option was previously selected
         if (quizAnswers[currentQuizQuestion] === opt) {
             button.classList.add('selected');
             button.style.background = '#667eea';
@@ -243,7 +243,6 @@ function displayQuizQuestion() {
             button.style.borderColor = '#667eea';
         }
         
-        // Add hover effect
         button.addEventListener('mouseenter', function() {
             if (!this.classList.contains('selected')) {
                 this.style.background = '#f5f5f5';
@@ -256,9 +255,7 @@ function displayQuizQuestion() {
             }
         });
         
-        // Add click event listener
         button.addEventListener('click', function() {
-            console.log('Option clicked:', opt);
             selectAnswer(opt);
         });
         
@@ -267,8 +264,6 @@ function displayQuizQuestion() {
     
     questionDiv.appendChild(optionsDiv);
     container.appendChild(questionDiv);
-    
-    console.log('Question displayed successfully');
 
     updateQuizProgress();
     updateQuizButtons();
@@ -277,12 +272,17 @@ function displayQuizQuestion() {
 function selectAnswer(answer) {
     quizAnswers[currentQuizQuestion] = answer;
     
-    // Update visual selection
     document.querySelectorAll('.quiz-option').forEach(btn => {
         if (btn.textContent.trim() === answer) {
             btn.classList.add('selected');
+            btn.style.background = '#667eea';
+            btn.style.color = 'white';
+            btn.style.borderColor = '#667eea';
         } else {
             btn.classList.remove('selected');
+            btn.style.background = 'white';
+            btn.style.color = '#333';
+            btn.style.borderColor = '#e0e0e0';
         }
     });
 }
@@ -425,4 +425,4 @@ function showMessage(text, type) {
     setTimeout(() => div.remove(), 3000);
 }
 
-console.log('Product Detail JS - Quiz Fixed & Loaded!');
+console.log('Product Detail JS - API Support Loaded!');
