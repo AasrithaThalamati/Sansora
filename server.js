@@ -1,3 +1,4 @@
+// server.js
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
@@ -14,44 +15,48 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(__dirname));
 
-// === MONGOOSE: CACHED CONNECTION (VERCEL SAFE) ===
+// === MONGOOSE: CACHED CONNECTION ===
 let cachedConn = null;
-
 async function connectDB() {
   if (cachedConn) return cachedConn;
-
-  if (!process.env.MONGODB_URI) {
-    throw new Error('MONGODB_URI is missing in Vercel Environment Variables');
-  }
-
+  if (!process.env.MONGODB_URI) throw new Error('MONGODB_URI missing');
   cachedConn = await mongoose.connect(process.env.MONGODB_URI, {
     serverSelectionTimeoutMS: 15000,
-    socketTimeoutMS: 50000,
   });
-
   console.log('MongoDB connected');
   return cachedConn;
 }
 
-// === API: GET PRODUCT BY SKU ===
+// === API ROUTE ===
 app.get('/api/product/:sku', async (req, res) => {
   try {
     await connectDB();
     const Product = mongoose.model('Product', new mongoose.Schema({}, { strict: false }), 'products');
     const product = await Product.findOne({ sku: req.params.sku }).lean();
-
-    if (!product) return res.status(404).json({ error: 'Product not found' });
+    if (!product) return res.status(404).json({ error: 'Not found' });
     res.json(product);
   } catch (err) {
-    console.error('API Error:', err.message);
-    res.status(500).json({ error: 'Server error', details: err.message });
+    console.error(err);
+    res.status(500).json({ error: 'Server error' });
   }
 });
 
-// === SERVE index.html FOR ALL ROUTES ===
+// === SERVE index.html ===
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// Export for Vercel
-export default app;
+// === VERCEL HANDLER: REQUIRED ===
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
+
+export default function handler(req, res) {
+  if (req.method === 'OPTIONS') {
+    res.status(200).end();
+    return;
+  }
+  return app(req, res);
+}
