@@ -15,6 +15,9 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(__dirname));
 
+// === FAVICON FIX (PREVENT 500) ===
+app.get('/favicon.ico', (req, res) => res.status(204).end());
+
 // === MONGOOSE: CACHED CONNECTION ===
 let cachedConn = null;
 async function connectDB() {
@@ -27,13 +30,11 @@ async function connectDB() {
   return cachedConn;
 }
 
-// === API ROUTE - FIXED: Using query params ===
+// === API ROUTE: Use ?sku=ABC123 ===
 app.get('/api/product', async (req, res) => {
   try {
     const sku = req.query.sku;
-    if (!sku) {
-      return res.status(400).json({ error: 'SKU parameter required' });
-    }
+    if (!sku) return res.status(400).json({ error: 'SKU required' });
     
     await connectDB();
     const Product = mongoose.model('Product', new mongoose.Schema({}, { strict: false }), 'products');
@@ -41,7 +42,7 @@ app.get('/api/product', async (req, res) => {
     if (!product) return res.status(404).json({ error: 'Not found' });
     res.json(product);
   } catch (err) {
-    console.error(err);
+    console.error('API Error:', err);
     res.status(500).json({ error: 'Server error' });
   }
 });
@@ -51,17 +52,7 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// === VERCEL HANDLER: REQUIRED ===
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
-
+// === VERCEL HANDLER (ONLY THIS) ===
 export default function handler(req, res) {
-  if (req.method === 'OPTIONS') {
-    res.status(200).end();
-    return;
-  }
-  return app(req, res);
+  app(req, res);
 }
