@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sansora - Welcome</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        .splash-container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .background-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.1;
+            background-image: 
+                repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(255,255,255,.1) 35px, rgba(255,255,255,.1) 70px);
+        }
+
+        .content {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            animation: slideUp 0.8s ease-out;
+        }
+
+        .logo-container {
+            margin-bottom: 30px;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        .logo {
+            width: 200px;
+            height: 200px;
+            background: white;
+            border-radius: 50%;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .quote {
+            color: white;
+            font-size: 24px;
+            font-weight: 300;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            margin-top: 20px;
+            opacity: 0;
+            animation: fadeInText 1s ease-in 0.3s forwards;
+        }
+
+        .tagline {
+            color: rgba(255,255,255,0.9);
+            font-size: 16px;
+            font-weight: 400;
+            margin-top: 15px;
+            opacity: 0;
+            animation: fadeInText 1s ease-in 0.6s forwards;
+        }
+
+        .loading-dots {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-top: 40px;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            background: white;
+            border-radius: 50%;
+            animation: dotPulse 1.4s ease-in-out infinite;
+        }
+
+        .dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeInText {
+            to { opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        @keyframes dotPulse {
+            0%, 100% {
+                opacity: 0.3;
+                transform: scale(0.8);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.2);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .logo {
+                width: 150px;
+                height: 150px;
+                padding: 25px;
+            }
+
+            .quote {
+                font-size: 20px;
+                padding: 0 20px;
+            }
+
+            .tagline {
+                font-size: 14px;
+                padding: 0 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="splash-container">
+        <div class="background-pattern"></div>
+        
+        <div class="content">
+            <div class="logo-container">
+                <div class="logo">
+                    <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#F4A460;stop-opacity:1" />
+                                <stop offset="50%" style="stop-color:#DC143C;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#8B008B;stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+                        
+                        <!-- Curved flowing shapes representing the Sansora logo -->
+                        <path d="M 200 80 Q 280 90 310 150 Q 320 180 300 220 Q 280 250 240 260" 
+                              fill="none" stroke="url(#grad1)" stroke-width="25" stroke-linecap="round"/>
+                        <path d="M 200 120 Q 270 130 290 180 Q 295 210 270 240" 
+                              fill="none" stroke="url(#grad1)" stroke-width="25" stroke-linecap="round"/>
+                        <path d="M 200 160 Q 250 170 265 210 Q 268 235 245 255" 
+                              fill="none" stroke="url(#grad1)" stroke-width="25" stroke-linecap="round"/>
+                    </svg>
+                </div>
+            </div>
+            
+            <div class="quote">Celebrate the Season with Sansora</div>
+            <div class="tagline">Where Style Meets Elegance</div>
+            
+            <div class="loading-dots">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Check if user has already seen splash screen in this session
+        const hasSeenSplash = sessionStorage.getItem('sansora_splash_shown');
+        const savedUser = localStorage.getItem('sansora_user');
+        
+        if (hasSeenSplash) {
+            // If splash was already shown, redirect immediately based on login status
+            if (savedUser) {
+                window.location.href = 'index.html';
+            } else {
+                window.location.href = 'login.html';
+            }
+        } else {
+            // Mark splash as shown for this session
+            sessionStorage.setItem('sansora_splash_shown', 'true');
+            
+            // Show splash for 2 seconds, then redirect
+            setTimeout(() => {
+                if (savedUser) {
+                    // User is logged in, go to home page
+                    window.location.href = 'index.html';
+                } else {
+                    // User not logged in, go to login page
+                    window.location.href = 'login.html';
+                }
+            }, 2000);
+        }
+    </script>
+</body>
+</html>

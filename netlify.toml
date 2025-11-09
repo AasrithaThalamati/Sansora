@@ -1,0 +1,14 @@
+cat > netlify.toml << 'EOF'
+[build]
+  publish = "."
+  command = "echo 'No build needed'"
+
+[[redirects]]
+  from = "/*"
+  to = "/.netlify/functions/server"
+  status = 200
+  force = true
+
+[functions]
+  directory = ".netlify/functions"
+EOF
