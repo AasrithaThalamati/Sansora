@@ -27,10 +27,9 @@ async function connectDB() {
   return cachedConn;
 }
 
-// === API ROUTE ===
+// === API ROUTE - FIXED: Using query params ===
 app.get('/api/product', async (req, res) => {
   try {
-    // Get SKU from query parameter instead
     const sku = req.query.sku;
     if (!sku) {
       return res.status(400).json({ error: 'SKU parameter required' });
