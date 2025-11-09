@@ -28,11 +28,17 @@ async function connectDB() {
 }
 
 // === API ROUTE ===
-app.get('/api/product/:sku', async (req, res) => {
+app.get('/api/product', async (req, res) => {
   try {
+    // Get SKU from query parameter instead
+    const sku = req.query.sku;
+    if (!sku) {
+      return res.status(400).json({ error: 'SKU parameter required' });
+    }
+    
     await connectDB();
     const Product = mongoose.model('Product', new mongoose.Schema({}, { strict: false }), 'products');
-    const product = await Product.findOne({ sku: req.params.sku }).lean();
+    const product = await Product.findOne({ sku }).lean();
     if (!product) return res.status(404).json({ error: 'Not found' });
     res.json(product);
   } catch (err) {
