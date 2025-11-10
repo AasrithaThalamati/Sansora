@@ -292,19 +292,63 @@
             background: #357abd;
             transform: translateY(-2px);
         }
-        
+
+        /* Success Popup */
+        .success-popup {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: none; justify-content: center; align-items: center;
+            z-index: 9999;
+        }
+        .popup-content {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 400px;
+            animation: pop 0.4s ease-out;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        @keyframes pop {
+            from { transform: scale(0.7); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        .popup-content i {
+            font-size: 4rem;
+            color: #27ae60;
+            margin-bottom: 1rem;
+        }
+        .popup-content h2 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+        .popup-content .btn {
+            background: #4a90e2;
+            color: white;
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 1rem;
+            font-weight: 600;
+        }
+
+        /* Wallet + COD Info */
+        .wallet-cod-info {
+            background: #e8f5e9;
+            padding: 1rem;
+            border-radius: 12px;
+            margin-top: 1rem;
+            font-size: 0.95rem;
+            color: #2e7d32;
+            border: 1px solid #a5d6a7;
+        }
+
         @media (max-width: 968px) {
-            .checkout-content {
-                grid-template-columns: 1fr;
-            }
-            
-            .order-summary {
-                position: static;
-            }
-            
-            .form-row {
-                grid-template-columns: 1fr;
-            }
+            .checkout-content { grid-template-columns: 1fr; }
+            .order-summary { position: static; }
+            .form-row { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -318,7 +362,7 @@
                 <li><a href="index.html" class="nav-link">Home</a></li>
                 <li><a href="deals.html" class="nav-link">Deals</a></li>
                 <li><a href="orders.html" class="nav-link">Orders</a></li>
-                <li><a href="cart.html" class="nav-link"><i class="fas fa-shopping-cart"></i> Cart (<span id="cart-count">0</span>)</a></li>
+                <li><a href="cart.html" class="nav-link">Cart (<span id="cart-count">0</span>)</a></li>
                 <li><a href="#" class="nav-link" onclick="logout()">Logout</a></li>
             </ul>
         </div>
@@ -326,7 +370,7 @@
 
     <div class="checkout-container">
         <div class="checkout-header">
-            <h1><i class="fas fa-credit-card"></i> Secure Checkout</h1>
+            <h1>Secure Checkout</h1>
             <p>Complete your order safely and securely</p>
         </div>
 
@@ -335,7 +379,7 @@
                 <form id="checkoutForm">
                     <!-- Shipping Information -->
                     <div class="form-section">
-                        <h2><i class="fas fa-shipping-fast"></i> Shipping Information</h2>
+                        <h2>Shipping Information</h2>
                         <div class="form-group">
                             <label for="fullName">Full Name *</label>
                             <input type="text" id="fullName" required placeholder="Enter your full name">
@@ -376,34 +420,34 @@
 
                     <!-- Payment Method -->
                     <div class="form-section">
-                        <h2><i class="fas fa-wallet"></i> Payment Method</h2>
+                        <h2>Payment Method</h2>
                         <div class="payment-methods">
                             <label class="payment-option">
                                 <input type="radio" name="payment" value="card" required>
-                                <i class="fas fa-credit-card"></i>
                                 <span>Credit/Debit Card</span>
                             </label>
                             <label class="payment-option">
                                 <input type="radio" name="payment" value="upi" required>
-                                <i class="fas fa-mobile-alt"></i>
-                                <span>UPI Payment</span>
+                                <span>UPI Payment</span  >
                             </label>
                             <label class="payment-option">
                                 <input type="radio" name="payment" value="netbanking" required>
-                                <i class="fas fa-university"></i>
                                 <span>Net Banking</span>
                             </label>
                             <label class="payment-option">
+                                <input type="radio" name="payment" value="wallet" required>
+                                <span>Sansora Wallet</span>
+                            </label>
+                            <label class="payment-option">
                                 <input type="radio" name="payment" value="cod" required>
-                                <i class="fas fa-money-bill-wave"></i>
                                 <span>Cash on Delivery</span>
                             </label>
                         </div>
                     </div>
 
-                    <!-- Card Details (shown when card is selected) -->
+                    <!-- Card Details -->
                     <div class="form-section" id="cardDetails" style="display: none;">
-                        <h2><i class="fas fa-credit-card"></i> Card Details</h2>
+                        <h2>Card Details</h2>
                         <div class="form-group">
                             <label for="cardNumber">Card Number</label>
                             <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19">
@@ -423,6 +467,83 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- UPI QR Code Section -->
+                    <div class="form-section" id="upiDetails" style="display: none;">
+                        <h2>UPI Payment</h2>
+                        <div style="text-align: center; padding: 1.5rem; background: #f8f9fa; border-radius: 16px; border: 2px dashed #4a90e2;">
+                            <img id="upiQR" src="" alt="UPI QR Code" style="width: 180px; height: 180px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                            <p style="margin: 1rem 0 0.5rem; font-weight: 600; color: #2c3e50;">Scan with any UPI app</p>
+                            <p style="margin: 0.5rem 0; color: #7f8c8d; font-size: 0.9rem;">
+                                Amount: <strong id="upiAmount">₹0</strong>
+                            </p>
+                            <p style="margin: 0.5rem 0 1rem; color: #7f8c8d; font-size: 0.9rem;">
+                                UPI ID: <code id="upiId" style="background:#e9ecef;padding:0.2rem 0.5rem;border-radius:6px;">sansora@upi</code>
+                                <button type="button" onclick="copyUPI()" style="margin-left:0.5rem;background:none;border:none;color:#4a90e2;cursor:pointer;font-weight:600;">Copy</button>
+                            </p>
+                            <div id="upiTimer" style="color:#e74c3c;font-weight:600;margin-top:1rem;display:none;">
+                                Expires in: <span id="timer">05:00</span>
+                            </div>
+                            <button type="button" id="upiPaidBtn" class="place-order-btn" style="margin-top:1.5rem;display:none;" onclick="mockUPIPayment()">
+                                I have paid
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Net Banking Mock Section -->
+                    <div class="form-section" id="netbankingDetails" style="display: none;">
+                        <h2>Net Banking</h2>
+                        <div style="background:#f8f9fa;padding:1.5rem;border-radius:16px;border:2px dashed #4a90e2;">
+                            <div class="form-group">
+                                <label for="bankSelect">Select Your Bank</label>
+                                <select id="bankSelect" style="width:100%;padding:0.8rem;border-radius:8px;border:2px solid #e8ecf1;">
+                                    <option value="">-- Choose Bank --</option>
+                                    <option value="hdfc">HDFC Bank</option>
+                                    <option value="sbi">State Bank of India</option>
+                                    <option value="icici">ICICI Bank</option>
+                                    <option value="axis">Axis Bank</option>
+                                    <option value="kotak">Kotak Mahindra</option>
+                                </select>
+                            </div>
+                            <div id="bankLogin" style="display:none;margin-top:1rem;">
+                                <div class="form-group">
+                                    <label for="bankUser">User ID / Customer ID</label>
+                                    <input type="text" id="bankUser" placeholder="Enter User ID" style="padding:0.8rem;border-radius:8px;">
+                                </div>
+                                <div class="form-group">
+                                    <label for="bankPass">Password</label>
+                                    <input type="password" id="bankPass" placeholder="Enter Password" style="padding:0.8rem;border-radius:8px;">
+                                </div>
+                                <p style="font-size:0.85rem;color:#e74c3c;margin:0.5rem 0;">
+                                    <strong>Demo Login:</strong> user / 1234
+                                </p>
+                                <button type="button" id="netbankPayBtn" class="place-order-btn" style="margin-top:1rem;" onclick="mockNetbankingPayment()">
+                                    Pay Now
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Wallet + COD Payment (REAL) -->
+                    <div class="form-section" id="walletDetails" style="display: none;">
+                        <h2>Wallet + COD</h2>
+                        <div style="background:#f8f9fa;padding:1.5rem;border-radius:16px;border:2px dashed #4a90e2;">
+                            <p style="margin:0.5rem 0;font-weight:600;color:#2c3e50;">
+                                Wallet Balance: <strong id="walletBalanceDisplay">₹0</strong>
+                            </p>
+                            <div id="walletCodInfo" class="wallet-cod-info" style="display:none;"></div>
+                            <div class="form-group" style="margin-top:1rem;">
+                                <label for="walletPinInput">Enter 4-digit PIN</label>
+                                <input type="password" id="walletPinInput" placeholder="****" maxlength="4" style="padding:0.8rem;border-radius:8px;">
+                            </div>
+                            <p style="font-size:0.85rem;color:#e74c3c;margin:0.5rem 0;">
+                                <strong>Demo PIN:</strong> 1234
+                            </p>
+                            <button type="button" id="walletPayBtn" class="place-order-btn" style="margin-top:1rem;" onclick="processWalletCOD()">
+                                Pay with Wallet + COD
+                            </button>
+                        </div>
+                    </div>
                 </form>
             </div>
 
@@ -430,9 +551,7 @@
             <div class="order-summary">
                 <h2>Order Summary</h2>
                 <div id="cartContent">
-                    <!-- Cart items will be loaded here -->
                     <div class="empty-cart-message">
-                        <i class="fas fa-shopping-cart"></i>
                         <h3>Loading your cart...</h3>
                     </div>
                 </div>
@@ -446,7 +565,7 @@
                         <span id="shipping">₹99</span>
                     </div>
                     <div class="summary-row">
-                        <span>Tax (10%):</span>
+                        <span>GST (10%):</span>
                         <span id="tax">₹0</span>
                     </div>
                     <div class="summary-row total">
@@ -455,13 +574,21 @@
                     </div>
                 </div>
                 <button type="button" class="place-order-btn" id="placeOrderBtn" onclick="placeOrder()" disabled>
-                    <i class="fas fa-lock"></i> Place Order
+                    Place Order
                 </button>
                 <div class="security-badge">
-                    <i class="fas fa-shield-alt"></i>
                     <span>Secure Payment - Your data is protected</span>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- Success Popup -->
+    <div class="success-popup" id="successPopup">
+        <div class="popup-content">
+            <h2>Payment Successful!</h2>
+            <p>Your order has been placed successfully.</p>
+            <button class="btn" onclick="window.location.href='orders.html'">View Orders</button>
         </div>
     </div>
 
@@ -487,244 +614,351 @@
             </div>
             <div class="footer-section">
                 <h4>Contact Info</h4>
-                <p><i class="fas fa-phone"></i> +91 98765 43210</p>
-                <p><i class="fas fa-envelope"></i> support@sansora.com</p>
-                <p><i class="fas fa-map-marker-alt"></i> Mumbai, India</p>
+                <p>+91 98765 43210</p>
+                <p>support@sansora.com</p>
+                <p>Mumbai, India</p>
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2024 Sansora. All rights reserved. | Designed with ❤️ for premium shopping experience</p>
+            <p>© 2024 Sansora. All rights reserved. | Designed with love for premium shopping experience</p>
         </div>
     </footer>
 
-    <script src="product-data.js"></script>
-    <script src="script.js"></script>
     <script>
-        // Checkout Page Specific Code
         let checkoutCart = [];
-        let subtotal = 0;
-        let shipping = 99;
-        let tax = 0;
-        let total = 0;
+        let subtotal = 0, shipping = 99, tax = 0, total = 0;
+        let upiTimerInterval;
 
-        // Load cart when page loads
-        window.addEventListener('DOMContentLoaded', function() {
-            console.log('Checkout page loaded');
+        // === WALLET INTEGRATION ===
+        const WALLET_KEY_PREFIX = 'sansora_wallet_';
+        let userData = null;
+        let walletData = { balance: 0, transactions: [] };
+
+        function loadUser() {
+            const saved = localStorage.getItem('sansora_user');
+            if (!saved) {
+                alert('Please login first');
+                setTimeout(() => location.href = 'login.html', 1000);
+                return false;
+            }
+            try { userData = JSON.parse(saved); } catch (e) {}
+            return true;
+        }
+
+        function loadWallet() {
+            if (!userData?.username) return;
+            const key = WALLET_KEY_PREFIX + userData.username;
+            const saved = localStorage.getItem(key);
+            if (saved) {
+                try { walletData = JSON.parse(saved); } catch (e) {}
+            }
+            const el = document.getElementById('walletBalanceDisplay');
+            if (el) {
+                el.textContent = `₹${walletData.balance.toLocaleString('en-IN')}`;
+            }
+        }
+
+        function saveWallet() {
+            if (!userData?.username) return;
+            const key = WALLET_KEY_PREFIX + userData.username;
+            localStorage.setItem(key, JSON.stringify(walletData));
+        }
+
+        function processWalletCOD() {
+            const pin = document.getElementById('walletPinInput').value.trim();
+            if (!pin) return alert('Enter 4-digit PIN');
+            if (pin !== '1234') return alert('Invalid PIN. Use: 1234');
+
+            if (walletData.balance >= total) {
+                // Full wallet payment
+                const txn = {
+                    type: 'debit',
+                    amount: total,
+                    description: `Full payment – ${checkoutCart.length} item${checkoutCart.length > 1 ? 's' : ''}`,
+                    date: new Date().toLocaleString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+                };
+                walletData.balance -= total;
+                walletData.transactions.push(txn);
+                saveWallet();
+                placeOrderSuccess('WALLET');
+            } else {
+                // Partial + COD
+                const codAmount = total - walletData.balance;
+                const txn = {
+                    type: 'debit',
+                    amount: walletData.balance,
+                    description: `Partial payment (COD: ₹${codAmount})`,
+                    date: new Date().toLocaleString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+                };
+                walletData.balance = 0;
+                walletData.transactions.push(txn);
+                saveWallet();
+
+                document.getElementById('walletCodInfo').innerHTML = `
+                    <strong>₹${walletData.balance.toLocaleString('en-IN')} paid from wallet</strong><br>
+                    <strong>₹${codAmount.toLocaleString('en-IN')} to be paid in Cash on Delivery</strong>
+                `;
+                document.getElementById('walletCodInfo').style.display = 'block';
+
+                setTimeout(() => {
+                    placeOrderSuccess('WALLET+COD', codAmount);
+                }, 1500);
+            }
+        }
+        // === END WALLET INTEGRATION ===
+
+        window.addEventListener('DOMContentLoaded', () => {
+            if (!loadUser()) return;
+            loadWallet();
             loadCheckoutCart();
             setupPaymentOptions();
             setupCardFormatting();
         });
 
-        // Load cart from localStorage
         function loadCheckoutCart() {
             try {
-                const savedCart = localStorage.getItem('cart');
-                console.log('Raw cart data:', savedCart);
-                
-                if (!savedCart || savedCart === '[]' || savedCart === 'null' || savedCart === '') {
-                    showEmptyCart();
-                    return;
-                }
-                
-                checkoutCart = JSON.parse(savedCart);
-                console.log('Parsed cart:', checkoutCart);
-                
-                if (!checkoutCart || !Array.isArray(checkoutCart) || checkoutCart.length === 0) {
-                    showEmptyCart();
-                    return;
-                }
-                
+                const saved = localStorage.getItem('cart');
+                if (!saved || saved === '[]') return showEmptyCart();
+
+                checkoutCart = JSON.parse(saved);
+                if (!Array.isArray(checkoutCart) || checkoutCart.length === 0) return showEmptyCart();
+
                 displayCartSummary();
                 calculateTotals();
                 document.getElementById('placeOrderBtn').disabled = false;
-                
-            } catch (error) {
-                console.error('Error loading cart:', error);
+                updateCartCount();
+            } catch (e) {
+                console.error(e);
                 showEmptyCart();
             }
         }
 
-        // Show empty cart message
         function showEmptyCart() {
-            const cartContent = document.getElementById('cartContent');
-            cartContent.innerHTML = `
+            document.getElementById('cartContent').innerHTML = `
                 <div class="empty-cart-message">
-                    <i class="fas fa-shopping-cart"></i>
                     <h3>Your cart is empty</h3>
-                    <p>Add some items to your cart before checking out</p>
-                    <a href="index.html" class="continue-shopping-btn">
-                        <i class="fas fa-arrow-left"></i> Continue Shopping
-                    </a>
-                </div>
-            `;
+                    <p>Add items before checking out</p>
+                    <a href="index.html" class="continue-shopping-btn">Continue Shopping</a>
+                </div>`;
             document.getElementById('summaryTotals').style.display = 'none';
             document.getElementById('placeOrderBtn').disabled = true;
         }
 
-        // Display cart items in summary
         function displayCartSummary() {
-            const cartContentContainer = document.getElementById('cartContent');
-            
-            if (!checkoutCart || checkoutCart.length === 0) {
-                showEmptyCart();
-                return;
-            }
-
+            const container = document.getElementById('cartContent');
             let html = '';
-            checkoutCart.forEach(function(item) {
+            checkoutCart.forEach(item => {
                 const itemTotal = item.price * item.quantity;
                 html += `
                     <div class="cart-item-summary">
-                        <img src="${item.image}" alt="${item.title}" onerror="this.src='https://via.placeholder.com/70x70?text=Product'">
+                        <img src="${item.image}" alt="${item.title}" onerror="this.src='https://via.placeholder.com/70'">
                         <div class="item-summary-details">
                             <h4>${item.title}</h4>
-                            <p class="quantity">Quantity: ${item.quantity}</p>
+                            <p class="quantity">Qty: ${item.quantity}</p>
                         </div>
-                        <div class="item-summary-price">
-                            ₹${itemTotal.toLocaleString('en-IN')}
-                        </div>
-                    </div>
-                `;
+                        <div class="item-summary-price">₹${itemTotal.toLocaleString('en-IN')}</div>
+                    </div>`;
             });
-
-            cartContentContainer.innerHTML = html;
+            container.innerHTML = html;
             document.getElementById('summaryTotals').style.display = 'block';
         }
 
-        // Calculate totals
         function calculateTotals() {
-            try {
-                subtotal = 0;
-                
-                checkoutCart.forEach(function(item) {
-                    subtotal += (item.price * item.quantity);
-                });
-                
-                console.log('Calculated subtotal:', subtotal);
-                
-                // Free shipping for orders above 999
-                shipping = subtotal > 999 ? 0 : 99;
-                
-                // Calculate tax (10% GST)
-                tax = Math.round(subtotal * 0.10);
-                
-                // Calculate total
-                total = subtotal + shipping + tax;
-                
-                console.log('Totals - Subtotal:', subtotal, 'Shipping:', shipping, 'Tax:', tax, 'Total:', total);
-                
-                // Update DOM
-                document.getElementById('subtotal').textContent = '₹' + subtotal.toLocaleString('en-IN');
-                document.getElementById('shipping').textContent = shipping === 0 ? 'FREE' : '₹' + shipping.toLocaleString('en-IN');
-                document.getElementById('tax').textContent = '₹' + tax.toLocaleString('en-IN');
-                document.getElementById('total').textContent = '₹' + total.toLocaleString('en-IN');
-                
-            } catch (error) {
-                console.error('Error calculating totals:', error);
-            }
+            subtotal = checkoutCart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            shipping = subtotal > 999 ? 0 : 99;
+            tax = Math.round(subtotal * 0.10);
+            total = subtotal + shipping + tax;
+
+            document.getElementById('subtotal').textContent = '₹' + subtotal.toLocaleString('en-IN');
+            document.getElementById('shipping').textContent = shipping === 0 ? 'FREE' : '₹' + shipping;
+            document.getElementById('tax').textContent = '₹' + tax.toLocaleString('en-IN');
+            document.getElementById('total').textContent = '₹' + total.toLocaleString('en-IN');
         }
 
-        // Setup payment options
         function setupPaymentOptions() {
-            document.querySelectorAll('.payment-option').forEach(function(option) {
-                option.addEventListener('click', function() {
-                    // Remove selected class from all options
-                    document.querySelectorAll('.payment-option').forEach(function(opt) {
-                        opt.classList.remove('selected');
-                    });
-                    
-                    // Add selected class to clicked option
-                    this.classList.add('selected');
-                    this.querySelector('input[type="radio"]').checked = true;
+            document.querySelectorAll('.payment-option').forEach(opt => {
+                opt.addEventListener('click', () => {
+                    document.querySelectorAll('.payment-option').forEach(o => o.classList.remove('selected'));
+                    opt.classList.add('selected');
+                    opt.querySelector('input').checked = true;
 
-                    // Show/hide card details
-                    const cardDetails = document.getElementById('cardDetails');
-                    if (this.querySelector('input').value === 'card') {
-                        cardDetails.style.display = 'block';
-                    } else {
-                        cardDetails.style.display = 'none';
+                    document.getElementById('cardDetails').style.display = 'none';
+                    hideUPISection();
+                    hideNetbankingSection();
+                    hideWalletSection();
+
+                    const val = opt.querySelector('input').value;
+                    if (val === 'card') {
+                        document.getElementById('cardDetails').style.display = 'block';
+                    } else if (val === 'upi') {
+                        showUPISection();
+                    } else if (val === 'netbanking') {
+                        showNetbankingSection();
+                    } else if (val === 'wallet') {
+                        showWalletSection();
                     }
                 });
             });
         }
 
-        // Setup card number and expiry formatting
         function setupCardFormatting() {
-            // Format card number input
-            const cardNumberInput = document.getElementById('cardNumber');
-            if (cardNumberInput) {
-                cardNumberInput.addEventListener('input', function(e) {
-                    let value = e.target.value.replace(/\s/g, '');
-                    let match = value.match(/.{1,4}/g);
-                    let formattedValue = match ? match.join(' ') : value;
-                    e.target.value = formattedValue;
-                });
-            }
+            const cardNum = document.getElementById('cardNumber');
+            if (cardNum) cardNum.addEventListener('input', e => {
+                let v = e.target.value.replace(/\s/g, '').replace(/\D/g, '');
+                e.target.value = v.match(/.{1,4}/g)?.join(' ') || v;
+            });
 
-            // Format expiry date input
-            const expiryInput = document.getElementById('expiry');
-            if (expiryInput) {
-                expiryInput.addEventListener('input', function(e) {
-                    let value = e.target.value.replace(/\D/g, '');
-                    if (value.length >= 2) {
-                        value = value.slice(0, 2) + '/' + value.slice(2, 4);
-                    }
-                    e.target.value = value;
-                });
-            }
+            const expiry = document.getElementById('expiry');
+            if (expiry) expiry.addEventListener('input', e => {
+                let v = e.target.value.replace(/\D/g, '');
+                if (v.length >= 2) v = v.slice(0,2) + '/' + v.slice(2,4);
+                e.target.value = v;
+            });
         }
 
-        // Place order function
         function placeOrder() {
             const form = document.getElementById('checkoutForm');
-            
-            // Validate form
-            if (!form.checkValidity()) {
-                form.reportValidity();
-                return;
+            if (!form.checkValidity()) return form.reportValidity();
+
+            const payment = document.querySelector('input[name="payment"]:checked');
+            if (!payment) return alert('Select a payment method');
+
+            const method = payment.value;
+
+            if (method === 'card') {
+                const card = document.getElementById('cardNumber').value.replace(/\s/g, '');
+                if (card.length !== 16) return alert('Invalid card number');
+                if (!document.getElementById('cardName').value) return alert('Enter cardholder name');
+                if (!/^\d{2}\/\d{2}$/.test(document.getElementById('expiry').value)) return alert('Invalid expiry');
+                if (!/^\d{3,4}$/.test(document.getElementById('cvv').value)) return alert('Invalid CVV');
             }
 
-            // Check if payment method is selected
-            const paymentMethod = document.querySelector('input[name="payment"]:checked');
-            if (!paymentMethod) {
-                alert('Please select a payment method');
-                return;
-            }
+            if (checkoutCart.length === 0) return alert('Cart is empty');
 
-            // Validate card details if card payment is selected
-            if (paymentMethod.value === 'card') {
-                const cardNumber = document.getElementById('cardNumber').value.trim();
-                const cardName = document.getElementById('cardName').value.trim();
-                const expiry = document.getElementById('expiry').value.trim();
-                const cvv = document.getElementById('cvv').value.trim();
-                
-                if (!cardNumber || !cardName || !expiry || !cvv) {
-                    alert('Please fill in all card details');
-                    return;
+            const btn = document.getElementById('placeOrderBtn');
+            btn.disabled = true;
+            btn.innerHTML = 'Processing...';
+
+            setTimeout(() => {
+                placeOrderSuccess(method.toUpperCase());
+            }, 1500);
+        }
+
+        function updateCartCount() {
+            const count = checkoutCart.reduce((sum, i) => sum + i.quantity, 0);
+            const el = document.getElementById('cart-count');
+            if (el) el.textContent = count;
+        }
+
+        // === UPI, NETBANKING, MOCKS ===
+        function showUPISection() {
+            document.getElementById('upiDetails').style.display = 'block';
+            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=sansora@upi&pn=Sansora&am=${total}&cu=INR`;
+            document.getElementById('upiQR').src = qrUrl;
+            document.getElementById('upiAmount').textContent = '₹' + total.toLocaleString('en-IN');
+            startUPITimer();
+        }
+
+        function hideUPISection() {
+            document.getElementById('upiDetails').style.display = 'none';
+            clearInterval(upiTimerInterval);
+            document.getElementById('upiTimer').style.display = 'none';
+            document.getElementById('upiPaidBtn').style.display = 'none';
+        }
+
+        function startUPITimer() {
+            let seconds = 300;
+            document.getElementById('upiTimer').style.display = 'block';
+            document.getElementById('upiPaidBtn').style.display = 'block';
+
+            upiTimerInterval = setInterval(() => {
+                seconds--;
+                const mins = String(Math.floor(seconds / 60)).padStart(2, '0');
+                const secs = String(seconds % 60).padStart(2, '0');
+                document.getElementById('timer').textContent = `${mins}:${secs}`;
+                if (seconds <= 0) {
+                    clearInterval(upiTimerInterval);
+                    alert('UPI payment expired. Please try again.');
+                    hideUPISection();
                 }
-            }
+            }, 1000);
+        }
 
-            // Check if cart has items
-            if (!checkoutCart || checkoutCart.length === 0) {
-                alert('Your cart is empty');
-                return;
-            }
+        function copyUPI() {
+            const upiId = document.getElementById('upiId').textContent;
+            navigator.clipboard.writeText(upiId).then(() => {
+                const btn = document.querySelector('#upiDetails button[onclick="copyUPI()"]');
+                const orig = btn.textContent;
+                btn.textContent = 'Copied!';
+                setTimeout(() => btn.textContent = orig, 2000);
+            });
+        }
 
-            // Create order object
+        function mockUPIPayment() {
+            clearInterval(upiTimerInterval);
+            const btn = document.getElementById('upiPaidBtn');
+            btn.disabled = true;
+            btn.innerHTML = 'Processing...';
+            setTimeout(() => {
+                placeOrderSuccess('UPI');
+            }, 1500);
+        }
+
+        function showNetbankingSection() {
+            document.getElementById('netbankingDetails').style.display = 'block';
+            document.getElementById('bankSelect').selectedIndex = 0;
+            document.getElementById('bankLogin').style.display = 'none';
+        }
+
+        function hideNetbankingSection() {
+            document.getElementById('netbankingDetails').style.display = 'none';
+            document.getElementById('bankLogin').style.display = 'none';
+        }
+
+        document.getElementById('bankSelect')?.addEventListener('change', function() {
+            if (this.value) {
+                document.getElementById('bankLogin').style.display = 'block';
+            } else {
+                document.getElementById('bankLogin').style.display = 'none';
+            }
+        });
+
+        function mockNetbankingPayment() {
+            const user = document.getElementById('bankUser').value.trim();
+            const pass = document.getElementById('bankPass').value;
+
+            if (!user || !pass) return alert('Enter User ID and Password');
+            if (user !== 'user' || pass !== '1234') return alert('Invalid credentials. Use: user / 1234');
+
+            const btn = document.getElementById('netbankPayBtn');
+            btn.disabled = true;
+            btn.innerHTML = 'Processing...';
+
+            setTimeout(() => {
+                placeOrderSuccess('NETBANKING');
+            }, 1500);
+        }
+
+        function showWalletSection() {
+            document.getElementById('walletDetails').style.display = 'block';
+            loadWallet();
+            document.getElementById('walletCodInfo').style.display = 'none';
+        }
+
+        function hideWalletSection() {
+            document.getElementById('walletDetails').style.display = 'none';
+        }
+
+        // === FINAL SUCCESS ===
+        function placeOrderSuccess(method, codAmount = 0) {
             const order = {
                 id: 'ORD-' + Date.now(),
-                date: new Date().toLocaleDateString('en-IN', { 
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric' 
-                }),
+                date: new Date().toLocaleDateString('en-IN'),
                 items: checkoutCart,
-                subtotal: subtotal,
-                shipping: shipping,
-                tax: tax,
-                total: total,
-                status: 'Processing',
-                paymentMethod: paymentMethod.value.toUpperCase(),
+                subtotal, shipping, tax, total,
+                status: method.includes('COD') ? 'Pending COD' : 'Paid',
+                paymentMethod: method,
+                codAmount: codAmount,
                 shippingInfo: {
                     name: document.getElementById('fullName').value,
                     email: document.getElementById('email').value,
@@ -737,47 +971,15 @@
                 }
             };
 
-            console.log('Creating order:', order);
+            let orders = JSON.parse(localStorage.getItem('user_orders') || '[]');
+            orders.push(order);
+            localStorage.setItem('user_orders', JSON.stringify(orders));
+            localStorage.removeItem('cart');
 
-            try {
-                // Save order to localStorage
-                let orders = JSON.parse(localStorage.getItem('user_orders') || '[]');
-                orders.push(order);
-                localStorage.setItem('user_orders', JSON.stringify(orders));
-                console.log('Order saved successfully');
-
-                // Clear cart from localStorage
-                localStorage.removeItem('cart');
-                console.log('Cart cleared');
-
-                // Show success message
-                alert(`🎉 Order Placed Successfully!\n\nOrder ID: ${order.id}\nTotal Amount: ₹${total.toLocaleString('en-IN')}\n\nThank you for shopping with Sansora!`);
-
-                // Redirect to orders page
-                setTimeout(function() {
-                    window.location.href = 'orders.html';
-                }, 1000);
-
-            } catch (error) {
-                console.error('Error placing order:', error);
-                alert('There was an error processing your order. Please try again.');
-            }
+            document.getElementById('successPopup').style.display = 'flex';
+            document.getElementById('placeOrderBtn').disabled = false;
+            document.getElementById('placeOrderBtn').innerHTML = 'Place Order';
         }
-
-        // Update cart count in navbar
-        function updateCartCount() {
-            const cartCount = document.getElementById('cart-count');
-            if (cartCount && checkoutCart) {
-                let totalItems = 0;
-                checkoutCart.forEach(function(item) {
-                    totalItems += item.quantity;
-                });
-                cartCount.textContent = totalItems;
-            }
-        }
-
-        // Call updateCartCount initially
-        updateCartCount();
     </script>
 </body>
 </html>

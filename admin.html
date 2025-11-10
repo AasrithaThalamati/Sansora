@@ -5,14 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - Sansora</title>
     <link rel="icon" type="image/png" href="logo-black.png">
+    <!-- Font Awesome CDN -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        /* -------------------------------------------------
+           Global Reset & Base Styles
+        ------------------------------------------------- */
+        * { margin:0; padding:0; box-sizing:border-box; }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
@@ -21,707 +22,441 @@
             overflow-x: hidden;
         }
 
-        /* Animated Background */
+        /* -------------------------------------------------
+           Animated Background Bubbles
+        ------------------------------------------------- */
         .bg-animation {
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            z-index: 0;
-            opacity: 0.3;
-            overflow: hidden;
+            position: fixed; top:0; left:0; width:100%; height:100%; z-index:0;
+            opacity:0.3; overflow:hidden;
         }
-
         .bg-animation span {
-            position: absolute;
-            display: block;
-            width: 20px;
-            height: 20px;
-            background: rgba(138, 99, 210, 0.5);
-            animation: float 25s infinite;
-            border-radius: 50%;
+            position:absolute; display:block; width:20px; height:20px;
+            background:rgba(138,99,210,.5); border-radius:50%;
+            animation:float 25s infinite;
+        }
+        .bg-animation span:nth-child(1){left:10%;animation-delay:0s}
+        .bg-animation span:nth-child(2){left:20%;animation-delay:2s}
+        .bg-animation span:nth-child(3){left:30%;animation-delay:4s}
+        .bg-animation span:nth-child(4){left:40%;animation-delay:6s}
+        .bg-animation span:nth-child(5){left:50%;animation-delay:8s}
+        .bg-animation span:nth-child(6){left:60%;animation-delay:10s}
+        .bg-animation span:nth-child(7){left:70%;animation-delay:12s}
+        .bg-animation span:nth-child(8){left:80%;animation-delay:14s}
+        @keyframes float{
+            0%{opacity:0;transform:translateY(100vh) scale(0)}
+            10%{opacity:1}
+            90%{opacity:1}
+            100%{opacity:0;transform:translateY(-100vh) scale(1.5)}
         }
 
-        .bg-animation span:nth-child(1) { left: 10%; animation-delay: 0s; }
-        .bg-animation span:nth-child(2) { left: 20%; animation-delay: 2s; }
-        .bg-animation span:nth-child(3) { left: 30%; animation-delay: 4s; }
-        .bg-animation span:nth-child(4) { left: 40%; animation-delay: 6s; }
-        .bg-animation span:nth-child(5) { left: 50%; animation-delay: 8s; }
-        .bg-animation span:nth-child(6) { left: 60%; animation-delay: 10s; }
-        .bg-animation span:nth-child(7) { left: 70%; animation-delay: 12s; }
-        .bg-animation span:nth-child(8) { left: 80%; animation-delay: 14s; }
-
-        @keyframes float {
-            0% { opacity: 0; transform: translateY(100vh) scale(0); }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { opacity: 0; transform: translateY(-100vh) scale(1.5); }
+        /* -------------------------------------------------
+           Navbar (fixed)
+        ------------------------------------------------- */
+        .navbar{
+            position:fixed; top:0; left:0; right:0;
+            background:rgba(255,255,255,.95); backdrop-filter:blur(10px);
+            padding:1rem 2rem; display:flex; justify-content:space-between;
+            align-items:center; z-index:1000;
+            box-shadow:0 4px 30px rgba(0,0,0,.3);
+        }
+        .nav-logo img{height:70px;cursor:pointer;transition:transform .3s}
+        .nav-logo img:hover{transform:scale(1.05)}
+        .nav-links{display:flex;gap:2rem;list-style:none;align-items:center}
+        .nav-link{
+            color:#000; text-decoration:none; font-weight:500;
+            transition:all .3s; padding:.5rem 1rem; border-radius:8px;
+        }
+        .nav-link:hover{background:rgba(138,99,210,.2);transform:translateY(-2px)}
+        .nav-link.active{
+            background:linear-gradient(135deg,#8a63d2,#6a4ba9);
+            color:#fff;
         }
 
-        /* Navbar */
-        .navbar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 1000;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
-        }
-
-        .nav-logo img {
-            height: 70px;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-            list-style: none;
-            align-items: center;
-        }
-
-        .nav-link {
-            color: #000000;
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-        }
-
-        .nav-link:hover {
-            background: rgba(138, 99, 210, 0.2);
-            transform: translateY(-2px);
-        }
-
-        .nav-link.active {
-            background: linear-gradient(135deg, #8a63d2, #6a4ba9);
-        }
-
-        /* Main Container */
-        .admin-container {
-            position: relative;
-            z-index: 1;
-            max-width: 1400px;
-            margin: 100px auto 2rem;
-            padding: 0 2rem;
+        /* -------------------------------------------------
+           Main Container
+        ------------------------------------------------- */
+        .admin-container{
+            position:relative; z-index:1; max-width:1400px;
+            margin:100px auto 2rem; padding:0 2rem;
         }
 
         /* Header */
-        .admin-header {
-            background: linear-gradient(135deg, rgba(138, 99, 210, 0.3), rgba(106, 75, 169, 0.3));
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 2.5rem;
-            border-radius: 25px;
-            margin-bottom: 2rem;
-            text-align: center;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            animation: slideDown 0.6s ease;
+        .admin-header{
+            background:linear-gradient(135deg,rgba(138,99,210,.3),rgba(106,75,169,.3));
+            backdrop-filter:blur(20px); border:1px solid rgba(255,255,255,.1);
+            padding:2.5rem; border-radius:25px; margin-bottom:2rem;
+            text-align:center; box-shadow:0 8px 32px rgba(0,0,0,.3);
+            animation:slideDown .6s ease;
         }
-
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        @keyframes slideDown{from{opacity:0;transform:translateY(-30px)}to{opacity:1;transform:translateY(0)}}
+        .admin-header h1{
+            font-size:2.5rem; margin-bottom:.5rem;
+            background:linear-gradient(135deg,#fff,#8a63d2);
+            -webkit-background-clip:text; -webkit-text-fill-color:transparent;
         }
-
-        .admin-header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
-            background: linear-gradient(135deg, #fff, #8a63d2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+        .admin-header p{font-size:1.1rem; color:rgba(255,255,255,.8)}
 
         /* Tabs */
-        .admin-tabs {
-            display: flex;
-            background: rgba(26, 26, 46, 0.8);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 0.8rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            gap: 0.8rem;
-            overflow-x: auto;
-            animation: slideUp 0.6s ease;
+        .admin-tabs{
+            display:flex; background:rgba(26,26,46,.8);
+            backdrop-filter:blur(20px); border:1px solid rgba(255,255,255,.1);
+            border-radius:20px; padding:.8rem; margin-bottom:2rem;
+            box-shadow:0 8px 32px rgba(0,0,0,.3); gap:.8rem;
+            overflow-x:auto; animation:slideUp .6s ease;
+        }
+        @keyframes slideUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+        .admin-tab{
+            flex:1; min-width:150px; padding:1.2rem; border:none;
+            background:transparent; border-radius:15px; cursor:pointer;
+            font-weight:600; color:rgba(255,255,255,.7);
+            transition:all .4s cubic-bezier(.4,0,.2,1);
+            display:flex; align-items:center; justify-content:center; gap:.8rem;
+            font-size:1rem; position:relative; overflow:hidden;
+        }
+        .admin-tab::before{
+            content:''; position:absolute; top:0; left:-100%; width:100%; height:100%;
+            background:linear-gradient(90deg,transparent,rgba(255,255,255,.1),transparent);
+            transition:left .5s;
+        }
+        .admin-tab:hover::before{left:100%}
+        .admin-tab:hover{background:rgba(138,99,210,.2);color:#fff;transform:translateY(-3px)}
+        .admin-tab.active{
+            background:linear-gradient(135deg,#8a63d2,#6a4ba9);
+            color:#fff; transform:translateY(-3px);
+            box-shadow:0 8px 25px rgba(138,99,210,.5);
         }
 
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        /* Stats Grid */
+        .admin-stats{
+            display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+            gap:1.5rem; margin-bottom:3rem;
         }
-
-        .admin-tab {
-            flex: 1;
-            min-width: 150px;
-            padding: 1.2rem;
-            border: none;
-            background: transparent;
-            border-radius: 15px;
-            cursor: pointer;
-            font-weight: 600;
-            color: rgba(255, 255, 255, 0.7);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.8rem;
-            font-size: 1rem;
-            position: relative;
-            overflow: hidden;
+        .stat-card{
+            background:rgba(26,26,46,.8); backdrop-filter:blur(20px);
+            border:1px solid rgba(255,255,255,.1); padding:2rem;
+            border-radius:20px; box-shadow:0 8px 32px rgba(0,0,0,.3);
+            text-align:center; transition:all .4s cubic-bezier(.4,0,.2,1);
+            cursor:pointer; position:relative; overflow:hidden;
+            animation:fadeIn .6s ease forwards; opacity:0;
         }
-
-        .admin-tab::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-            transition: left 0.5s;
+        .stat-card:nth-child(1){animation-delay:.1s}
+        .stat-card:nth-child(2){animation-delay:.2s}
+        .stat-card:nth-child(3){animation-delay:.3s}
+        .stat-card:nth-child(4){animation-delay:.4s}
+        @keyframes fadeIn{to{opacity:1}}
+        .stat-card::before{
+            content:''; position:absolute; top:0; left:0; width:100%; height:4px;
+            background:linear-gradient(90deg,#8a63d2,#6a4ba9);
+            transform:scaleX(0); transition:transform .4s ease;
         }
-
-        .admin-tab:hover::before {
-            left: 100%;
+        .stat-card:hover::before{transform:scaleX(1)}
+        .stat-card:hover{
+            transform:translateY(-10px) scale(1.02);
+            border-color:rgba(138,99,210,.5);
+            box-shadow:0 15px 45px rgba(138,99,210,.3);
         }
-
-        .admin-tab:hover {
-            background: rgba(138, 99, 210, 0.2);
-            color: #fff;
-            transform: translateY(-3px);
+        .stat-icon{
+            font-size:3rem;
+            background:linear-gradient(135deg,#8a63d2,#6a4ba9);
+            -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+            margin-bottom:1rem; transition:transform .3s;
         }
+        .stat-card:hover .stat-icon{transform:scale(1.2) rotate(10deg)}
+        .stat-number{font-size:2.5rem;font-weight:700;color:#fff;margin-bottom:.5rem}
+        .stat-label{color:rgba(255,255,255,.7);font-size:1rem}
 
-        .admin-tab.active {
-            background: linear-gradient(135deg, #8a63d2, #6a4ba9);
-            color: white;
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(138, 99, 210, 0.5);
+        /* Dashboard Grid (Charts & Activity) */
+        .dashboard-grid{
+            display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin-top:2rem;
         }
-
-        /* Stats Cards */
-        .admin-stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 3rem;
+        .chart-card{
+            background:rgba(26,26,46,.8); backdrop-filter:blur(20px);
+            border:1px solid rgba(255,255,255,.1); border-radius:20px;
+            padding:1.8rem; box-shadow:0 8px 32px rgba(0,0,0,.3);
+            animation:fadeIn .6s ease forwards; opacity:0;
         }
-
-        .stat-card {
-            background: rgba(26, 26, 46, 0.8);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 2rem;
-            border-radius: 20px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            text-align: center;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-            animation: fadeIn 0.6s ease forwards;
-            opacity: 0;
+        .chart-card:nth-child(1){animation-delay:.5s}
+        .chart-card:nth-child(2){animation-delay:.6s}
+        .chart-title{
+            font-size:1.3rem; font-weight:600; margin-bottom:1rem;
+            background:linear-gradient(135deg,#fff,#8a63d2);
+            -webkit-background-clip:text; -webkit-text-fill-color:transparent;
         }
-
-        .stat-card:nth-child(1) { animation-delay: 0.1s; }
-        .stat-card:nth-child(2) { animation-delay: 0.2s; }
-        .stat-card:nth-child(3) { animation-delay: 0.3s; }
-        .stat-card:nth-child(4) { animation-delay: 0.4s; }
-
-        @keyframes fadeIn {
-            to {
-                opacity: 1;
-            }
+        .recent-activity{grid-column:span 2}
+        .activity-item{
+            display:flex; align-items:center; gap:1rem; padding:1rem;
+            background:rgba(255,255,255,.05); border-radius:12px;
+            margin-bottom:.8rem; border:1px solid rgba(255,255,255,.1);
+            transition:all .3s ease;
         }
-
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background: linear-gradient(90deg, #8a63d2, #6a4ba9);
-            transform: scaleX(0);
-            transition: transform 0.4s ease;
+        .activity-item:hover{
+            background:rgba(138,99,210,.15); transform:translateX(8px);
         }
-
-        .stat-card:hover::before {
-            transform: scaleX(1);
+        .activity-icon{
+            width:45px; height:45px; border-radius:50%;
+            display:flex; align-items:center; justify-content:center;
+            font-size:1.2rem; color:#fff;
         }
+        .activity-new{background:linear-gradient(135deg,#27ae60,#2ecc71)}
+        .activity-update{background:linear-gradient(135deg,#feca57,#ff9ff3)}
+        .activity-delete{background:linear-gradient(135deg,#e74c3c,#c0392b)}
+        .activity-text{flex:1; font-size:.95rem}
+        .activity-time{font-size:.8rem; color:rgba(255,255,255,.6)}
 
-        .stat-card:hover {
-            transform: translateY(-10px) scale(1.02);
-            border-color: rgba(138, 99, 210, 0.5);
-            box-shadow: 0 15px 45px rgba(138, 99, 210, 0.3);
+        /* Quick Actions */
+        .quick-actions{
+            display:flex; gap:1rem; margin-top:1.5rem; flex-wrap:wrap;
         }
-
-        .stat-icon {
-            font-size: 3rem;
-            background: linear-gradient(135deg, #8a63d2, #6a4ba9);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 1rem;
-            transition: transform 0.3s ease;
+        .quick-btn{
+            flex:1; min-width:180px; padding:1rem; border-radius:15px;
+            border:none; font-weight:600; cursor:pointer;
+            transition:all .3s ease; display:flex;
+            align-items:center; justify-content:center; gap:.7rem;
+            font-size:.95rem;
         }
-
-        .stat-card:hover .stat-icon {
-            transform: scale(1.2) rotate(10deg);
-        }
-
-        .stat-number {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: #fff;
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-label {
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 1rem;
-        }
+        .quick-btn.export{background:linear-gradient(135deg,#3498db,#2980b9)}
+        .quick-btn.backup{background:linear-gradient(135deg,#9b59b6,#8e44ad)}
+        .quick-btn.report{background:linear-gradient(135deg,#f39c12,#e67e22)}
+        .quick-btn:hover{transform:translateY(-3px);box-shadow:0 8px 25px rgba(0,0,0,.3)}
 
         /* Controls */
-        .admin-controls {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
+        .admin-controls{display:flex;gap:1rem;margin-bottom:2rem;flex-wrap:wrap}
+        .control-btn{
+            background:linear-gradient(135deg,#8a63d2,#6a4ba9);
+            color:#fff; border:none; padding:1rem 1.8rem;
+            border-radius:15px; cursor:pointer; font-weight:600;
+            transition:all .3s cubic-bezier(.4,0,.2,1);
+            display:flex; align-items:center; gap:.8rem;
+            box-shadow:0 4px 15px rgba(138,99,210,.3);
+            position:relative; overflow:hidden;
         }
-
-        .control-btn {
-            background: linear-gradient(135deg, #8a63d2, #6a4ba9);
-            color: rgb(0, 0, 0);
-            border: none;
-            padding: 1rem 1.8rem;
-            border-radius: 15px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            box-shadow: 0 4px 15px rgba(138, 99, 210, 0.3);
-            position: relative;
-            overflow: hidden;
+        .control-btn::before{
+            content:''; position:absolute; top:50%; left:50%; width:0; height:0;
+            background:rgba(255,255,255,.2); border-radius:50%;
+            transform:translate(-50%,-50%); transition:width .6s,height .6s;
         }
-
-        .control-btn::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            transition: width 0.6s, height 0.6s;
+        .control-btn:hover::before{width:300px;height:300px}
+        .control-btn:hover{
+            transform:translateY(-3px);
+            box-shadow:0 8px 25px rgba(138,99,210,.5);
         }
-
-        .control-btn:hover::before {
-            width: 300px;
-            height: 300px;
-        }
-
-        .control-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(138, 99, 210, 0.5);
-        }
-
-        .control-btn.add {
-            background: linear-gradient(135deg, #27ae60, #2ecc71);
-            box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
-        }
-
-        .control-btn.add:hover {
-            box-shadow: 0 8px 25px rgba(39, 174, 96, 0.5);
-        }
-
-        .control-btn.delete {
-            background: linear-gradient(135deg, #e74c3c, #c0392b);
-            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
-        }
-
-        .control-btn.delete:hover {
-            box-shadow: 0 8px 25px rgba(231, 76, 60, 0.5);
-        }
+        .control-btn.add{background:linear-gradient(135deg,#27ae60,#2ecc71);box-shadow:0 4px 15px rgba(39,174,96,.3)}
+        .control-btn.add:hover{box-shadow:0 8px 25px rgba(39,174,96,.5)}
+        .control-btn.delete{background:linear-gradient(135deg,#e74c3c,#c0392b);box-shadow:0 4px 15px rgba(231,76,60,.3)}
+        .control-btn.delete:hover{box-shadow:0 8px 25px rgba(231,76,60,.5)}
 
         /* Tables */
-        .products-table, .orders-table {
-            background: rgba(26, 26, 46, 0.8);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        .products-table, .orders-table{
+            background:rgba(26,26,46,.8); backdrop-filter:blur(20px);
+            border:1px solid rgba(255,255,255,.1); border-radius:20px;
+            overflow:hidden; box-shadow:0 8px 32px rgba(0,0,0,.3);
         }
-
-        .table-header {
-            background: linear-gradient(135deg, #8a63d2, #6a4ba9);
-            color: white;
-            padding: 1.5rem;
-            text-align: center;
-            font-size: 1.3rem;
-            font-weight: 600;
+        .table-header{
+            background:linear-gradient(135deg,#8a63d2,#6a4ba9);
+            color:#fff; padding:1.5rem; text-align:center;
+            font-size:1.3rem; font-weight:600;
         }
-
-        .products-grid-admin, .orders-grid-admin {
-            display: grid;
-            gap: 1rem;
-            padding: 1.5rem;
-            max-height: 600px;
-            overflow-y: auto;
+        .products-grid-admin, .orders-grid-admin{
+            display:grid; gap:1rem; padding:1.5rem;
+            max-height:600px; overflow-y:auto;
         }
-
-        /* Custom Scrollbar */
         .products-grid-admin::-webkit-scrollbar,
-        .orders-grid-admin::-webkit-scrollbar {
-            width: 10px;
-        }
-
+        .orders-grid-admin::-webkit-scrollbar{width:10px}
         .products-grid-admin::-webkit-scrollbar-track,
-        .orders-grid-admin::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
+        .orders-grid-admin::-webkit-scrollbar-track{
+            background:rgba(255,255,255,.05); border-radius:10px;
         }
-
         .products-grid-admin::-webkit-scrollbar-thumb,
-        .orders-grid-admin::-webkit-scrollbar-thumb {
-            background: linear-gradient(135deg, #8a63d2, #6a4ba9);
-            border-radius: 10px;
+        .orders-grid-admin::-webkit-scrollbar-thumb{
+            background:linear-gradient(135deg,#8a63d2,#6a4ba9); border-radius:10px;
         }
 
-        .product-row, .order-row {
-            display: grid;
-            grid-template-columns: 80px 2fr 1fr 1fr 1fr 180px;
-            gap: 1rem;
-            align-items: center;
-            padding: 1.5rem;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        .product-row, .order-row{
+            display:grid; grid-template-columns:80px 2fr 1fr 1fr 1fr 180px;
+            gap:1rem; align-items:center; padding:1.5rem;
+            background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1);
+            border-radius:15px; transition:all .3s cubic-bezier(.4,0,.2,1);
+        }
+        .order-row{grid-template-columns:1fr 1fr 1fr 1fr 180px}
+        .product-row:hover, .order-row:hover{
+            background:rgba(138,99,210,.15); border-color:rgba(138,99,210,.5);
+            transform:translateX(10px); box-shadow:0 8px 25px rgba(138,99,210,.2);
+        }
+        .product-image-small{
+            width:70px; height:70px; object-fit:cover; border-radius:12px;
+            box-shadow:0 4px 15px rgba(0,0,0,.3); transition:transform .3s;
+        }
+        .product-row:hover .product-image-small{transform:scale(1.1)}
+        .product-actions, .order-actions{display:flex;gap:.8rem}
+        .action-btn{
+            padding:.7rem 1.2rem; border:none; border-radius:10px;
+            cursor:pointer; font-size:.85rem; transition:all .3s;
+            font-weight:600; box-shadow:0 4px 12px rgba(0,0,0,.2);
+        }
+        .edit-btn{background:linear-gradient(135deg,#feca57,#ff9ff3);color:#fff}
+        .delete-btn{background:linear-gradient(135deg,#e74c3c,#c0392b);color:#fff}
+        .view-btn{background:linear-gradient(135deg,#3498db,#2980b9);color:#fff}
+        .action-btn:hover{
+            transform:translateY(-3px);
+            box-shadow:0 6px 20px rgba(0,0,0,.3);
         }
 
-        .order-row {
-            grid-template-columns: 1fr 1fr 1fr 1fr 180px;
+        /* Modals */
+        .modal{
+            display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+            background:rgba(0,0,0,.9); z-index:10000; overflow-y:auto;
+            backdrop-filter:blur(5px);
+        }
+        .modal-content{
+            background:linear-gradient(135deg,#1a1a2e,#16213e);
+            margin:2rem auto; padding:2.5rem; border-radius:25px;
+            max-width:650px; position:relative; border:1px solid rgba(255,255,255,.1);
+            box-shadow:0 15px 50px rgba(0,0,0,.5);
+            animation:modalSlide .4s ease;
+        }
+        @keyframes modalSlide{from{opacity:0;transform:translateY(-50px)}to{opacity:1;transform:translateY(0)}}
+        .modal-header{
+            display:flex; justify-content:space-between; align-items:center;
+            margin-bottom:2rem; padding-bottom:1rem;
+            border-bottom:2px solid rgba(138,99,210,.3);
+        }
+        .modal-header h2{
+            background:linear-gradient(135deg,#fff,#8a63d2);
+            -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+        }
+        .modal-close{
+            background:none; border:none; font-size:2rem; cursor:pointer;
+            color:rgba(255,255,255,.7); transition:all .3s;
+            width:40px; height:40px; border-radius:50%;
+            display:flex; align-items:center; justify-content:center;
+        }
+        .modal-close:hover{
+            background:rgba(231,76,60,.2); color:#e74c3c; transform:rotate(90deg);
         }
 
-        .product-row:hover, .order-row:hover {
-            background: rgba(138, 99, 210, 0.15);
-            border-color: rgba(138, 99, 210, 0.5);
-            transform: translateX(10px);
-            box-shadow: 0 8px 25px rgba(138, 99, 210, 0.2);
+        .form-group{margin-bottom:1.5rem}
+        .form-group label{
+            display:block; margin-bottom:.8rem; font-weight:600; color:rgba(255,255,255,.9);
         }
-
-        .product-image-small {
-            width: 70px;
-            height: 70px;
-            object-fit: cover;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-            transition: transform 0.3s ease;
-        }
-
-        .product-row:hover .product-image-small {
-            transform: scale(1.1);
-        }
-
-        .product-actions, .order-actions {
-            display: flex;
-            gap: 0.8rem;
-        }
-
-        .action-btn {
-            padding: 0.7rem 1.2rem;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 0.85rem;
-            transition: all 0.3s ease;
-            font-weight: 600;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-        }
-
-        .edit-btn {
-            background: linear-gradient(135deg, #feca57, #ff9ff3);
-            color: white;
-        }
-
-        .delete-btn {
-            background: linear-gradient(135deg, #e74c3c, #c0392b);
-            color: white;
-        }
-
-        .view-btn {
-            background: linear-gradient(135deg, #3498db, #2980b9);
-            color: white;
-        }
-
-        .action-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-        }
-
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            z-index: 10000;
-            overflow-y: auto;
-            backdrop-filter: blur(5px);
-        }
-
-        .modal-content {
-            background: linear-gradient(135deg, #1a1a2e, #16213e);
-            margin: 2rem auto;
-            padding: 2.5rem;
-            border-radius: 25px;
-            max-width: 650px;
-            position: relative;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.5);
-            animation: modalSlide 0.4s ease;
-        }
-
-        @keyframes modalSlide {
-            from {
-                opacity: 0;
-                transform: translateY(-50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid rgba(138, 99, 210, 0.3);
-        }
-
-        .modal-header h2 {
-            background: linear-gradient(135deg, #fff, #8a63d2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .modal-close {
-            background: none;
-            border: none;
-            font-size: 2rem;
-            cursor: pointer;
-            color: rgba(255, 255, 255, 0.7);
-            transition: all 0.3s ease;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal-close:hover {
-            background: rgba(231, 76, 60, 0.2);
-            color: #e74c3c;
-            transform: rotate(90deg);
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.8rem;
-            font-weight: 600;
-            color: rgba(255, 255, 255, 0.9);
-        }
-
         .form-group input,
         .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 1rem;
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            font-size: 1rem;
-            background: rgba(255, 255, 255, 0.05);
-            color: #fff;
-            transition: all 0.3s ease;
+        .form-group textarea{
+            width:100%; padding:1rem; border:2px solid rgba(255,255,255,.1);
+            border-radius:12px; font-size:1rem; background:rgba(255,255,255,.05);
+            color:#fff; transition:all .3s;
         }
-
         .form-group input:focus,
         .form-group select:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: #8a63d2;
-            background: rgba(138, 99, 210, 0.1);
-            box-shadow: 0 0 20px rgba(138, 99, 210, 0.3);
+        .form-group textarea:focus{
+            outline:none; border-color:#8a63d2; background:rgba(138,99,210,.1);
+            box-shadow:0 0 20px rgba(138,99,210,.3);
         }
+        .form-group textarea{height:120px; resize:vertical}
 
-        .form-group textarea {
-            height: 120px;
-            resize: vertical;
+        .order-status-select{
+            padding:.7rem 1rem; border-radius:10px; border:2px solid rgba(255,255,255,.1);
+            font-weight:600; background:rgba(255,255,255,.05); color:#fff;
+            cursor:pointer; transition:all .3s;
         }
+        .order-status-select:hover{border-color:#8a63d2}
+        .status-pending{background:rgba(255,193,7,.2);color:#ffc107}
+        .status-processing{background:rgba(52,152,219,.2);color:#3498db}
+        .status-shipped{background:rgba(155,89,182,.2);color:#9b59b6}
+        .status-delivered{background:rgba(39,174,96,.2);color:#27ae60}
+        .status-cancelled{background:rgba(231,76,60,.2);color:#e74c3c}
 
-        /* Status Select */
-        .order-status-select {
-            padding: 0.7rem 1rem;
-            border-radius: 10px;
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            font-weight: 600;
-            background: rgba(255, 255, 255, 0.05);
-            color: #fff;
-            cursor: pointer;
-            transition: all 0.3s ease;
+        .message-popup{
+            position:fixed; top:100px; right:20px; padding:1.2rem 2rem;
+            border-radius:15px; color:#fff; font-weight:500; z-index:10001;
+            box-shadow:0 8px 25px rgba(0,0,0,.3);
+            animation:slideInRight .4s ease;
         }
+        @keyframes slideInRight{from{opacity:0;transform:translateX(100px)}to{opacity:1;transform:translateX(0)}}
 
-        .order-status-select:hover {
-            border-color: #8a63d2;
-        }
-
-        .status-pending { background: rgba(255, 193, 7, 0.2); color: #ffc107; }
-        .status-processing { background: rgba(52, 152, 219, 0.2); color: #3498db; }
-        .status-shipped { background: rgba(155, 89, 182, 0.2); color: #9b59b6; }
-        .status-delivered { background: rgba(39, 174, 96, 0.2); color: #27ae60; }
-        .status-cancelled { background: rgba(231, 76, 60, 0.2); color: #e74c3c; }
-
-        /* Message Popup */
-        .message-popup {
-            position: fixed;
-            top: 100px;
-            right: 20px;
-            padding: 1.2rem 2rem;
-            border-radius: 15px;
-            color: white;
-            font-weight: 500;
-            z-index: 10001;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-            animation: slideInRight 0.4s ease;
-        }
-
-        @keyframes slideInRight {
-            from {
-                opacity: 0;
-                transform: translateX(100px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        /* Responsive */
-        @media (max-width: 968px) {
-            .product-row {
-                grid-template-columns: 60px 1fr 120px;
-            }
-            .product-row > div:nth-child(3),
-            .product-row > div:nth-child(4),
-            .product-row > div:nth-child(5) {
-                display: none;
-            }
-            .order-row {
-                grid-template-columns: 1fr;
-            }
-            .admin-header h1 {
-                font-size: 1.8rem;
-            }
+        @media(max-width:968px){
+            .product-row{grid-template-columns:60px 1fr 120px}
+            .product-row>div:nth-child(3),
+            .product-row>div:nth-child(4),
+            .product-row>div:nth-child(5){display:none}
+            .order-row{grid-template-columns:1fr}
+            .admin-header h1{font-size:1.8rem}
+            .dashboard-grid{grid-template-columns:1fr}
+            .recent-activity{grid-column:1}
         }
     </style>
 </head>
 <body>
     <!-- Animated Background -->
     <div class="bg-animation">
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
+        <span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span>
     </div>
 
-    <!-- Admin Auth Check -->
+    <!-- Authentication & Navigation -->
     <script>
-        (function() {
-            const savedUser = localStorage.getItem('sansora_user');
-            
-            if (!savedUser) {
-                alert('Please login to access the admin dashboard');
-                window.location.href = 'login.html';
+        function goHome(){
+            localStorage.setItem('allow_home','true');
+            window.location.href='index.html';
+        }
+        function logout(){
+            if(confirm('Are you sure you want to logout?')){
+                localStorage.removeItem('sansora_user');
+                localStorage.removeItem('sansora_remember');
+                window.location.href='login.html';
+            }
+            return false;
+        }
+        (function(){
+            if(localStorage.getItem('allow_home')==='true'){
+                localStorage.removeItem('allow_home');
                 return;
             }
-            
-            try {
-                const userData = JSON.parse(savedUser);
-                
-                if (!userData.isAdmin) {
+            const user = localStorage.getItem('sansora_user');
+            if(!user){
+                alert('Please login to access the admin dashboard');
+                window.location.href='login.html';
+                return;
+            }
+            try{
+                const data = JSON.parse(user);
+                if(!data.isAdmin){
                     alert('Access denied. Admin privileges required.');
-                    window.location.href = 'index.html';
-                    return;
+                    window.location.href='index.html';
                 }
-            } catch (error) {
+            }catch(e){
                 localStorage.removeItem('sansora_user');
                 alert('Authentication error. Please login again.');
-                window.location.href = 'login.html';
+                window.location.href='login.html';
             }
         })();
     </script>
 
+    <!-- Navbar -->
     <nav class="navbar">
         <div class="nav-logo">
-            <img src="logo-black.png" alt="Sansora Logo">
+            <a href="#" onclick="goHome(); return false;">
+                <img src="logo-black.png" alt="Sansora Logo">
+            </a>
         </div>
         <ul class="nav-links">
-            <li><a href="index.html" class="nav-link">Home</a></li>
+            <li><a href="#" class="nav-link" onclick="goHome(); return false;">Home</a></li>
             <li><a href="admin.html" class="nav-link active">Admin Dashboard</a></li>
-            <li><a href="#" class="nav-link" onclick="logout()">Logout</a></li>
+            <li><a href="login.html" class="nav-link" onclick="logout(); return false;">Logout</a></li>
         </ul>
     </nav>
 
+    <!-- Main Admin Container -->
     <div class="admin-container">
+        <!-- Header -->
         <div class="admin-header">
-            <h1><i class="fas fa-crown"></i> Admin Dashboard</h1>
-            <p>Manage products, orders, and control your e-commerce platform</p>
+            <h1>Admin Dashboard</h1>
+            <p>Real-time insights, analytics, and full control over your Sansora store</p>
         </div>
 
-        <!-- Admin Tabs -->
+        <!-- Tabs -->
         <div class="admin-tabs">
             <button class="admin-tab active" onclick="switchTab('dashboard', event)">
-                <i class="fas fa-chart-line"></i> Dashboard
+                <i class="fas fa-tachometer-alt"></i> Dashboard
             </button>
             <button class="admin-tab" onclick="switchTab('products', event)">
                 <i class="fas fa-box"></i> Products
@@ -740,7 +475,7 @@
                     <div class="stat-label">Total Products</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-icon"><i class="fas fa-tag"></i></div>
+                    <div class="stat-icon"><i class="fas fa-tags"></i></div>
                     <div class="stat-number" id="totalCategories">0</div>
                     <div class="stat-label">Categories</div>
                 </div>
@@ -755,47 +490,66 @@
                     <div class="stat-label">Total Orders</div>
                 </div>
             </div>
+
+            <!-- Charts & Activity -->
+            <div class="dashboard-grid">
+                <div class="chart-card">
+                    <div class="chart-title">Sales Trend (Last 7 Days)</div>
+                    <canvas id="salesChart"></canvas>
+                </div>
+                <div class="chart-card">
+                    <div class="chart-title">Products by Category</div>
+                    <canvas id="categoryChart"></canvas>
+                </div>
+                <div class="chart-card recent-activity">
+                    <div class="chart-title">Recent Activity</div>
+                    <div id="activityFeed">
+                        <p style="text-align:center;color:rgba(255,255,255,.6);padding:1rem;">No recent activity</p>
+                    </div>
+                    <div class="quick-actions">
+                        <button class="quick-btn export" onclick="exportData()">
+                            <i class="fas fa-download"></i> Export Report
+                        </button>
+                        <button class="quick-btn backup" onclick="backupData()">
+                            <i class="fas fa-shield-alt"></i> Backup Data
+                        </button>
+                        <button class="quick-btn report" onclick="generateReport()">
+                            <i class="fas fa-chart-line"></i> Generate Report
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Products Content -->
-        <div id="productsContent" style="display: none;">
+        <div id="productsContent" style="display:none;">
             <div class="admin-controls">
                 <button class="control-btn add" onclick="showAddProductModal()">
                     <i class="fas fa-plus"></i> Add Product
                 </button>
                 <button class="control-btn" onclick="refreshData()">
-                    <i class="fas fa-sync"></i> Refresh Data
+                    <i class="fas fa-sync-alt"></i> Refresh Data
                 </button>
                 <button class="control-btn delete" onclick="toggleDeleteMode()">
-                    <i class="fas fa-trash"></i> <span id="deleteModeText">Delete Mode</span>
+                    <i class="fas fa-trash-alt"></i> <span id="deleteModeText">Delete Mode</span>
                 </button>
             </div>
-
             <div class="products-table">
-                <div class="table-header">
-                    <i class="fas fa-list"></i> Product Management
-                </div>
-                <div class="products-grid-admin" id="productsGridAdmin">
-                    <!-- Products will be loaded here -->
-                </div>
+                <div class="table-header">Product Management</div>
+                <div class="products-grid-admin" id="productsGridAdmin"></div>
             </div>
         </div>
 
         <!-- Orders Content -->
-        <div id="ordersContent" style="display: none;">
+        <div id="ordersContent" style="display:none;">
             <div class="admin-controls">
                 <button class="control-btn" onclick="refreshOrders()">
-                    <i class="fas fa-sync"></i> Refresh Orders
+                    <i class="fas fa-sync-alt"></i> Refresh Orders
                 </button>
             </div>
-
             <div class="orders-table">
-                <div class="table-header">
-                    <i class="fas fa-shopping-cart"></i> Order Management
-                </div>
-                <div class="orders-grid-admin" id="ordersGridAdmin">
-                    <!-- Orders will be loaded here -->
-                </div>
+                <div class="table-header">Order Management</div>
+                <div class="orders-grid-admin" id="ordersGridAdmin"></div>
             </div>
         </div>
     </div>
@@ -805,7 +559,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h2 id="modalTitle">Add New Product</h2>
-                <button class="modal-close" onclick="closeModal()">&times;</button>
+                <button class="modal-close" onclick="closeModal()">x</button>
             </div>
             <form id="productForm">
                 <div class="form-group">
@@ -843,8 +597,8 @@
                     <label for="productInventory">Inventory Count *</label>
                     <input type="number" id="productInventory" min="0" value="100" required>
                 </div>
-                <button type="submit" class="control-btn add" style="width: 100%; justify-content: center;">
-                    <i class="fas fa-save"></i> <span id="submitBtnText">Add Product</span>
+                <button type="submit" class="control-btn add" style="width:100%;justify-content:center;">
+                    <i class="fas fa-plus"></i> <span id="submitBtnText">Add Product</span>
                 </button>
             </form>
         </div>
@@ -855,164 +609,130 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h2>Order Details</h2>
-                <button class="modal-close" onclick="closeOrderModal()">&times;</button>
+                <button class="modal-close" onclick="closeOrderModal()">x</button>
             </div>
-            <div id="orderDetailsContent">
-                <!-- Order details will be loaded here -->
-            </div>
+            <div id="orderDetailsContent"></div>
         </div>
     </div>
 
+    <!-- JavaScript -->
     <script>
-        let deleteMode = false;
-        let editingProductId = null;
-        let adminOrders = [];
-        let currentTab = 'dashboard';
-        
-        function getAdminProducts() {
-            const savedProducts = localStorage.getItem('sansora_products');
-            if (savedProducts) {
-                try {
-                    return JSON.parse(savedProducts);
-                } catch (error) {
-                    console.error('Error loading products:', error);
-                    return [];
-                }
-            }
-            return [];
+        // Message popup
+        function showMessage(text, type){
+            const div = document.createElement('div');
+            div.className = `message-popup ${type}`;
+            div.textContent = text;
+            div.style.background = type === 'success' 
+                ? 'linear-gradient(135deg,#27ae60,#2ecc71)' 
+                : 'linear-gradient(135deg,#e74c3c,#c0392b)';
+            document.body.appendChild(div);
+            setTimeout(() => div.remove(), 3000);
         }
-        
-        function initializeAdmin() {
+
+        let deleteMode = false, editingProductId = null, adminOrders = [], currentTab = 'dashboard';
+        let salesChart, categoryChart;
+        const activityLog = [];
+
+        function getAdminProducts(){
+            const data = localStorage.getItem('sansora_products');
+            return data ? JSON.parse(data) : [];
+        }
+
+        function initializeAdmin(){
             loadOrders();
             loadAdminData();
             displayAdminProducts();
             displayAdminOrders();
-            console.log('✅ Admin initialized. Total products:', getAdminProducts().length);
+            initCharts();
+            updateCharts();
+            logActivity('Logged in to dashboard', 'Admin session', 'new');
         }
-        
-        function switchTab(tab, event) {
+
+        function switchTab(tab, event){
             currentTab = tab;
-            
-            document.querySelectorAll('.admin-tab').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.admin-tab').forEach(b => b.classList.remove('active'));
             event.target.closest('.admin-tab').classList.add('active');
-            
             document.getElementById('dashboardContent').style.display = tab === 'dashboard' ? 'block' : 'none';
             document.getElementById('productsContent').style.display = tab === 'products' ? 'block' : 'none';
             document.getElementById('ordersContent').style.display = tab === 'orders' ? 'block' : 'none';
-            
-            if (tab === 'orders') {
-                refreshOrders();
-            } else if (tab === 'products') {
-                displayAdminProducts();
-            }
+            if(tab === 'orders') refreshOrders();
+            else if(tab === 'products') displayAdminProducts();
         }
-        
-        function loadAdminData() {
-            const adminProducts = getAdminProducts();
-            const totalProducts = adminProducts.length;
-            const categories = [...new Set(adminProducts.map(p => p.category))];
-            const totalCategories = categories.length;
-            const averagePrice = totalProducts > 0 ? Math.round(adminProducts.reduce((sum, p) => sum + p.price, 0) / totalProducts) : 0;
-            const totalOrders = adminOrders.length;
-            
-            document.getElementById('totalProducts').textContent = totalProducts;
-            document.getElementById('totalCategories').textContent = totalCategories;
-            document.getElementById('averagePrice').textContent = `₹${averagePrice.toLocaleString('en-IN')}`;
-            document.getElementById('totalOrders').textContent = totalOrders;
+
+        function loadAdminData(){
+            const products = getAdminProducts();
+            const total = products.length;
+            const categories = [...new Set(products.map(p => p.category))].length;
+            const avg = total > 0 ? Math.round(products.reduce((s,p) => s + p.price, 0) / total) : 0;
+            const orders = adminOrders.length;
+
+            document.getElementById('totalProducts').textContent = total;
+            document.getElementById('totalCategories').textContent = categories;
+            document.getElementById('averagePrice').textContent = `₹${avg.toLocaleString('en-IN')}`;
+            document.getElementById('totalOrders').textContent = orders;
         }
-        
-        function loadOrders() {
-            const savedOrders = localStorage.getItem('user_orders');
-            if (savedOrders) {
-                adminOrders = JSON.parse(savedOrders);
-            } else {
-                adminOrders = [];
-            }
+
+        function loadOrders(){
+            const data = localStorage.getItem('user_orders');
+            adminOrders = data ? JSON.parse(data) : [];
         }
-        
-        function displayAdminProducts() {
-            const adminProducts = getAdminProducts();
+
+        function displayAdminProducts(){
+            const products = getAdminProducts();
             const grid = document.getElementById('productsGridAdmin');
-            if (!grid) return;
-            
-            if (adminProducts.length === 0) {
-                grid.innerHTML = '<p style="text-align: center; padding: 2rem; color: rgba(255,255,255,0.7);">No products available. Add your first product!</p>';
+            if(products.length === 0){
+                grid.innerHTML = '<p style="text-align:center;padding:2rem;color:rgba(255,255,255,.7)">No products available. Add your first product!</p>';
                 return;
             }
-            
-            grid.innerHTML = adminProducts.map(product => `
-                <div class="product-row" data-id="${product.id}">
-                    <img src="${product.image}" alt="${product.title}" class="product-image-small" onerror="this.src='https://via.placeholder.com/70x70?text=No+Image'">
-                    <div>
-                        <strong>${product.title}</strong><br>
-                        <small style="color: rgba(255,255,255,0.6);">${product.category.toUpperCase()}</small>
-                    </div>
-                    <div style="font-weight: 600;">₹${product.price.toLocaleString('en-IN')}</div>
-                    <div style="font-size: 0.9rem; color: rgba(255,255,255,0.6);">
-                        ${product.description.substring(0, 50)}...
-                    </div>
-                    <div style="text-align: center; color: rgba(255,255,255,0.6);">
-                        <small>SKU: ${product.sku || 'N/A'}</small><br>
-                        <small>Stock: ${product.inventory_count || 0}</small>
+            grid.innerHTML = products.map(p => `
+                <div class="product-row" data-id="${p.id}">
+                    <img src="${p.image}" alt="${p.title}" class="product-image-small" onerror="this.src='https://via.placeholder.com/70x70?text=No+Image'">
+                    <div><strong>${p.title}</strong><br><small style="color:rgba(255,255,255,.6)">${p.category.toUpperCase()}</small></div>
+                    <div style="font-weight:600">₹${p.price.toLocaleString('en-IN')}</div>
+                    <div style="font-size:.9rem;color:rgba(255,255,255,.6)">${p.description.substring(0,50)}...</div>
+                    <div style="text-align:center;color:rgba(255,255,255,.6)">
+                        <small>SKU: ${p.sku || 'N/A'}</small><br>
+                        <small>Stock: ${p.inventory_count || 0}</small>
                     </div>
                     <div class="product-actions">
-                        <button class="action-btn edit-btn" onclick="editProduct(${product.id})">
-                            <i class="fas fa-edit"></i> Edit
-                        </button>
-                        <button class="action-btn delete-btn" onclick="deleteProduct(${product.id})" 
-                                ${deleteMode ? 'style="background: linear-gradient(135deg, #27ae60, #2ecc71);"' : ''}>
-                            <i class="fas fa-${deleteMode ? 'check' : 'trash'}"></i>
+                        <button class="action-btn edit-btn" onclick="editProduct(${p.id})">Edit</button>
+                        <button class="action-btn delete-btn" onclick="deleteProduct(${p.id})" 
+                                ${deleteMode ? 'style="background:linear-gradient(135deg,#27ae60,#2ecc71)"' : ''}>
+                            ${deleteMode ? 'Confirm' : 'Delete'}
                         </button>
                     </div>
                 </div>
             `).join('');
-            
-            console.log('✅ Displayed', adminProducts.length, 'products in admin');
         }
-        
-        function displayAdminOrders() {
+
+        function displayAdminOrders(){
             const grid = document.getElementById('ordersGridAdmin');
-            if (!grid) return;
-            
-            if (adminOrders.length === 0) {
-                grid.innerHTML = '<p style="text-align: center; padding: 2rem; color: rgba(255,255,255,0.7);">No orders available</p>';
+            if(adminOrders.length === 0){
+                grid.innerHTML = '<p style="text-align:center;padding:2rem;color:rgba(255,255,255,.7)">No orders available</p>';
                 return;
             }
-            
-            grid.innerHTML = adminOrders.map(order => `
-                <div class="order-row" data-id="${order.id}">
+            grid.innerHTML = adminOrders.map(o => `
+                <div class="order-row" data-id="${o.id}">
+                    <div><strong>#${o.id}</strong><br><small style="color:rgba(255,255,255,.6)">${o.date}</small></div>
+                    <div><strong>Items:</strong> ${o.items.length}<br><small style="color:rgba(255,255,255,.6)">${o.items.map(i=>i.title).join(', ').substring(0,30)}...</small></div>
+                    <div><strong>₹${o.total.toLocaleString('en-IN')}</strong><br><small style="color:rgba(255,255,255,.6)">${o.paymentMethod.toUpperCase()}</small></div>
                     <div>
-                        <strong>#${order.id}</strong><br>
-                        <small style="color: rgba(255,255,255,0.6);">${order.date}</small>
-                    </div>
-                    <div>
-                        <strong>Items:</strong> ${order.items.length}<br>
-                        <small style="color: rgba(255,255,255,0.6);">${order.items.map(i => i.title).join(', ').substring(0, 30)}...</small>
-                    </div>
-                    <div>
-                        <strong>₹${order.total.toLocaleString('en-IN')}</strong><br>
-                        <small style="color: rgba(255,255,255,0.6);">${order.paymentMethod.toUpperCase()}</small>
-                    </div>
-                    <div>
-                        <select class="order-status-select status-${order.status.toLowerCase()}" 
-                                onchange="updateOrderStatus('${order.id}', this.value)">
-                            <option value="Pending" ${order.status === 'Pending' ? 'selected' : ''}>Pending</option>
-                            <option value="Processing" ${order.status === 'Processing' ? 'selected' : ''}>Processing</option>
-                            <option value="Shipped" ${order.status === 'Shipped' ? 'selected' : ''}>Shipped</option>
-                            <option value="Delivered" ${order.status === 'Delivered' ? 'selected' : ''}>Delivered</option>
-                            <option value="Cancelled" ${order.status === 'Cancelled' ? 'selected' : ''}>Cancelled</option>
+                        <select class="order-status-select status-${o.status.toLowerCase()}" onchange="updateOrderStatus('${o.id}',this.value)">
+                            <option value="Pending" ${o.status==='Pending'?'selected':''}>Pending</option>
+                            <option value="Processing" ${o.status==='Processing'?'selected':''}>Processing</option>
+                            <option value="Shipped" ${o.status==='Shipped'?'selected':''}>Shipped</option>
+                            <option value="Delivered" ${o.status==='Delivered'?'selected':''}>Delivered</option>
+                            <option value="Cancelled" ${o.status==='Cancelled'?'selected':''}>Cancelled</option>
                         </select>
                     </div>
                     <div class="order-actions">
-                        <button class="action-btn view-btn" onclick="viewOrderDetails('${order.id}')">
-                            <i class="fas fa-eye"></i> View
-                        </button>
+                        <button class="action-btn view-btn" onclick="viewOrderDetails('${o.id}')">View</button>
                     </div>
                 </div>
             `).join('');
         }
-        
-        function showAddProductModal() {
+
+        function showAddProductModal(){
             editingProductId = null;
             document.getElementById('modalTitle').textContent = 'Add New Product';
             document.getElementById('submitBtnText').textContent = 'Add Product';
@@ -1020,171 +740,227 @@
             document.getElementById('productInventory').value = 100;
             document.getElementById('addProductModal').style.display = 'block';
         }
-        
-        function editProduct(productId) {
-            const adminProducts = getAdminProducts();
-            const product = adminProducts.find(p => p.id === productId);
-            if (!product) {
-                showMessage('Product not found', 'error');
-                return;
-            }
-            
-            editingProductId = productId;
+
+        function editProduct(id){
+            const products = getAdminProducts();
+            const p = products.find(x => x.id === id);
+            if(!p) return showMessage('Product not found', 'error');
+            editingProductId = id;
             document.getElementById('modalTitle').textContent = 'Edit Product';
             document.getElementById('submitBtnText').textContent = 'Update Product';
-            
-            document.getElementById('productTitle').value = product.title;
-            document.getElementById('productCategory').value = product.category;
-            document.getElementById('productPrice').value = product.price;
-            document.getElementById('productImage').value = product.image;
-            document.getElementById('productDescription').value = product.description;
-            document.getElementById('productSKU').value = product.sku || '';
-            document.getElementById('productInventory').value = product.inventory_count || 100;
-            
+            document.getElementById('productTitle').value = p.title;
+            document.getElementById('productCategory').value = p.category;
+            document.getElementById('productPrice').value = p.price;
+            document.getElementById('productImage').value = p.image;
+            document.getElementById('productDescription').value = p.description;
+            document.getElementById('productSKU').value = p.sku || '';
+            document.getElementById('productInventory').value = p.inventory_count || 100;
             document.getElementById('addProductModal').style.display = 'block';
         }
-        
-        function deleteProduct(productId) {
-            if (!deleteMode) {
-                showMessage('Enable delete mode first!', 'error');
-                return;
-            }
-            
-            if (confirm('Are you sure you want to delete this product? This action cannot be undone.')) {
-                let adminProducts = getAdminProducts();
-                const productIndex = adminProducts.findIndex(p => p.id === productId);
-                
-                if (productIndex > -1) {
-                    const deletedProduct = adminProducts.splice(productIndex, 1)[0];
-                    localStorage.setItem('sansora_products', JSON.stringify(adminProducts));
-                    
-                    showMessage(`✅ ${deletedProduct.title} deleted successfully!`, 'success');
+
+        function deleteProduct(id){
+            if(!deleteMode) return showMessage('Enable delete mode first!', 'error');
+            if(confirm('Delete this product?')){
+                let products = getAdminProducts();
+                const idx = products.findIndex(x => x.id === id);
+                if(idx > -1){
+                    const title = products[idx].title;
+                    products.splice(idx,1);
+                    localStorage.setItem('sansora_products', JSON.stringify(products));
+                    showMessage('Product deleted!', 'success');
+                    logActivity('Deleted product', title, 'delete');
                     loadAdminData();
                     displayAdminProducts();
-                    
-                    console.log('✅ Product deleted. Remaining products:', adminProducts.length);
+                    updateCharts();
                 }
             }
         }
-        
-        function toggleDeleteMode() {
+
+        function toggleDeleteMode(){
             deleteMode = !deleteMode;
-            const deleteModeText = document.getElementById('deleteModeText');
-            const deleteBtn = deleteModeText.parentElement;
-            
-            if (deleteMode) {
-                deleteModeText.textContent = 'Exit Delete Mode';
-                deleteBtn.style.background = 'linear-gradient(135deg, #27ae60, #2ecc71)';
-                showMessage('⚠️ Delete mode enabled - Click delete buttons to remove products', 'success');
-            } else {
-                deleteModeText.textContent = 'Delete Mode';
-                deleteBtn.style.background = 'linear-gradient(135deg, #e74c3c, #c0392b)';
+            const txt = document.getElementById('deleteModeText');
+            const btn = txt.parentElement;
+            if(deleteMode){
+                txt.textContent = 'Exit Delete Mode';
+                btn.style.background = 'linear-gradient(135deg,#27ae60,#2ecc71)';
+                showMessage('Delete mode enabled', 'success');
+            }else{
+                txt.textContent = 'Delete Mode';
+                btn.style.background = 'linear-gradient(135deg,#e74c3c,#c0392b)';
                 showMessage('Delete mode disabled', 'success');
             }
-            
             displayAdminProducts();
         }
-        
-        function updateOrderStatus(orderId, newStatus) {
-            const orderIndex = adminOrders.findIndex(o => o.id === orderId);
-            if (orderIndex > -1) {
-                adminOrders[orderIndex].status = newStatus;
+
+        function updateOrderStatus(id, status){
+            const idx = adminOrders.findIndex(o => o.id === id);
+            if(idx > -1){
+                adminOrders[idx].status = status;
                 localStorage.setItem('user_orders', JSON.stringify(adminOrders));
-                showMessage(`Order status updated to ${newStatus}`, 'success');
+                showMessage(`Status updated to ${status}`, 'success');
                 displayAdminOrders();
                 loadAdminData();
             }
         }
-        
-        function viewOrderDetails(orderId) {
-            const order = adminOrders.find(o => o.id === orderId);
-            if (!order) return;
-            
-            const content = `
-                <div style="padding: 1rem;">
-                    <h3 style="color: #fff;">Order #${order.id}</h3>
-                    <p style="color: rgba(255,255,255,0.8);"><strong>Date:</strong> ${order.date}</p>
-                    <p style="color: rgba(255,255,255,0.8);"><strong>Status:</strong> <span class="status-${order.status.toLowerCase()}" style="padding: 0.3rem 0.8rem; border-radius: 5px;">${order.status}</span></p>
-                    <p style="color: rgba(255,255,255,0.8);"><strong>Payment:</strong> ${order.paymentMethod.toUpperCase()}</p>
-                    <p style="color: rgba(255,255,255,0.8);"><strong>Total:</strong> ₹${order.total.toLocaleString('en-IN')}</p>
-                    
-                    <h4 style="margin-top: 2rem; color: #fff;">Items:</h4>
-                    <div style="display: grid; gap: 1rem;">
-                        ${order.items.map(item => `
-                            <div style="display: flex; gap: 1rem; padding: 1rem; background: rgba(255,255,255,0.05); border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
-                                <img src="${item.image}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px;">
-                                <div style="flex: 1; color: rgba(255,255,255,0.9);">
-                                    <strong>${item.title}</strong><br>
-                                    <small style="color: rgba(255,255,255,0.6);">${item.category}</small><br>
-                                    <span>Qty: ${item.quantity} × ₹${item.price.toLocaleString('en-IN')}</span>
-                                </div>
-                                <div style="text-align: right; font-weight: 700; color: #8a63d2;">
-                                    ₹${(item.price * item.quantity).toLocaleString('en-IN')}
-                                </div>
-                            </div>
-                        `).join('')}
+
+        function viewOrderDetails(id){
+            const order = adminOrders.find(o => o.id === id);
+            if(!order) return;
+            const items = order.items.map(it => `
+                <div style="display:flex;gap:1rem;padding:1rem;background:rgba(255,255,255,.05);border-radius:12px;border:1px solid rgba(255,255,255,.1)">
+                    <img src="${it.image}" style="width:60px;height:60px;object-fit:cover;border-radius:8px">
+                    <div style="flex:1;color:rgba(255,255,255,.9)">
+                        <strong>${it.title}</strong><br>
+                        <small style="color:rgba(255,255,255,.6)">${it.category}</small><br>
+                        <span>Qty: ${it.quantity} × ₹${it.price.toLocaleString('en-IN')}</span>
+                    </div>
+                    <div style="text-align:right;font-weight:700;color:#8a63d2">
+                        ₹${(it.price*it.quantity).toLocaleString('en-IN')}
                     </div>
                 </div>
+            `).join('');
+            document.getElementById('orderDetailsContent').innerHTML = `
+                <div style="padding:1rem">
+                    <h3 style="color:#fff">Order #${order.id}</h3>
+                    <p style="color:rgba(255,255,255,.8)"><strong>Date:</strong> ${order.date}</p>
+                    <p style="color:rgba(255,255,255,.8)"><strong>Status:</strong> 
+                        <span class="status-${order.status.toLowerCase()}" style="padding:.3rem .8rem;border-radius:5px">${order.status}</span>
+                    </p>
+                    <p style="color:rgba(255,255,255,.8)"><strong>Payment:</strong> ${order.paymentMethod.toUpperCase()}</p>
+                    <p style="color:rgba(255,255,255,.8)"><strong>Total:</strong> ₹${order.total.toLocaleString('en-IN')}</p>
+                    <h4 style="margin-top:2rem;color:#fff">Items:</h4>
+                    <div style="display:grid;gap:1rem">${items}</div>
+                </div>
             `;
-            
-            document.getElementById('orderDetailsContent').innerHTML = content;
             document.getElementById('viewOrderModal').style.display = 'block';
         }
-        
-        function closeModal() {
-            document.getElementById('addProductModal').style.display = 'none';
-            editingProductId = null;
+
+        function closeModal(){ 
+            document.getElementById('addProductModal').style.display = 'none'; 
+            editingProductId = null; 
         }
-        
-        function closeOrderModal() {
-            document.getElementById('viewOrderModal').style.display = 'none';
+        function closeOrderModal(){ 
+            document.getElementById('viewOrderModal').style.display = 'none'; 
         }
-        
-        function refreshData() {
-            loadAdminData();
-            displayAdminProducts();
-            showMessage('✅ Data refreshed successfully!', 'success');
+
+        function refreshData(){ 
+            loadAdminData(); 
+            displayAdminProducts(); 
+            updateCharts();
+            showMessage('Data refreshed!', 'success'); 
         }
-        
-        function refreshOrders() {
-            loadOrders();
-            displayAdminOrders();
-            loadAdminData();
-            showMessage('✅ Orders refreshed successfully!', 'success');
+        function refreshOrders(){ 
+            loadOrders(); 
+            displayAdminOrders(); 
+            loadAdminData(); 
+            showMessage('Orders refreshed!', 'success'); 
         }
-        
-        function logout() {
-            if (confirm('Are you sure you want to logout?')) {
-                localStorage.removeItem('sansora_user');
-                localStorage.removeItem('sansora_remember');
-                window.location.href = 'login.html';
+
+        // Activity Logging
+        function logActivity(action, item, type = 'update') {
+            const time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            activityLog.unshift({ action, item, type, time });
+            if (activityLog.length > 8) activityLog.pop();
+            updateActivityFeed();
+        }
+
+        function updateActivityFeed() {
+            const feed = document.getElementById('activityFeed');
+            if (activityLog.length === 0) {
+                feed.innerHTML = '<p style="text-align:center;color:rgba(255,255,255,.6);padding:1rem;">No recent activity</p>';
+                return;
             }
+            feed.innerHTML = activityLog.map(log => `
+                <div class="activity-item">
+                    <div class="activity-icon activity-${log.type}">
+                        ${log.type === 'new' ? '<i class="fas fa-plus"></i>' : 
+                          log.type === 'delete' ? '<i class="fas fa-trash"></i>' : 
+                          '<i class="fas fa-edit"></i>'}
+                    </div>
+                    <div class="activity-text">
+                        <strong>${log.action}</strong><br>
+                        <small>${log.item}</small>
+                    </div>
+                    <div class="activity-time">${log.time}</div>
+                </div>
+            `).join('');
         }
-        
-        function showMessage(text, type) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message-popup ${type}`;
-            messageDiv.textContent = text;
-            messageDiv.style.cssText = `
-                position: fixed;
-                top: 100px;
-                right: 20px;
-                padding: 1.2rem 2rem;
-                border-radius: 15px;
-                color: white;
-                font-weight: 500;
-                z-index: 10001;
-                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-                background: ${type === 'success' ? 'linear-gradient(135deg, #27ae60, #2ecc71)' : 'linear-gradient(135deg, #e74c3c, #c0392b)'};
-            `;
-            
-            document.body.appendChild(messageDiv);
-            setTimeout(() => messageDiv.remove(), 3000);
+
+        // Charts
+        function initCharts() {
+            const ctx1 = document.getElementById('salesChart').getContext('2d');
+            const ctx2 = document.getElementById('categoryChart').getContext('2d');
+
+            salesChart = new Chart(ctx1, {
+                type: 'line',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [{
+                        label: 'Daily Sales (₹)',
+                        data: [12000, 19000, 15000, 25000, 22000, 30000, 28000],
+                        borderColor: '#8a63d2',
+                        backgroundColor: 'rgba(138, 99, 210, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: { responsive: true, plugins: { legend: { display: false } } }
+            });
+
+            categoryChart = new Chart(ctx2, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Electronics', 'Fashion', 'Home', 'Books', 'Sports'],
+                    datasets: [{
+                        data: [35, 25, 20, 10, 10],
+                        backgroundColor: ['#8a63d2', '#27ae60', '#feca57', '#3498db', '#e74c3c']
+                    }]
+                },
+                options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+            });
         }
-        
-        document.getElementById('productForm').addEventListener('submit', function(e) {
+
+        function updateCharts() {
+            const products = getAdminProducts();
+            const categoryCount = {};
+            products.forEach(p => {
+                categoryCount[p.category] = (categoryCount[p.category] || 0) + 1;
+            });
+
+            const labels = Object.keys(categoryCount);
+            const data = Object.values(categoryCount);
+            const colors = labels.map(() => `hsl(${Math.random()*360}, 70%, 60%)`);
+
+            categoryChart.data.labels = labels.length ? labels : ['No Data'];
+            categoryChart.data.datasets[0].data = data.length ? data : [1];
+            categoryChart.data.datasets[0].backgroundColor = colors;
+            categoryChart.update();
+        }
+
+        // Quick Actions
+        function exportData() {
+            const data = { products: getAdminProducts(), orders: adminOrders };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; a.download = `sansora-backup-${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            showMessage('Data exported!', 'success');
+            logActivity('Exported all data', 'Backup file', 'new');
+        }
+
+        function backupData() {
+            exportData();
+        }
+
+        function generateReport() {
+            showMessage('Report generation started...', 'success');
+            logActivity('Generated sales report', 'Last 30 days', 'new');
+        }
+
+        // Form Submission with Activity Logging
+        document.getElementById('productForm').addEventListener('submit', function(e){
             e.preventDefault();
-            
             const title = document.getElementById('productTitle').value.trim();
             const category = document.getElementById('productCategory').value;
             const price = parseInt(document.getElementById('productPrice').value);
@@ -1192,89 +968,50 @@
             const description = document.getElementById('productDescription').value.trim();
             const sku = document.getElementById('productSKU').value.trim();
             const inventory_count = parseInt(document.getElementById('productInventory').value);
-            
-            if (!title || !category || !price || !image || !description || !sku) {
-                showMessage('❌ Please fill all required fields!', 'error');
+
+            if(!title || !category || !price || !image || !description || !sku){
+                showMessage('Please fill all required fields!', 'error');
                 return;
             }
-            
-            let adminProducts = getAdminProducts();
-            
-            if (editingProductId) {
-                const productIndex = adminProducts.findIndex(p => p.id === editingProductId);
-                if (productIndex > -1) {
-                    adminProducts[productIndex] = {
-                        ...adminProducts[productIndex],
-                        title, 
-                        category, 
-                        price, 
-                        image, 
-                        description, 
-                        sku,
-                        inventory_count
-                    };
-                    
-                    localStorage.setItem('sansora_products', JSON.stringify(adminProducts));
-                    showMessage('✅ Product updated successfully!', 'success');
-                    console.log('✅ Product updated:', adminProducts[productIndex]);
+
+            let products = getAdminProducts();
+            if(editingProductId){
+                const idx = products.findIndex(p => p.id === editingProductId);
+                if(idx > -1){
+                    products[idx] = { ...products[idx], title, category, price, image, description, sku, inventory_count };
+                    localStorage.setItem('sansora_products', JSON.stringify(products));
+                    showMessage('Product updated!', 'success');
+                    logActivity('Updated product', title, 'update');
                 }
-            } else {
-                const newId = adminProducts.length > 0 ? Math.max(...adminProducts.map(p => p.id)) + 1 : 1;
+            }else{
+                const newId = products.length ? Math.max(...products.map(p => p.id)) + 1 : 1;
                 const newProduct = {
-                    id: newId,
-                    title,
-                    category,
-                    price,
-                    image,
-                    description,
-                    sku,
-                    rating: 4.5,
-                    reviews_count: 0,
-                    inventory_count,
+                    id: newId, title, category, price, image, description, sku,
+                    rating: 4.5, reviews_count: 0, inventory_count,
                     delivery_time: "2-3 business days",
-                    features: [
-                        "High quality product",
-                        "Fast delivery",
-                        "Warranty included",
-                        "Customer support available"
-                    ],
-                    specs: {
-                        "Brand": "Premium",
-                        "Quality": "High",
-                        "Warranty": "1 Year"
-                    },
-                    images: [
-                        { url: image, is_main: true, is_thumbnail: true }
-                    ]
+                    features: ["High quality","Fast delivery","Warranty","Support"],
+                    specs: { "Brand": "Premium", "Quality": "High", "Warranty": "1 Year" },
+                    images: [{ url: image, is_main: true, is_thumbnail: true }]
                 };
-                
-                adminProducts.push(newProduct);
-                localStorage.setItem('sansora_products', JSON.stringify(adminProducts));
-                
-                showMessage('✅ Product added successfully!', 'success');
-                console.log('✅ New product added:', newProduct);
-                console.log('✅ Total products now:', adminProducts.length);
+                products.push(newProduct);
+                localStorage.setItem('sansora_products', JSON.stringify(products));
+                showMessage('Product added!', 'success');
+                logActivity('Added new product', title, 'new');
             }
-            
             loadAdminData();
             displayAdminProducts();
+            updateCharts();
             closeModal();
         });
-        
-        window.onclick = function(event) {
-            const modal = document.getElementById('addProductModal');
-            const orderModal = document.getElementById('viewOrderModal');
-            if (event.target === modal) {
-                closeModal();
-            }
-            if (event.target === orderModal) {
-                closeOrderModal();
-            }
-        }
-        
-        document.addEventListener('DOMContentLoaded', function() {
-            setTimeout(initializeAdmin, 100);
-        });
+
+        // Close modals on outside click
+        window.onclick = function(e){
+            if(e.target === document.getElementById('addProductModal')) closeModal();
+            if(e.target === document.getElementById('viewOrderModal')) closeOrderModal();
+        };
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', () => setTimeout(initializeAdmin, 100));
     </script>
 </body>
 </html>

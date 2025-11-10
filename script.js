@@ -170,7 +170,7 @@ function getDefaultProducts() {
             title: "Luxury Swiss Watch",
             category: "fashion",
             price: 45999,
-            image: "https://media.istockphoto.com/id/97472180/photo/wristwatch.webp?w=600",
+            image: "https://images.unsplash.com/photo-1724843143577-92029154397a?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1170sockphoto.com/id/97472180/photo/wristwatch.webp?w=600",
             description: "Precision Swiss-made timepiece with automatic movement, sapphire crystal, and water resistance.",
             sku: "SW-LUX-011",
             rating: 4.9,

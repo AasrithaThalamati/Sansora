@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script src="https://js.stripe.com/v3/"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shopping Cart - Sansora</title>
@@ -661,7 +660,7 @@
                         </div>
                         
                         <button class="checkout-btn" onclick="proceedToCheckout()">
-                            <i class="fas fa-lock"></i> Pay with Stripe
+                            <i class="fas fa-credit-card"></i> Proceed to Checkout
                         </button>
                         
                         <button class="continue-shopping" onclick="window.location.href='index.html'">
@@ -683,44 +682,17 @@
         }
         
         function proceedToCheckout() {
-    const cart = loadCart();
-    if (cart.length === 0) {
-        showMessage('Your cart is empty!', 'error');
-        return;
-    }
-
-    // Calculate total amount in rupees
-    const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-    const shipping = subtotal > 999 ? 0 : 99;
-    const tax = Math.round(subtotal * 0.18);
-    const total = subtotal + shipping + tax;
-
-    // Show loading
-    showMessage('Redirecting to Stripe...', 'success');
-
-    // Call Stripe function
-    fetch('/.netlify/functions/create-checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            amount: total,
-            title: `Sansora Order (${cart.length} items)`
-        })
-    })
-    .then(res => res.json())
-    .then(data => {
-        if (data.id) {
-            const stripe = Stripe('pk_test_51SRXQZLekH2bbuGFa5mnZGSHt2NiXkLHt5aaER7JxF04KBpRMDSCge3H1t0jRuwRTTgMpZVTarJLCGHd9pprusT700o49cikyW'); 
-            stripe.redirectToCheckout({ sessionId: data.id });
-        } else {
-            showMessage('Payment failed: ' + (data.error || 'Unknown error'), 'error');
+            const cart = loadCart();
+            if (cart.length === 0) {
+                showMessage('Your cart is empty!', 'error');
+                return;
+            }
+            
+            showMessage('Redirecting to checkout...', 'success');
+            setTimeout(() => {
+                window.location.href = 'checkout.html';
+            }, 1000);
         }
-    })
-    .catch(err => {
-        console.error(err);
-        showMessage('Network error. Try again.', 'error');
-    });
-}
         
         function updateQuantity(productId, newQuantity) {
             if (newQuantity <= 0) {

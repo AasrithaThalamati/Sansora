@@ -9,26 +9,33 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-    <!-- Authentication Check and Redirect -->
+
+    <!-- FIXED: Allow Admin to Access Home Page -->
     <script>
         (function() {
+            // Allow home access if coming from admin
+            if (localStorage.getItem('allow_home') === 'true') {
+                localStorage.removeItem('allow_home');
+                return;
+            }
+
             const savedUser = localStorage.getItem('sansora_user');
-            
             if (!savedUser) {
-                // User not logged in, redirect to login page
                 window.location.href = 'login.html';
                 return;
-          
             }
             
-            // User is logged in, load their data
             try {
                 const userData = JSON.parse(savedUser);
-                console.log('User logged in:', userData.username);
                 window.currentUser = userData;
+                
+                // Only redirect admin if NOT already on admin.html
+                if (userData.isAdmin && !window.location.pathname.includes('admin.html')) {
+                    window.location.href = 'admin.html';
+                    return;
+                }
             } catch (error) {
                 console.error('Error loading user data:', error);
-                // If data is corrupted, redirect to login
                 localStorage.removeItem('sansora_user');
                 window.location.href = 'login.html';
             }
@@ -63,20 +70,20 @@
             <a href="cart.html" class="sidebar-link">
                 <i class="fas fa-shopping-cart"></i> Cart (<span id="sidebar-cart-count">0</span>)
             </a>
-             <a href="track-order.html" class="sidebar-link" id="sidebar-admin-link" style="display: none;">
-                <i class="fas fa-cog"></i> Track Order
+            <a href="track-order.html" class="sidebar-link" id="sidebar-admin-link" style="display: none;">
+                <i class="fas fa-truck"></i> Track Order
             </a>
-             <a href="shipping-info.html" class="sidebar-link" id="sidebar-admin-link" style="display: none;">
-                <i class="fas fa-cog"></i> Shipping Info
+            <a href="shipping-info.html" class="sidebar-link" id="sidebar-admin-link" style="display: none;">
+                <i class="fas fa-shipping-fast"></i> Shipping Info
             </a>
-             <a href="returns.html" class="sidebar-link" id="sidebar-admin-link" style="display: none;">
-                <i class="fas fa-cog"></i> Returns
+            <a href="returns.html" class="sidebar-link" id="sidebar-admin-link" style="display: none;">
+                <i class="fas fa-undo"></i> Returns
             </a>
-             <a href="help-center.html" class="sidebar-link" id="sidebar-admin-link" style="display: none;">
-                <i class="fas fa-cog"></i> Help Center
+            <a href="help-center.html" class="sidebar-link" id="sidebar-admin-link" style="display: none;">
+                <i class="fas fa-question-circle"></i> Help Center
             </a>
             <a href="gifts.html" class="sidebar-link">
-                <i class="fas fa-envelope"></i> Gifts
+                <i class="fas fa-gift"></i> Gifts
             </a>
             <a href="contact.html" class="sidebar-link">
                 <i class="fas fa-envelope"></i> Contact
@@ -111,15 +118,14 @@
                 <li><a href="index.html" class="nav-link active">Home</a></li>
                 <li><a href="deals.html" class="nav-link">Deals</a></li>
                 <li><a href="orders.html" class="nav-link">Orders</a></li>
-                <li id="adminNavLink" style="display: none;"><a href="admin.html" class="nav-link">Admin</a></li>
+                <li><a href="admin.html" class="nav-link">Admin</a></li>
                 <li><a href="cart.html" class="nav-link"><i class="fas fa-shopping-cart"></i> Cart (<span id="cart-count">0</span>)</a></li>
-                <li><a href="contact.html"class="nav-link"><i class="fas fa-envelope"></i> Contact</a></li>
-                <li><a href="login.html" class="nav-link" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
-                <a href="profile.html" id="profileBtn" class="nav-btn">
-                <i class="fas fa-user-circle"></i> Profile
-                <li><a href="admin/index.html" class="nav-link">ADMIN</a></li>
-                </a>
+                <li><a href="contact.html" class="nav-link"><i class="fas fa-envelope"></i> Contact</a></li>
+                <li><a href="login.html" class="nav-link" onclick="logout(); return false;"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
             </ul>
+            <a href="profile.html" id="profileBtn" class="nav-btn">
+                <i class="fas fa-user-circle"></i> Profile
+            </a>
         </div>
     </nav>
 
@@ -507,6 +513,14 @@
             overlay.classList.toggle('active');
             hamburger.classList.toggle('active');
         }
+        function logout() {
+    if (confirm('Are you sure you want to logout?')) {
+        localStorage.removeItem('sansora_user');
+        localStorage.removeItem('sansora_remember');
+        window.location.href = 'login.html';
+    }
+    return false;
+}
 
         // Show admin link if user is admin
         document.addEventListener('DOMContentLoaded', function() {

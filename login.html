@@ -3,32 +3,568 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Sansora Shopping</title>
+    <title>Login - Sansora</title>
+    <link rel="icon" type="image/png" href="logo-black.png">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="login-styles.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0a0e27;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated Background */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 25%, #0f1729 50%, #1e2742 75%, #0a0e27 100%);
+            background-size: 400% 400%;
+            animation: gradientMove 15s ease infinite;
+            z-index: 0;
+        }
+
+        @keyframes gradientMove {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        /* Grid Pattern Overlay */
+        .grid-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                repeating-linear-gradient(0deg, rgba(255,255,255,0.03) 0px, transparent 1px, transparent 40px),
+                repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0px, transparent 1px, transparent 40px);
+            animation: gridMove 20s linear infinite;
+            z-index: 0;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(40px, 40px); }
+        }
+
+        /* Floating Particles */
+        .particles {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(96, 165, 250, 0.6);
+            border-radius: 50%;
+            animation: floatParticle 20s infinite ease-in-out;
+        }
+
+        @keyframes floatParticle {
+            0%, 100% {
+                transform: translate(0, 0) scale(1);
+                opacity: 0.6;
+            }
+            50% {
+                transform: translate(100px, -100px) scale(1.5);
+                opacity: 1;
+            }
+        }
+
+        /* Glowing Orbs */
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: 0.3;
+            animation: floatOrb 15s infinite ease-in-out;
+        }
+
+        .orb-1 {
+            width: 300px;
+            height: 300px;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            top: 10%;
+            left: 10%;
+        }
+
+        .orb-2 {
+            width: 400px;
+            height: 400px;
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            bottom: 10%;
+            right: 10%;
+            animation-delay: -7s;
+        }
+
+        @keyframes floatOrb {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(50px, 50px) scale(1.2); }
+        }
+
+        /* Main Container */
+        .login-page {
+            position: relative;
+            z-index: 2;
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            align-items: center;
+            padding: 2rem;
+            gap: 4rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Left Side - Branding */
+        .brand-section {
+            color: white;
+            animation: fadeInLeft 1s ease;
+            padding: 2rem;
+        }
+
+        @keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .logo-container {
+            margin-bottom: 3rem;
+        }
+
+        .logo-image {
+            width: 200px;
+            height: auto;
+            margin-bottom: 2rem;
+            filter: drop-shadow(0 10px 30px rgba(59, 130, 246, 0.5));
+            animation: logoFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .brand-name {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ffffff, #60a5fa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            letter-spacing: 2px;
+        }
+
+        .brand-tagline {
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 3rem;
+            font-weight: 300;
+        }
+
+        .brand-features {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.2rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-left: 3px solid #3b82f6;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .feature-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateX(10px);
+        }
+
+        .feature-item i {
+            font-size: 1.5rem;
+            color: #60a5fa;
+            min-width: 30px;
+        }
+
+        .feature-text {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1rem;
+        }
+
+        /* Right Side - Login Form */
+        .form-section {
+            background: rgba(255, 255, 255, 0.98);
+            padding: 3rem;
+            border-radius: 24px;
+            box-shadow: 0 30px 90px rgba(0, 0, 0, 0.5);
+            animation: fadeInRight 1s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .form-title {
+            font-size: 2rem;
+            color: #0a0e27;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-subtitle {
+            color: #64748b;
+            font-size: 0.95rem;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #1e293b;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper i {
+            position: absolute;
+            left: 1.2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 1rem;
+        }
+
+        .input-wrapper input {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3.2rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            color: #0a0e27;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .input-wrapper input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+        }
+
+        .input-wrapper input::placeholder {
+            color: #cbd5e1;
+        }
+
+        .toggle-password {
+            left: auto !important;
+            right: 1.2rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .toggle-password:hover {
+            color: #3b82f6;
+        }
+
+        .login-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #475569;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        .checkbox-label input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .forgot-link {
+            color: #3b82f6;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .forgot-link:hover {
+            color: #2563eb;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 1.2rem;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(59, 130, 246, 0.4);
+        }
+
+        .divider {
+            text-align: center;
+            margin: 2rem 0;
+            position: relative;
+            color: #94a3b8;
+            font-size: 0.85rem;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 42%;
+            height: 1px;
+            background: #e2e8f0;
+        }
+
+        .divider::before { left: 0; }
+        .divider::after { right: 0; }
+
+        .demo-credentials {
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .demo-credentials h4 {
+            color: #1e293b;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .demo-credentials h4 i {
+            color: #3b82f6;
+        }
+
+        .credential-box {
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+            font-size: 0.85rem;
+            line-height: 1.8;
+            color: #475569;
+            border: 1px solid #e2e8f0;
+        }
+
+        .credential-box:last-child {
+            margin-bottom: 0;
+        }
+
+        .credential-box strong {
+            color: #1e293b;
+            display: block;
+            margin-bottom: 0.3rem;
+        }
+
+        .credential-box i {
+            color: #3b82f6;
+            margin-right: 0.3rem;
+        }
+
+        .signup-link {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid #e2e8f0;
+            color: #64748b;
+            font-size: 0.95rem;
+        }
+
+        .signup-link a {
+            color: #3b82f6;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .signup-link a:hover {
+            color: #2563eb;
+        }
+
+        .message-popup {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            z-index: 1000;
+            opacity: 0;
+            transform: translateX(400px);
+            transition: all 0.4s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .message-popup.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .message-popup.success {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+
+        .message-popup.error {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+        }
+
+        @media (max-width: 968px) {
+            .login-page {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+
+            .brand-section {
+                text-align: center;
+            }
+
+            .brand-name {
+                font-size: 2.5rem;
+            }
+
+            .form-section {
+                padding: 2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .brand-features {
+                display: none;
+            }
+
+            .message-popup {
+                top: 1rem;
+                right: 1rem;
+                left: 1rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <!-- Animated Background with Product Images -->
-    <div class="login-background">
-        <div class="bg-slideshow" id="bgSlideshow">
-            <!-- Background slides will be dynamically generated -->
-        </div>
-        <div class="gradient-overlay"></div>
-        <div class="particles" id="particles"></div>
-    </div>
+    <!-- Animated Background -->
+    <div class="animated-bg"></div>
+    <div class="grid-pattern"></div>
+    <div class="particles" id="particles"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
 
-    <!-- Login Container -->
-    <div class="login-container">
-        <div class="login-card">
-            <!-- Logo and Header -->
-            <div class="login-header">
-                <img src="logo-black.png" alt="Sansora Logo" class="login-logo">
-                <h2>Welcome Back</h2>
-                <p>Sign in to continue shopping</p>
+    <!-- Main Content -->
+    <div class="login-page">
+        <!-- Left Side - Branding -->
+        <div class="brand-section">
+            <div class="logo-container">
+                <img src="logo-black.png" alt="Sansora Logo" class="logo-image" onerror="this.style.display='none'">
             </div>
+            <h1 class="brand-name">SANSORA</h1>
+            <p class="brand-tagline">Premium Shopping Experience</p>
             
-            <!-- Login Form -->
-            <form class="login-form" id="loginForm">
+            <div class="brand-features">
+                <div class="feature-item">
+                    <i class="fas fa-shield-alt"></i>
+                    <span class="feature-text">Secure & encrypted transactions</span>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-crown"></i>
+                    <span class="feature-text">Exclusive luxury collections</span>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-truck"></i>
+                    <span class="feature-text">Free premium shipping worldwide</span>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-headset"></i>
+                    <span class="feature-text">24/7 VIP customer support</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Side - Login Form -->
+        <div class="form-section">
+            <div class="form-header">
+                <h2 class="form-title">Welcome Back</h2>
+                <p class="form-subtitle">Sign in to access your account</p>
+            </div>
+
+            <form id="loginForm">
                 <div class="input-group">
                     <label for="username">Username</label>
                     <div class="input-wrapper">
@@ -59,38 +595,143 @@
                     Sign In
                 </button>
             </form>
-            
-            <div class="login-divider">
-                <span>or</span>
-            </div>
-            
-            <!-- Demo Credentials -->
+
+            <div class="divider">OR</div>
+
             <div class="demo-credentials">
-                <h4><i class="fas fa-info-circle"></i> Demo Credentials:</h4>
+                <h4><i class="fas fa-info-circle"></i> Demo Credentials</h4>
                 <div class="credential-box">
-                    <strong>User Login:</strong><br>
+                    <strong>User Login:</strong>
                     <i class="fas fa-user-circle"></i> Username: Aasritha_Thalamati<br>
                     <i class="fas fa-key"></i> Password: 1234
                 </div>
                 <div class="credential-box">
-                    <strong>Admin Login:</strong><br>
+                    <strong>Admin Login:</strong>
                     <i class="fas fa-user-shield"></i> Username: admin<br>
                     <i class="fas fa-key"></i> Password: admin123
                 </div>
             </div>
-            
-            <!-- Footer -->
-            <div class="login-footer">
-                <p>Don't have an account? <a href="signup.html">Sign up here</a></p>
+
+            <div class="signup-link">
+                Don't have an account? <a href="signup.html">Create Account</a>
             </div>
         </div>
     </div>
-    
-    <!-- Message Popup -->
+
     <div id="loginMessage" class="message-popup"></div>
-    
-    <!-- Scripts -->
-    <script src="product-data.js"></script>
-    <script src="login-script.js"></script>
+
+    <script>
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                particle.style.animationDelay = `${Math.random() * 5}s`;
+                particle.style.animationDuration = `${15 + Math.random() * 10}s`;
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        document.getElementById('togglePassword').addEventListener('click', function() {
+            const passwordInput = document.getElementById('password');
+            const icon = this;
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        });
+
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const remember = document.getElementById('remember').checked;
+            const loginBtn = document.querySelector('.login-btn');
+            
+            loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing in...';
+            loginBtn.style.pointerEvents = 'none';
+            
+            setTimeout(() => {
+                if ((username === 'Aasritha_Thalamati' && password === '1234') ||
+                    (username === 'admin' && password === 'admin123')) {
+                    
+                    // Create user data object
+                    const userData = {
+                        username: username,
+                        isAdmin: username === 'admin',
+                        loginTime: new Date().toISOString(),
+                        email: username === 'admin' ? 'admin@sansora.com' : 'user@sansora.com'
+                    };
+                    
+                    // Save to localStorage
+                    localStorage.setItem('sansora_user', JSON.stringify(userData));
+                    
+                    // Save remember preference
+                    if (remember) {
+                        localStorage.setItem('sansora_remember', 'true');
+                    } else {
+                        localStorage.removeItem('sansora_remember');
+                    }
+                    
+                    showMessage('Login successful! Redirecting...', 'success');
+                    
+                    setTimeout(() => {
+                        if (username === 'admin') {
+                            window.location.href = 'admin.html';
+                        } else {
+                            window.location.href = 'index.html';
+                        }
+                    }, 1500);
+                } else {
+                    showMessage('Invalid username or password', 'error');
+                    loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Sign In';
+                    loginBtn.style.pointerEvents = 'auto';
+                }
+            }, 1500);
+        });
+
+        function showMessage(text, type) {
+            const messageDiv = document.getElementById('loginMessage');
+            messageDiv.className = `message-popup ${type}`;
+            messageDiv.textContent = text;
+            
+            setTimeout(() => messageDiv.classList.add('show'), 100);
+            
+            setTimeout(() => {
+                messageDiv.classList.remove('show');
+            }, 4000);
+        }
+
+        window.addEventListener('DOMContentLoaded', createParticles);
+        document.getElementById('username').focus();
+
+        // Check if user is already logged in
+        (function() {
+            const savedUser = localStorage.getItem('sansora_user');
+            if (savedUser) {
+                try {
+                    const userData = JSON.parse(savedUser);
+                    // Redirect to appropriate page if already logged in
+                    if (userData.isAdmin) {
+                        window.location.href = 'admin.html';
+                    } else {
+                        window.location.href = 'index.html';
+                    }
+                } catch (error) {
+                    // If error, clear storage and stay on login
+                    localStorage.removeItem('sansora_user');
+                }
+            }
+        })();
+    </script>
 </body>
 </html>

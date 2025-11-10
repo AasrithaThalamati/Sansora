@@ -1,7 +1,7 @@
 cat > netlify.toml << 'EOF'
 [build]
   publish = "."
-  command = "echo 'No build needed'"
+  command = "npm install && echo 'Build complete'"
 
 [[redirects]]
   from = "/*"

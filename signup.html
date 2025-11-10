@@ -4,285 +4,601 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up - Sansora</title>
-    <link rel="stylesheet" href="styles.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="logo-black.png" rel="stylesheet">
     <style>
-        .signup-body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated Gradient Background */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #f8fafc 0%, #ffffff 25%, #f1f5f9 50%, #ffffff 75%, #e0e7ff 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 20s ease infinite;
+            z-index: 0;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        /* Animated Wave Pattern */
+        .wave-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 200px;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 200%;
+            height: 100%;
+        }
+
+        .wave-1 {
+            background: linear-gradient(180deg, transparent, rgba(59, 130, 246, 0.08));
+            animation: wave1 15s linear infinite;
+        }
+
+        .wave-2 {
+            background: linear-gradient(180deg, transparent, rgba(37, 99, 235, 0.05));
+            animation: wave2 20s linear infinite;
+        }
+
+        @keyframes wave1 {
+            0% { transform: translateX(0) translateZ(0) scaleY(1); }
+            50% { transform: translateX(-25%) translateZ(0) scaleY(0.8); }
+            100% { transform: translateX(-50%) translateZ(0) scaleY(1); }
+        }
+
+        @keyframes wave2 {
+            0% { transform: translateX(0) translateZ(0) scaleY(1); }
+            50% { transform: translateX(-25%) translateZ(0) scaleY(1.2); }
+            100% { transform: translateX(-50%) translateZ(0) scaleY(1); }
+        }
+
+        /* Floating Geometric Shapes */
+        .shapes-container {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .floating-shape {
+            position: absolute;
+            opacity: 0.1;
+            animation: floatShape 20s infinite ease-in-out;
+        }
+
+        .shape-1 {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+            top: 10%;
+            left: 10%;
+        }
+
+        .shape-2 {
+            width: 160px;
+            height: 160px;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            border-radius: 63% 37% 54% 46% / 55% 48% 52% 45%;
+            top: 60%;
+            right: 15%;
+            animation-delay: -7s;
+        }
+
+        .shape-3 {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #93c5fd, #60a5fa);
+            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+            bottom: 20%;
+            left: 20%;
+            animation-delay: -14s;
+        }
+
+        @keyframes floatShape {
+            0%, 100% {
+                transform: translate(0, 0) rotate(0deg) scale(1);
+            }
+            33% {
+                transform: translate(60px, -60px) rotate(120deg) scale(1.1);
+            }
+            66% {
+                transform: translate(-40px, 40px) rotate(240deg) scale(0.9);
+            }
+        }
+
+        /* Particle System */
+        .particles {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: rgba(59, 130, 246, 0.5);
+            border-radius: 50%;
+            animation: riseParticle 15s infinite ease-in-out;
+        }
+
+        @keyframes riseParticle {
+            0% {
+                transform: translateY(100vh) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) scale(1);
+                opacity: 0;
+            }
+        }
+
+        /* Main Container */
+        .signup-page {
+            position: relative;
+            z-index: 2;
             min-height: 100vh;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 2rem;
+            padding: 3rem 2rem;
         }
-        
-        .signup-container {
-            width: 100%;
-            max-width: 500px;
-        }
-        
-        .signup-card {
-            background: white;
-            border-radius: 20px;
-            padding: 3rem 2.5rem;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
-            animation: slideUp 0.6s ease;
-        }
-        
-        .signup-header {
+
+        /* Header Section */
+        .page-header {
             text-align: center;
-            margin-bottom: 2.5rem;
+            margin-bottom: 3rem;
+            animation: fadeInDown 1s ease;
         }
-        
-        .signup-logo {
-            height: 50px;
-            margin-bottom: 1.5rem;
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
-        
-        .signup-header h2 {
-            color: #333;
+
+        .logo-header {
+            margin-bottom: 2rem;
+        }
+
+        .logo-image {
+            width: 160px;
+            height: auto;
+            filter: drop-shadow(0 10px 30px rgba(59, 130, 246, 0.3));
+            animation: logoFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            color: #0a0e27;
+            font-weight: 800;
             margin-bottom: 0.5rem;
-            font-size: 2rem;
         }
-        
-        .signup-header p {
-            color: #666;
+
+        .page-subtitle {
             font-size: 1.1rem;
+            color: #64748b;
         }
-        
-        .form-row {
+
+        /* Form Container */
+        .form-wrapper {
+            width: 100%;
+            max-width: 900px;
+            background: white;
+            border-radius: 24px;
+            padding: 3rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+            animation: fadeInUp 1s ease;
+            border: 1px solid #e2e8f0;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
         }
-        
+
         .input-group {
             margin-bottom: 1.5rem;
         }
-        
+
+        .input-group.full-width {
+            grid-column: 1 / -1;
+        }
+
         .input-group label {
             display: block;
             margin-bottom: 0.5rem;
-            color: #333;
-            font-weight: 500;
+            color: #1e293b;
+            font-weight: 600;
+            font-size: 0.9rem;
         }
-        
+
         .input-wrapper {
             position: relative;
         }
-        
+
         .input-wrapper i {
             position: absolute;
-            left: 15px;
+            left: 1rem;
             top: 50%;
             transform: translateY(-50%);
-            color: #999;
+            color: #94a3b8;
+            font-size: 0.95rem;
         }
-        
+
         .input-wrapper input,
         .input-wrapper select {
             width: 100%;
-            padding: 1rem 1rem 1rem 3rem;
-            border: 2px solid #e9ecef;
-            border-radius: 10px;
-            font-size: 1rem;
+            padding: 1rem 1rem 1rem 2.8rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            color: #0a0e27;
             transition: all 0.3s ease;
+            background: white;
         }
-        
+
         .input-wrapper input:focus,
         .input-wrapper select:focus {
             outline: none;
-            border-color: #0066cc;
-            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
-            transform: translateY(-2px);
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
         }
-        
+
+        .input-wrapper input::placeholder {
+            color: #cbd5e1;
+        }
+
+        .input-wrapper select {
+            cursor: pointer;
+        }
+
         .password-strength {
             margin-top: 0.5rem;
             font-size: 0.8rem;
         }
-        
+
         .strength-bar {
             width: 100%;
-            height: 4px;
-            background: #e9ecef;
+            height: 3px;
+            background: #e2e8f0;
             border-radius: 2px;
-            margin: 0.5rem 0;
+            margin: 0.4rem 0;
             overflow: hidden;
         }
-        
+
         .strength-progress {
             height: 100%;
             transition: all 0.3s ease;
+            width: 0;
         }
-        
+
         .strength-weak {
             width: 33%;
-            background: #e74c3c;
+            background: linear-gradient(90deg, #ef4444, #dc2626);
         }
-        
+
         .strength-medium {
             width: 66%;
-            background: #f39c12;
+            background: linear-gradient(90deg, #f59e0b, #d97706);
         }
-        
+
         .strength-strong {
             width: 100%;
-            background: #27ae60;
+            background: linear-gradient(90deg, #10b981, #059669);
         }
-        
+
         .terms-checkbox {
+            grid-column: 1 / -1;
             display: flex;
             align-items: flex-start;
             gap: 0.8rem;
-            margin-bottom: 2rem;
+            padding: 1.2rem;
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
         }
-        
+
         .terms-checkbox input {
             margin-top: 0.2rem;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
         }
-        
+
         .terms-checkbox label {
-            font-size: 0.9rem;
-            line-height: 1.5;
-            color: #666;
+            font-size: 0.85rem;
+            line-height: 1.6;
+            color: #475569;
         }
-        
+
         .terms-checkbox a {
-            color: #0066cc;
+            color: #3b82f6;
             text-decoration: none;
+            font-weight: 600;
         }
-        
+
         .terms-checkbox a:hover {
-            text-decoration: underline;
+            color: #2563eb;
         }
-        
+
         .signup-btn {
+            grid-column: 1 / -1;
             width: 100%;
-            background: linear-gradient(45deg, #0066cc, #004499);
-            color: white;
+            padding: 1.2rem;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
             border: none;
-            padding: 1rem;
-            border-radius: 10px;
+            border-radius: 12px;
+            color: white;
             font-size: 1.1rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
             margin-bottom: 2rem;
         }
-        
+
         .signup-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0, 102, 204, 0.3);
+            box-shadow: 0 15px 40px rgba(59, 130, 246, 0.4);
         }
-        
+
         .signup-btn:disabled {
-            background: #ccc;
+            opacity: 0.5;
             cursor: not-allowed;
             transform: none;
-            box-shadow: none;
         }
-        
+
         .login-link {
+            grid-column: 1 / -1;
             text-align: center;
-            color: #666;
+            padding-top: 2rem;
+            border-top: 1px solid #e2e8f0;
+            color: #64748b;
+            font-size: 0.95rem;
         }
-        
+
         .login-link a {
-            color: #0066cc;
+            color: #3b82f6;
             text-decoration: none;
             font-weight: 600;
         }
-        
+
         .login-link a:hover {
-            text-decoration: underline;
+            color: #2563eb;
         }
-        
+
+        /* Benefits Section */
         .benefits-section {
-            background: #f8f9ff;
-            padding: 2rem;
-            border-radius: 15px;
+            grid-column: 1 / -1;
             margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid #e2e8f0;
         }
-        
+
         .benefits-title {
             text-align: center;
-            color: #333;
-            margin-bottom: 1.5rem;
             font-size: 1.3rem;
+            color: #1e293b;
+            font-weight: 700;
+            margin-bottom: 2rem;
         }
-        
-        .benefits-list {
-            list-style: none;
-            padding: 0;
+
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
         }
-        
-        .benefits-list li {
-            padding: 0.8rem 0;
+
+        .benefit-card {
+            text-align: center;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #f8fafc, #ffffff);
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .benefit-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(59, 130, 246, 0.15);
+            border-color: #3b82f6;
+        }
+
+        .benefit-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+            border-radius: 12px;
             display: flex;
             align-items: center;
-            gap: 1rem;
-            color: #666;
+            justify-content: center;
+            margin: 0 auto 1rem;
         }
-        
-        .benefits-list i {
-            color: #27ae60;
-            font-size: 1.2rem;
-            width: 20px;
+
+        .benefit-icon i {
+            font-size: 1.8rem;
+            color: #3b82f6;
         }
-        
-        @media (max-width: 768px) {
-            .signup-container {
-                max-width: 400px;
-            }
-            
-            .form-row {
+
+        .benefit-text {
+            font-size: 0.9rem;
+            color: #475569;
+            line-height: 1.5;
+        }
+
+        .message-popup {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            z-index: 1000;
+            opacity: 0;
+            transform: translateX(400px);
+            transition: all 0.4s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .message-popup.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .message-popup.success {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+
+        .message-popup.error {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+        }
+
+        @media (max-width: 968px) {
+            .form-grid {
                 grid-template-columns: 1fr;
             }
-            
-            .signup-card {
-                padding: 2rem 1.5rem;
+
+            .benefits-grid {
+                grid-template-columns: repeat(2, 1fr);
             }
-            
-            .signup-header h2 {
-                font-size: 1.7rem;
+        }
+
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .form-wrapper {
+                padding: 2rem;
+            }
+
+            .benefits-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .message-popup {
+                top: 1rem;
+                right: 1rem;
+                left: 1rem;
             }
         }
     </style>
 </head>
-<body class="signup-body">
-    <div class="signup-container">
-        <div class="signup-card">
-            <div class="signup-header">
-                <img src="logo-black.png" alt="Sansora Logo" class="signup-logo">
-                <h2>Create Account</h2>
-                <p>Join Sansora for exclusive deals and premium shopping</p>
+<body>
+    <!-- Animated Background -->
+    <div class="animated-bg"></div>
+    <div class="wave-container">
+        <div class="wave wave-1"></div>
+        <div class="wave wave-2"></div>
+    </div>
+    <div class="shapes-container">
+        <div class="floating-shape shape-1"></div>
+        <div class="floating-shape shape-2"></div>
+        <div class="floating-shape shape-3"></div>
+    </div>
+    <div class="particles" id="particles"></div>
+
+    <!-- Main Content -->
+    <div class="signup-page">
+        <!-- Header -->
+        <div class="page-header">
+            <div class="logo-header">
+                <img src="logo-black.png" alt="Sansora Logo" class="logo-image" onerror="this.style.display='none'">
             </div>
-            
-            <form class="signup-form" id="signupForm">
-                <div class="form-row">
-                    <div class="input-group">
-                        <label for="firstName">First Name</label>
-                        <div class="input-wrapper">
-                            <i class="fas fa-user"></i>
-                            <input type="text" id="firstName" name="firstName" placeholder="First name" required>
-                        </div>
+            <h1 class="page-title">Create Your Account</h1>
+            <p class="page-subtitle">Join thousands of satisfied customers worldwide</p>
+        </div>
+
+        <!-- Form Container -->
+        <div class="form-wrapper">
+            <form id="signupForm" class="form-grid">
+                <div class="input-group">
+                    <label for="firstName">First Name</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="firstName" name="firstName" placeholder="First name" required>
                     </div>
-                    <div class="input-group">
-                        <label for="lastName">Last Name</label>
-                        <div class="input-wrapper">
-                            <i class="fas fa-user"></i>
-                            <input type="text" id="lastName" name="lastName" placeholder="Last name" required>
-                        </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="lastName">Last Name</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="lastName" name="lastName" placeholder="Last name" required>
                     </div>
                 </div>
                 
-                <div class="input-group">
+                <div class="input-group full-width">
                     <label for="email">Email Address</label>
                     <div class="input-wrapper">
                         <i class="fas fa-envelope"></i>
-                        <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                        <input type="email" id="email" name="email" placeholder="your.email@example.com" required>
                     </div>
                 </div>
                 
@@ -290,30 +606,29 @@
                     <label for="phone">Phone Number</label>
                     <div class="input-wrapper">
                         <i class="fas fa-phone"></i>
-                        <input type="tel" id="phone" name="phone" placeholder="Enter phone number" required>
+                        <input type="tel" id="phone" name="phone" placeholder="10-digit number" required>
                     </div>
                 </div>
-                
-                <div class="form-row">
-                    <div class="input-group">
-                        <label for="gender">Gender</label>
-                        <div class="input-wrapper">
-                            <i class="fas fa-venus-mars"></i>
-                            <select id="gender" name="gender" required>
-                                <option value="">Select Gender</option>
-                                <option value="male">Male</option>
-                                <option value="female">Female</option>
-                                <option value="other">Other</option>
-                                <option value="prefer-not-to-say">Prefer not to say</option>
-                            </select>
-                        </div>
+
+                <div class="input-group">
+                    <label for="gender">Gender</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-venus-mars"></i>
+                        <select id="gender" name="gender" required>
+                            <option value="">Select Gender</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                            <option value="other">Other</option>
+                            <option value="prefer-not-to-say">Prefer not to say</option>
+                        </select>
                     </div>
-                    <div class="input-group">
-                        <label for="birthdate">Date of Birth</label>
-                        <div class="input-wrapper">
-                            <i class="fas fa-calendar"></i>
-                            <input type="date" id="birthdate" name="birthdate">
-                        </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="birthdate">Date of Birth</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-calendar"></i>
+                        <input type="date" id="birthdate" name="birthdate">
                     </div>
                 </div>
                 
@@ -321,13 +636,13 @@
                     <label for="password">Password</label>
                     <div class="input-wrapper">
                         <i class="fas fa-lock"></i>
-                        <input type="password" id="password" name="password" placeholder="Create a password" required>
+                        <input type="password" id="password" name="password" placeholder="Strong password" required>
                     </div>
-                    <div class="password-strength" id="passwordStrength">
+                    <div class="password-strength">
                         <div class="strength-bar">
                             <div class="strength-progress" id="strengthProgress"></div>
                         </div>
-                        <span id="strengthText">Password strength</span>
+                        <span id="strengthText" style="color: #94a3b8;">Password strength</span>
                     </div>
                 </div>
                 
@@ -335,71 +650,95 @@
                     <label for="confirmPassword">Confirm Password</label>
                     <div class="input-wrapper">
                         <i class="fas fa-lock"></i>
-                        <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password" required>
+                        <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm password" required>
                     </div>
                 </div>
                 
                 <div class="terms-checkbox">
                     <input type="checkbox" id="agreeTerms" name="agreeTerms" required>
                     <label for="agreeTerms">
-                        I agree to the <a href="#" onclick="showTerms()">Terms of Service</a> and 
-                        <a href="#" onclick="showPrivacy()">Privacy Policy</a>. 
-                        I also agree to receive promotional emails and updates from Sansora.
+                        I agree to the <a href="#" onclick="showTerms(); return false;">Terms of Service</a> and 
+                        <a href="#" onclick="showPrivacy(); return false;">Privacy Policy</a>. 
+                        I consent to receive promotional emails and updates from Sansora.
                     </label>
                 </div>
                 
                 <button type="submit" class="signup-btn">
                     <i class="fas fa-user-plus"></i> Create Account
                 </button>
+
+                <div class="login-link">
+                    Already have an account? <a href="login.html">Sign in here</a>
+                </div>
+
+                <!-- Benefits Section -->
+                <div class="benefits-section">
+                    <h3 class="benefits-title">Why Join Sansora?</h3>
+                    <div class="benefits-grid">
+                        <div class="benefit-card">
+                            <div class="benefit-icon">
+                                <i class="fas fa-shipping-fast"></i>
+                            </div>
+                            <p class="benefit-text">Free shipping on orders above ₹999</p>
+                        </div>
+                        <div class="benefit-card">
+                            <div class="benefit-icon">
+                                <i class="fas fa-undo"></i>
+                            </div>
+                            <p class="benefit-text">Easy 30-day returns & exchanges</p>
+                        </div>
+                        <div class="benefit-card">
+                            <div class="benefit-icon">
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <p class="benefit-text">Exclusive member discounts</p>
+                        </div>
+                        <div class="benefit-card">
+                            <div class="benefit-icon">
+                                <i class="fas fa-headset"></i>
+                            </div>
+                            <p class="benefit-text">24/7 premium support</p>
+                        </div>
+                        <div class="benefit-card">
+                            <div class="benefit-icon">
+                                <i class="fas fa-gift"></i>
+                            </div>
+                            <p class="benefit-text">Birthday rewards & offers</p>
+                        </div>
+                        <div class="benefit-card">
+                            <div class="benefit-icon">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <p class="benefit-text">Secure payments guaranteed</p>
+                        </div>
+                    </div>
+                </div>
             </form>
-            
-            <div class="login-link">
-                <p>Already have an account? <a href="login.html">Sign in here</a></p>
-            </div>
-        </div>
-        
-        <div class="benefits-section">
-            <h3 class="benefits-title">Why Join Sansora?</h3>
-            <ul class="benefits-list">
-                <li>
-                    <i class="fas fa-shipping-fast"></i>
-                    <span>Free shipping on orders above ₹999</span>
-                </li>
-                <li>
-                    <i class="fas fa-undo"></i>
-                    <span>Easy 30-day returns and exchanges</span>
-                </li>
-                <li>
-                    <i class="fas fa-star"></i>
-                    <span>Exclusive member discounts and early access</span>
-                </li>
-                <li>
-                    <i class="fas fa-headset"></i>
-                    <span>24/7 premium customer support</span>
-                </li>
-                <li>
-                    <i class="fas fa-gift"></i>
-                    <span>Birthday rewards and special offers</span>
-                </li>
-                <li>
-                    <i class="fas fa-shield-alt"></i>
-                    <span>Secure payments and data protection</span>
-                </li>
-            </ul>
         </div>
     </div>
-    
+
     <div id="signupMessage" class="message-popup"></div>
-    
+
     <script>
-        // Password strength checker
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            for (let i = 0; i < 25; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.bottom = `-20px`;
+                particle.style.animationDelay = `${Math.random() * 10}s`;
+                particle.style.animationDuration = `${10 + Math.random() * 10}s`;
+                particlesContainer.appendChild(particle);
+            }
+        }
+
         document.getElementById('password').addEventListener('input', function(e) {
             const password = e.target.value;
             const strengthProgress = document.getElementById('strengthProgress');
             const strengthText = document.getElementById('strengthText');
             
             let strength = 0;
-            let feedback = '';
             
             if (password.length >= 8) strength++;
             if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
@@ -409,91 +748,70 @@
             strengthProgress.className = 'strength-progress';
             
             if (strength === 0 || password.length === 0) {
-                strengthProgress.className += '';
+                strengthProgress.style.width = '0';
                 strengthText.textContent = 'Password strength';
-                strengthText.style.color = '#999';
+                strengthText.style.color = '#94a3b8';
             } else if (strength <= 2) {
                 strengthProgress.className += ' strength-weak';
-                strengthText.textContent = 'Weak password';
-                strengthText.style.color = '#e74c3c';
-                feedback = 'Use 8+ characters with uppercase, lowercase, numbers, and symbols';
+                strengthText.textContent = 'Weak - Use 8+ chars, uppercase, numbers & symbols';
+                strengthText.style.color = '#ef4444';
             } else if (strength === 3) {
                 strengthProgress.className += ' strength-medium';
-                strengthText.textContent = 'Medium password';
-                strengthText.style.color = '#f39c12';
-                feedback = 'Add symbols for a stronger password';
+                strengthText.textContent = 'Medium - Add symbols for stronger password';
+                strengthText.style.color = '#f59e0b';
             } else {
                 strengthProgress.className += ' strength-strong';
-                strengthText.textContent = 'Strong password';
-                strengthText.style.color = '#27ae60';
-                feedback = 'Excellent! Your password is secure';
-            }
-            
-            if (feedback) {
-                strengthText.textContent = feedback;
+                strengthText.textContent = 'Strong - Excellent password!';
+                strengthText.style.color = '#10b981';
             }
         });
-        
-        // Confirm password validation
+
         document.getElementById('confirmPassword').addEventListener('input', function(e) {
             const password = document.getElementById('password').value;
             const confirmPassword = e.target.value;
             
             if (confirmPassword && password !== confirmPassword) {
                 e.target.setCustomValidity('Passwords do not match');
-                e.target.style.borderColor = '#e74c3c';
+                e.target.style.borderColor = '#ef4444';
             } else {
                 e.target.setCustomValidity('');
-                e.target.style.borderColor = '#e9ecef';
+                e.target.style.borderColor = '#e2e8f0';
             }
         });
-        
-        // Form submission
+
         document.getElementById('signupForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
             const formData = new FormData(e.target);
             const data = Object.fromEntries(formData.entries());
             
-            // Validate required fields
-            if (!data.firstName || !data.lastName || !data.email || !data.phone || !data.password || !data.confirmPassword) {
-                showMessage('Please fill in all required fields', 'error');
-                return;
-            }
-            
-            // Validate email format
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(data.email)) {
                 showMessage('Please enter a valid email address', 'error');
                 return;
             }
             
-            // Validate phone number (Indian format)
             const phoneRegex = /^[6-9]\d{9}$/;
             if (!phoneRegex.test(data.phone)) {
                 showMessage('Please enter a valid 10-digit phone number', 'error');
                 return;
             }
             
-            // Validate password strength
             if (data.password.length < 8) {
                 showMessage('Password must be at least 8 characters long', 'error');
                 return;
             }
             
-            // Validate password match
             if (data.password !== data.confirmPassword) {
                 showMessage('Passwords do not match', 'error');
                 return;
             }
             
-            // Check terms agreement
             if (!data.agreeTerms) {
-                showMessage('Please agree to the Terms of Service and Privacy Policy', 'error');
+                showMessage('Please agree to the Terms of Service', 'error');
                 return;
             }
             
-            // Simulate signup process
             const submitBtn = document.querySelector('.signup-btn');
             const originalText = submitBtn.innerHTML;
             
@@ -501,27 +819,22 @@
             submitBtn.disabled = true;
             
             setTimeout(() => {
-                // Simulate successful signup
-                showMessage('Account created successfully! Please check your email to verify your account.', 'success');
+                showMessage('Account created successfully! Redirecting to login...', 'success');
                 
-                // Reset form
                 document.getElementById('signupForm').reset();
-                document.getElementById('strengthProgress').className = 'strength-progress';
+                document.getElementById('strengthProgress').style.width = '0';
                 document.getElementById('strengthText').textContent = 'Password strength';
-                document.getElementById('strengthText').style.color = '#999';
                 
-                // Re-enable button
                 submitBtn.innerHTML = originalText;
                 submitBtn.disabled = false;
                 
-                // Redirect to login after 3 seconds
                 setTimeout(() => {
                     window.location.href = 'login.html';
                 }, 3000);
                 
             }, 2000);
         });
-        
+
         function showMessage(text, type) {
             const messageDiv = document.getElementById('signupMessage');
             messageDiv.className = `message-popup ${type}`;
@@ -533,19 +846,17 @@
                 messageDiv.classList.remove('show');
             }, 5000);
         }
-        
+
         function showTerms() {
-            alert('Terms of Service\n\n1. Use of the website is subject to applicable laws.\n2. Users must provide accurate information.\n3. Sansora reserves the right to terminate accounts for violations.\n4. All purchases are subject to our return policy.\n5. Prices and availability are subject to change without notice.');
+            alert('Terms of Service\n\n1. Use of the website is subject to applicable laws.\n2. Users must provide accurate information.\n3. Sansora reserves the right to terminate accounts for violations.\n4. All purchases are subject to our return policy.\n5. Prices and availability are subject to change.');
         }
-        
+
         function showPrivacy() {
             alert('Privacy Policy\n\n1. We collect information to provide better services.\n2. Personal information is kept secure and confidential.\n3. We do not sell or rent personal information to third parties.\n4. Cookies may be used to enhance user experience.\n5. Users can request data deletion at any time.');
         }
-        
-        // Auto-focus on first name field
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('firstName').focus();
-        });
+
+        window.addEventListener('DOMContentLoaded', createParticles);
+        document.getElementById('firstName').focus();
     </script>
 </body>
 </html>

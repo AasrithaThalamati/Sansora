@@ -44,7 +44,7 @@
             position: relative;
             z-index: 10;
             text-align: center;
-            animation: slideUp 0.8s ease-out;
+            animation: slideUp 1.0s ease-out;
         }
 
         .logo-container {
@@ -78,7 +78,7 @@
             text-shadow: 0 2px 10px rgba(0,0,0,0.2);
             margin-top: 20px;
             opacity: 0;
-            animation: fadeInText 1s ease-in 0.3s forwards;
+            animation: fadeInText 1s ease-in 1.5s forwards;
         }
 
         .tagline {
@@ -87,7 +87,7 @@
             font-weight: 400;
             margin-top: 15px;
             opacity: 0;
-            animation: fadeInText 1s ease-in 0.6s forwards;
+            animation: fadeInText 1s ease-in 1.5s forwards;
         }
 
         .loading-dots {
@@ -102,15 +102,15 @@
             height: 10px;
             background: white;
             border-radius: 50%;
-            animation: dotPulse 1.4s ease-in-out infinite;
+            animation: dotPulse 1.7s ease-in-out infinite;
         }
 
         .dot:nth-child(2) {
-            animation-delay: 0.2s;
+            animation-delay: 0.9s;
         }
 
         .dot:nth-child(3) {
-            animation-delay: 0.4s;
+            animation-delay: 0.9s;
         }
 
         @keyframes fadeIn {
@@ -179,23 +179,7 @@
         <div class="content">
             <div class="logo-container">
                 <div class="logo">
-                    <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
-                        <defs>
-                            <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" style="stop-color:#F4A460;stop-opacity:1" />
-                                <stop offset="50%" style="stop-color:#DC143C;stop-opacity:1" />
-                                <stop offset="100%" style="stop-color:#8B008B;stop-opacity:1" />
-                            </linearGradient>
-                        </defs>
-                        
-                        <!-- Curved flowing shapes representing the Sansora logo -->
-                        <path d="M 200 80 Q 280 90 310 150 Q 320 180 300 220 Q 280 250 240 260" 
-                              fill="none" stroke="url(#grad1)" stroke-width="25" stroke-linecap="round"/>
-                        <path d="M 200 120 Q 270 130 290 180 Q 295 210 270 240" 
-                              fill="none" stroke="url(#grad1)" stroke-width="25" stroke-linecap="round"/>
-                        <path d="M 200 160 Q 250 170 265 210 Q 268 235 245 255" 
-                              fill="none" stroke="url(#grad1)" stroke-width="25" stroke-linecap="round"/>
-                    </svg>
+                    <img src="logo-black.png" alt="Sansora Logo">
                 </div>
             </div>
             
@@ -211,22 +195,18 @@
     </div>
 
     <script>
-        // Check if user has already seen splash screen in this session
-        const hasSeenSplash = sessionStorage.getItem('sansora_splash_shown');
+        // Check if user has seen intro page
+        const hasSeenIntro = sessionStorage.getItem('sansora_intro_shown');
         const savedUser = localStorage.getItem('sansora_user');
         
-        if (hasSeenSplash) {
-            // If splash was already shown, redirect immediately based on login status
-            if (savedUser) {
-                window.location.href = 'index.html';
-            } else {
-                window.location.href = 'login.html';
-            }
+        if (!hasSeenIntro) {
+            // First time visitor - show intro page after splash
+            setTimeout(() => {
+                sessionStorage.setItem('sansora_intro_shown', 'true');
+                window.location.href = 'intro.html';
+            }, 2000);
         } else {
-            // Mark splash as shown for this session
-            sessionStorage.setItem('sansora_splash_shown', 'true');
-            
-            // Show splash for 2 seconds, then redirect
+            // Returning visitor - redirect based on login status
             setTimeout(() => {
                 if (savedUser) {
                     // User is logged in, go to home page
