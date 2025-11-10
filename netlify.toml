@@ -1,14 +1,6 @@
-cat > netlify.toml << 'EOF'
 [build]
-  publish = "."
-  command = "npm install && echo 'Build complete'"
+  command = "npm run build"
+  publish = "dist"
 
-[[redirects]]
-  from = "/*"
-  to = "/.netlify/functions/server"
-  status = 200
-  force = true
-
-[functions]
-  directory = ".netlify/functions"
-EOF
+[build.environment]
+  NODE_VERSION = "18"
